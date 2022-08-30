@@ -201,6 +201,7 @@ public class DefaultClientSessionContext implements ClientSessionContext {
     private String buildScopesStringFromAuthorizationRequest() {
         return AuthorizationContextUtil.getAuthorizationRequestContextFromScopes(session, clientSession.getNote(OAuth2Constants.SCOPE)).getAuthorizationDetailEntries().stream()
                 .filter(authorizationDetails -> authorizationDetails.getSource().equals(AuthorizationRequestSource.SCOPE))
+                .filter(authorizationDetails -> clientScopeIds.contains(authorizationDetails.getClientScope().getId()))
                 .filter(authorizationDetails -> authorizationDetails.getClientScope().isIncludeInTokenScope())
                 .filter(authorizationDetails -> isClientScopePermittedForUser(authorizationDetails.getClientScope()))
                 .map(authorizationDetails -> authorizationDetails.getAuthorizationDetails().getScopeNameFromCustomData())
