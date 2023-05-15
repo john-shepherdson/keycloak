@@ -55,6 +55,7 @@ Our Keycloak version is working well with PostgreSQL database. For using other S
 - No extra checks for confidential clients in token exchange [RCIAM-988](https://jira.argo.grnet.gr/browse/RCIAM-988)
 - Consent extension [RCIAM-791](https://jira.argo.grnet.gr/browse/RCIAM-791)
 - Search in User Attribute with like
+- Protocol mapper that can combine multiple user attributes [RCIAM-1267](https://jira.argo.grnet.gr/browse/RCIAM-1267)
 
 ### Fixed
 - Changes in account console and account rest service [RCIAM-860](https://jira.argo.grnet.gr/browse/RCIAM-860)
