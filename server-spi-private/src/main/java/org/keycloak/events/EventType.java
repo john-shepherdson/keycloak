@@ -155,7 +155,11 @@ public enum EventType implements EnumWithStableIndex {
 
     // PAR request.
     PUSHED_AUTHORIZATION_REQUEST(51, false),
-    PUSHED_AUTHORIZATION_REQUEST_ERROR(0x10000 + PUSHED_AUTHORIZATION_REQUEST.getStableIndex(), false);
+    PUSHED_AUTHORIZATION_REQUEST_ERROR(0x10000 + PUSHED_AUTHORIZATION_REQUEST.getStableIndex(), false),
+    GROUP_MEMBERSHIP_CREATE(52, true),
+    GROUP_MEMBERSHIP_UPDATE(53, true),
+    GROUP_MEMBERSHIP_DELETE(54, true),
+    GROUP_MEMBERSHIP_SUSPEND(55, true);
 
 
     private final int stableIndex;
