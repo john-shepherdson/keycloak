@@ -484,9 +484,10 @@ public class SAMLEndpoint {
                 final boolean inResponseToValidationSuccess = validateInResponseToAttribute(responseType, expectedRequestId);
                 if (!inResponseToValidationSuccess)
                 {
-                    event.event(EventType.IDENTITY_PROVIDER_RESPONSE);
+                    logger.warn("inResponseTo validation failed. Try to continue log in process...");
+        /*            event.event(EventType.IDENTITY_PROVIDER_RESPONSE);
                     event.error(Errors.INVALID_SAML_RESPONSE);
-                    return ErrorPage.error(session, authSession, Response.Status.BAD_REQUEST, Messages.INVALID_REQUESTER);
+                    return ErrorPage.error(session, authSession, Response.Status.BAD_REQUEST, Messages.INVALID_REQUESTER);*/
                 }
 
                 boolean signed = AssertionUtil.isSignedElement(assertionElement);
@@ -901,7 +902,7 @@ public class SAMLEndpoint {
 
         // We are expecting a request ID so we are in SP-initiated login, attribute InResponseTo must be present
         if (responseType.getInResponseTo() == null) {
-            logger.error("Response Validation Error: InResponseTo attribute was expected but not present in received response");
+            logger.warn("Response Validation Error: InResponseTo attribute was expected but not present in received response");
             return false;
         }
 
@@ -909,13 +910,13 @@ public class SAMLEndpoint {
         // 1) Attribute Response > InResponseTo must not be empty
         String responseInResponseToValue = responseType.getInResponseTo();
         if (responseInResponseToValue.isEmpty()) {
-            logger.error("Response Validation Error: InResponseTo attribute was expected but it is empty in received response");
+            logger.warn("Response Validation Error: InResponseTo attribute was expected but it is empty in received response");
             return false;
         }
 
         // 2) Attribute Response > InResponseTo must match request ID
         if (!responseInResponseToValue.equals(expectedRequestId)) {
-            logger.error("Response Validation Error: received InResponseTo attribute does not match the expected request ID");
+            logger.warn("Response Validation Error: received InResponseTo attribute does not match the expected request ID");
             return false;
         }
 
@@ -937,13 +938,13 @@ public class SAMLEndpoint {
                             // 3) Assertion > Subject > Confirmation > SubjectConfirmationData > InResponseTo is empty
                             String subjectConfirmationDataInResponseToValue = subjectConfirmationDataElement.getInResponseTo();
                             if (subjectConfirmationDataInResponseToValue.isEmpty()) {
-                                logger.error("Response Validation Error: SubjectConfirmationData InResponseTo attribute was expected but it is empty in received response");
+                                logger.warn("Response Validation Error: SubjectConfirmationData InResponseTo attribute was expected but it is empty in received response");
                                 return false;
                             }
 
                             // 4) Assertion > Subject > Confirmation > SubjectConfirmationData > InResponseTo does not match request ID
                             if (!subjectConfirmationDataInResponseToValue.equals(expectedRequestId)) {
-                                logger.error("Response Validation Error: received SubjectConfirmationData InResponseTo attribute does not match the expected request ID");
+                                logger.warn("Response Validation Error: received SubjectConfirmationData InResponseTo attribute does not match the expected request ID");
                                 return false;
                             }
                         }
