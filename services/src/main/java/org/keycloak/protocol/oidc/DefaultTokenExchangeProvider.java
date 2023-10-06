@@ -309,11 +309,11 @@ public class DefaultTokenExchangeProvider implements TokenExchangeProvider {
             }
         }
 
-        if (targetClient.isConsentRequired()) {
-            event.detail(Details.REASON, "audience requires consent");
-            event.error(Errors.CONSENT_DENIED);
-            throw new CorsErrorResponseException(cors, OAuthErrorException.INVALID_CLIENT, "Client requires user consent", Response.Status.BAD_REQUEST);
-        }
+//        if (targetClient.isConsentRequired()) {
+//            event.detail(Details.REASON, "audience requires consent");
+//            event.error(Errors.CONSENT_DENIED);
+//            throw new CorsErrorResponseException(cors, OAuthErrorException.INVALID_CLIENT, "Client requires user consent", Response.Status.BAD_REQUEST);
+//        }
 
         boolean isClientTheAudience = client.equals(targetClient);
 

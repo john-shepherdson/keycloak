@@ -10,7 +10,7 @@ Full Keycloak upstream jira issue can be shown if filtered by Fix version.
 
 Our Keycloak version is working well with PostgreSQL database. For using other SQL databases, text field in database need to be evaluated.
 
-## [Unreleased]
+## [18.0.1-1.0] - 2022-07-04
 
 ### Added
 - Support for SAML Federation
@@ -46,6 +46,7 @@ Our Keycloak version is working well with PostgreSQL database. For using other S
 - Client description as text in database
 - Client attribute value as text in database [RCIAM-1026)](https://jira.argo.grnet.gr/browse/RCIAM-1026)
 - SAML IdP InResponseTo missing, warning instead of error
+- Remove consent required from Token Exchange [RCIAM-1048](https://jira.argo.grnet.gr/browse/RCIAM-1048)
 
 ### Fixed
 - Changes in account console and account rest service [RCIAM-860](https://jira.argo.grnet.gr/browse/RCIAM-860)
