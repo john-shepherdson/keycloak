@@ -209,6 +209,7 @@ public class SAMLFederationProvider extends AbstractIdPFederationProvider <SAMLF
         List<IdentityProviderModel> addedIdps= new ArrayList<>();
 		List<IdentityProviderModel> updatedIdps= new ArrayList<>();
 		List<String> existingIdps = realm.getIdentityProvidersByFederation(model.getInternalId());
+		String wantAssertionsEncrypted = "optional".equals(model.getWantAssertionsEncrypted()) ? "false" : model.getWantAssertionsEncrypted();
 		List<ClientModel> existingClientModels = session.clients().getFederationClientsStream(realm, model.getInternalId());
 
 		ClientValidationProvider clientValidationProvider = session.getProvider(ClientValidationProvider.class);
@@ -276,7 +277,7 @@ public class SAMLFederationProvider extends AbstractIdPFederationProvider <SAMLF
 							config.put(IdentityProviderModel.SYNC_MODE, model.getConfig().get(IdentityProviderModel.SYNC_MODE));
 							config.put("loginHint", "false");
 
-							config.put(SAMLIdentityProviderConfig.WANT_ASSERTIONS_ENCRYPTED, String.valueOf(model.isWantAssertionsEncrypted()));
+					                config.put(SAMLIdentityProviderConfig.WANT_ASSERTIONS_ENCRYPTED, wantAssertionsEncrypted);
 							config.put(SAMLIdentityProviderConfig.WANT_ASSERTIONS_SIGNED, String.valueOf(model.isWantAssertionsSigned()));
 							config.put(SAMLIdentityProviderConfig.WANT_LOGOUT_REQUESTS_SIGNED, String.valueOf(model.isWantLogoutRequestsSigned()));
 							config.put(SAMLIdentityProviderConfig.ENTITY_ID, model.getConfig().get(SAMLIdentityProviderConfig.ENTITY_ID));
@@ -752,7 +753,7 @@ public class SAMLFederationProvider extends AbstractIdPFederationProvider <SAMLF
             boolean wantAuthnRequestsSigned = model.isWantAuthnRequestsSigned();
 			boolean wantLogoutRequestsSigned = model.isWantLogoutRequestsSigned();
             boolean wantAssertionsSigned = model.isWantAssertionsSigned();
-            boolean wantAssertionsEncrypted = model.isWantAssertionsEncrypted();
+            String wantAssertionsEncrypted = model.getWantAssertionsEncrypted();
             String entityId = getEntityId(uriInfo, realm);
             String nameIDPolicyFormat = model.getNameIDPolicyFormat();
 
@@ -800,7 +801,7 @@ public class SAMLFederationProvider extends AbstractIdPFederationProvider <SAMLF
 			SAMLMetadataWriter metadataWriter = new SAMLMetadataWriter(writer);
 
 			EntityDescriptorType entityDescriptor = SPMetadataDescriptor.buildSPDescriptor(authnBinding, authnBindingLogout, endpoint, endpoint, wantAuthnRequestsSigned, wantLogoutRequestsSigned,
-                wantAssertionsSigned, wantAssertionsEncrypted, entityId, nameIDPolicyFormat, signingKeys, encryptionKeys);
+                wantAssertionsSigned, !"false".equals(wantAssertionsEncrypted), entityId, nameIDPolicyFormat, signingKeys, encryptionKeys);
 
 			// Create the AttributeConsumingService if at least one attribute importer mapper exists
 			List<FederationMapperModel> mappers = model.getFederationMapperModels().stream().filter(mapper -> "saml-user-attribute-idp-mapper".equals(mapper.getIdentityProviderMapper())).collect(Collectors.toList());

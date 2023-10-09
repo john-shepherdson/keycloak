@@ -10,7 +10,7 @@ Full Keycloak upstream jira issue can be shown if filtered by Fix version.
 
 Our Keycloak version is working well with PostgreSQL database. For using other SQL databases, text field in database need to be evaluated.
 
-## [18.0.1-1.0] - 2022-07-04
+## [Unreleased]
 
 ### Added
 - Extra logs for failed introspection
@@ -68,6 +68,7 @@ Our Keycloak version is working well with PostgreSQL database. For using other S
 - Remove consent required from Token Exchange [RCIAM-1048](https://jira.argo.grnet.gr/browse/RCIAM-1048)
 - Make optional the use of PKCE for Clients configured with PKCE only for Device Code Flow [RCIAM-1069](https://jira.argo.grnet.gr/browse/RCIAM-1069)
 - No extra checks for confidential clients in token exchange [RCIAM-988](https://jira.argo.grnet.gr/browse/RCIAM-988)
+- Correct including claim in token introspection response only [RCIAM-1117](https://jira.argo.grnet.gr/browse/RCIAM-1117)
 
 
 ### Fixed
