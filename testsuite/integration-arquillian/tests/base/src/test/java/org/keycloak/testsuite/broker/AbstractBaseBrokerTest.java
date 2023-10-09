@@ -382,7 +382,7 @@ public abstract class AbstractBaseBrokerTest extends AbstractKeycloakTest {
     }
 
     protected void waitForAccountManagementTitle() {
-        final String title = "Keycloak account management";
+        final String title = "AUTH_RESPONSE";
         waitForPage(driver, title, true);
     }
 

@@ -6,9 +6,11 @@ import org.keycloak.admin.client.resource.RealmResource;
 import org.keycloak.admin.client.resource.UserResource;
 import org.keycloak.common.Profile;
 import org.keycloak.common.util.Time;
+import org.keycloak.models.AuthenticationExecutionModel;
 import org.keycloak.models.IdentityProviderMapperSyncMode;
 import org.keycloak.models.IdentityProviderSyncMode;
 import org.keycloak.models.utils.TimeBasedOTP;
+import org.keycloak.representations.idm.AuthenticationExecutionInfoRepresentation;
 import org.keycloak.representations.idm.ClientRepresentation;
 import org.keycloak.representations.idm.ComponentRepresentation;
 import org.keycloak.representations.idm.IdentityProviderMapperRepresentation;
@@ -37,6 +39,7 @@ import jakarta.ws.rs.core.Response;
 import java.net.URI;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
@@ -70,6 +73,8 @@ import static org.keycloak.testsuite.broker.BrokerTestTools.waitForPage;
  */
 public abstract class AbstractAdvancedBrokerTest extends AbstractBrokerTest {
 
+    private static final String Browser_Conditional_OTP = "Browser - Conditional OTP";
+    private static final String Browser = "browser";
 
     protected void createRoleMappersForConsumerRealm() {
         createRoleMappersForConsumerRealm(IdentityProviderMapperSyncMode.FORCE);
@@ -519,6 +524,14 @@ public abstract class AbstractAdvancedBrokerTest extends AbstractBrokerTest {
         consumerRealmRep.setWaitIncrementSeconds(5);
         realm.update(consumerRealmRep);
 
+        //disable otp for browser flow
+        List<AuthenticationExecutionInfoRepresentation> executionReps = adminClient.realm(bc.consumerRealmName()).flows().getExecutions(Browser);
+        AuthenticationExecutionInfoRepresentation exec =  executionReps.stream().filter(authExec -> authExec.getDisplayName().equals(Browser_Conditional_OTP)).findFirst().orElse(null);
+        if (exec != null) {
+            exec.setRequirement(AuthenticationExecutionModel.Requirement.DISABLED.name());
+            adminClient.realm(bc.consumerRealmName()).flows().updateExecutions(Browser, exec);
+        }
+
         try {
             oauth.clientId("broker-app");
             loginPage.open(bc.consumerRealmName());
@@ -559,6 +572,9 @@ public abstract class AbstractAdvancedBrokerTest extends AbstractBrokerTest {
             setOtpTimeOffset(TimeBasedOTP.DEFAULT_INTERVAL_SECONDS, totp);
 
             loginTotpPage.login(totp.generateTOTP(totpSecret));
+//            //return to client flow -> otp has been configured -> ask again
+//            loginTotpPage.login(totp.generateTOTP(totpSecret));
+            waitForAccountManagementTitle();
             AccountHelper.logout(adminClient.realm(bc.consumerRealmName()), bc.getUserLogin());
         } finally {
             testingClient.server(bc.consumerRealmName()).run(disablePostBrokerLoginFlow(bc.getIDPAlias()));
@@ -615,6 +631,14 @@ public abstract class AbstractAdvancedBrokerTest extends AbstractBrokerTest {
         // don't run this test when map storage is enabled, as map storage doesn't support the legacy style federation
         ProfileAssume.assumeFeatureDisabled(Profile.Feature.MAP_STORAGE);
 
+        //disable otp for browser flow
+        List<AuthenticationExecutionInfoRepresentation> executionReps = adminClient.realm(bc.consumerRealmName()).flows().getExecutions(Browser);
+        AuthenticationExecutionInfoRepresentation exec =  executionReps.stream().filter(authExec -> authExec.getDisplayName().equals(Browser_Conditional_OTP)).findFirst().orElse(null);
+        if (exec != null) {
+            exec.setRequirement(AuthenticationExecutionModel.Requirement.DISABLED.name());
+            adminClient.realm(bc.consumerRealmName()).flows().updateExecutions(Browser, exec);
+        }
+
         try {
             updateExecutions(AbstractBrokerTest::disableUpdateProfileOnFirstLogin);
 
@@ -651,6 +675,11 @@ public abstract class AbstractAdvancedBrokerTest extends AbstractBrokerTest {
         } finally {
             removeUserByUsername(adminClient.realm(bc.consumerRealmName()), "test-user");
             removeUserByUsername(adminClient.realm(bc.consumerRealmName()), "test-user-noemail");
+
+            if (exec != null) {
+                exec.setRequirement(AuthenticationExecutionModel.Requirement.CONDITIONAL.name());
+                adminClient.realm(bc.consumerRealmName()).flows().updateExecutions(Browser, exec);
+            }
         }
     }
 }
