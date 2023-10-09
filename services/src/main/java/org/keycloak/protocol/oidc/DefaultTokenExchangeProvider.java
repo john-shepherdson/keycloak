@@ -321,9 +321,9 @@ public class DefaultTokenExchangeProvider implements TokenExchangeProvider {
             if (client.isPublicClient()) {
                 // public clients can only exchange on to themselves if they are the token holder
                 forbiddenIfClientIsNotTokenHolder(disallowOnHolderOfTokenMismatch, tokenHolder);
-            } else if (!client.equals(tokenHolder)) {
-                // confidential clients can only exchange to themselves if they are within the token audience
-                forbiddenIfClientIsNotWithinTokenAudience(token, tokenHolder);
+//            } else if (!client.equals(tokenHolder)) {
+//                // confidential clients can only exchange to themselves if they are within the token audience
+//                forbiddenIfClientIsNotWithinTokenAudience(token, tokenHolder);
             }
         } else {
             if (client.isPublicClient()) {
