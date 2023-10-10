@@ -26,7 +26,9 @@ import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -56,6 +58,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 
 import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 import org.jboss.logging.Logger;
+import org.jboss.resteasy.annotations.cache.Cache;
 import org.jboss.resteasy.annotations.cache.NoCache;
 import org.jboss.resteasy.spi.ResteasyProviderFactory;
 import org.keycloak.Config;
@@ -1216,5 +1219,18 @@ public class RealmAdminResource {
     public ClientProfilesResource getClientProfilesResource() {
         ProfileHelper.requireFeature(Profile.Feature.CLIENT_POLICIES);
         return new ClientProfilesResource(session, auth);
+    }
+
+
+    @GET
+    @Path("countries")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Map<String,String> getCountries() {
+        auth.clients().requireList();
+        Locale locale = session.getContext().resolveLocale(auth.adminAuth().getUser());
+
+        return Arrays.stream(Locale.getISOCountries()).collect(Collectors.toMap(country-> country, country-> new Locale("", country).getDisplayCountry(locale))).entrySet().stream()
+                .sorted(Map.Entry.comparingByValue()).collect(Collectors.toMap(
+                        Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> e1, LinkedHashMap::new));
     }
 }

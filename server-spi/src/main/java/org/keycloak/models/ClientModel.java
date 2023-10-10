@@ -41,6 +41,8 @@ public interface ClientModel extends ClientScopeModel, RoleContainerModel,  Prot
     String LOGO_URI ="logoUri";
     String POLICY_URI ="policyUri";
     String TOS_URI ="tosUri";
+    String CONTACTS = "contacts";
+    String COUNTRY = "country";
 
     public static class SearchableFields {
         public static final SearchableModelField<ClientModel> ID                 = new SearchableModelField<>("id", String.class);

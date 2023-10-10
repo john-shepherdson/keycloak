@@ -84,6 +84,8 @@ interface Application {
   logoUri: string;
   policyUri: string;
   tosUri: string;
+  contacts: string;
+  country: string;
 }
 
 export class ApplicationsPage extends React.Component<ApplicationsPageProps, ApplicationsPageState> {
@@ -238,16 +240,28 @@ export class ApplicationsPage extends React.Component<ApplicationsPageProps, App
                               </DescriptionListGroup>
                           }
                           {application.policyUri  &&
-                             <DescriptionListGroup>
-                                 <DescriptionListTerm>{Msg.localize('policy')}</DescriptionListTerm>
-                                 <DescriptionListDescription>{application.policyUri }</DescriptionListDescription>
-                             </DescriptionListGroup>
+                              <DescriptionListGroup>
+                                  <DescriptionListTerm>{Msg.localize('policy')}</DescriptionListTerm>
+                                  <DescriptionListDescription>{application.policyUri }</DescriptionListDescription>
+                              </DescriptionListGroup>
+                          }
+                          {application.contacts &&
+                              <DescriptionListGroup>
+                                  <DescriptionListTerm>{Msg.localize('contacts')}</DescriptionListTerm>
+                                  <DescriptionListDescription>{application.contacts}</DescriptionListDescription>
+                              </DescriptionListGroup>
+                          }
+                          {application.country &&
+                                <DescriptionListGroup>
+                                    <DescriptionListTerm>{Msg.localize('country')}</DescriptionListTerm>
+                                    <DescriptionListDescription>{application.country}</DescriptionListDescription>
+                                </DescriptionListGroup>
                           }
                           {application.logoUri &&
-                             <DescriptionListGroup>
-                                 <DescriptionListTerm>{Msg.localize('logo')}</DescriptionListTerm>
-                                 <DescriptionListDescription><img src={application.logoUri} /></DescriptionListDescription>
-                             </DescriptionListGroup>
+                               <DescriptionListGroup>
+                                   <DescriptionListTerm>{Msg.localize('logo')}</DescriptionListTerm>
+                                   <DescriptionListDescription><img src={application.logoUri} /></DescriptionListDescription>
+                               </DescriptionListGroup>
                           }
                           <DescriptionListGroup>
                             <DescriptionListTerm>{Msg.localize('accessGrantedOn') + ': '}</DescriptionListTerm>
