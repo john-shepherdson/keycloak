@@ -20,6 +20,7 @@ import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import org.jboss.logging.Logger;
 import org.jboss.resteasy.annotations.cache.NoCache;
+import org.jboss.resteasy.spi.ResteasyProviderFactory;
 import org.keycloak.http.HttpRequest;
 import org.keycloak.OAuthErrorException;
 import org.keycloak.authentication.AuthenticationFlow;
@@ -40,13 +41,16 @@ import org.keycloak.broker.provider.IdentityProviderMapper;
 import org.keycloak.broker.provider.IdentityProviderMapperSyncModeDelegate;
 import org.keycloak.broker.provider.util.IdentityBrokerState;
 import org.keycloak.broker.saml.SAMLEndpoint;
+import org.keycloak.broker.saml.SAMLIdentityProvider;
 import org.keycloak.broker.saml.SAMLIdentityProviderConfig;
+import org.keycloak.broker.saml.SAMLIdentityProviderFactory;
 import org.keycloak.broker.saml.federation.SAMLFederationProvider;
 import org.keycloak.broker.social.SocialIdentityProvider;
 import org.keycloak.common.ClientConnection;
 import org.keycloak.common.util.Base64Url;
 import org.keycloak.common.util.ObjectUtil;
 import org.keycloak.common.util.Time;
+import org.keycloak.dom.saml.v2.protocol.RequestAbstractType;
 import org.keycloak.dom.saml.v2.protocol.StatusResponseType;
 import org.keycloak.events.Details;
 import org.keycloak.events.Errors;
@@ -83,7 +87,7 @@ import org.keycloak.representations.AccessToken;
 import org.keycloak.saml.SAMLRequestParser;
 import org.keycloak.saml.common.constants.GeneralConstants;
 import org.keycloak.saml.processing.core.saml.v2.common.SAMLDocumentHolder;
-import org.keycloak.saml.processing.web.util.RedirectBindingUtil;
+import org.keycloak.saml.processing.web.util.PostBindingUtil;
 import org.keycloak.services.ErrorPage;
 import org.keycloak.services.ErrorPageException;
 import org.keycloak.services.ErrorResponse;
@@ -443,39 +447,75 @@ public class IdentityBrokerService implements IdentityProvider.AuthenticationCal
     @POST
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
     @Path(ENDPOINT_PATH)
-    public void getIdpFederationEndpointPOST(@FormParam(GeneralConstants.SAML_RESPONSE_KEY) String samlResponse) throws IOException {
-        checkForNullSamlResponse(samlResponse);
-        byte[] samlBytes = RedirectBindingUtil.urlBase64Decode(samlResponse);
-        SAMLDocumentHolder samlDocumentHolder = SAMLRequestParser.parseResponseDocument(samlBytes);
-        StatusResponseType statusResponse = (StatusResponseType)samlDocumentHolder.getSamlObject();
-        String issuer = statusResponse.getIssuer().getValue(); //this should be the entityId
-        String alias = SAMLFederationProvider.getHash(issuer);
-        String fullUrl = Urls.identityProviderAuthnResponse(this.session.getContext().getUri().getBaseUri(), alias, this.realmModel.getName()).toString();
-        String path = fullUrl.replace(this.session.getContext().getUri().getBaseUri().toString(), "/"); //get the subpath from "realms" and on, prepending also a "/"
-       // request.forward(path);
+    public Response getIdpFederationEndpointPOST(@FormParam(GeneralConstants.SAML_REQUEST_KEY) String samlRequest, @FormParam(GeneralConstants.SAML_RESPONSE_KEY) String samlResponse, @FormParam(GeneralConstants.RELAY_STATE) String relayState) throws IOException {
+        if (samlResponse == null && samlRequest == null) {
+            return errorForNullSamlResponse();
+        } else if (samlRequest != null) {
+            byte[] samlBytes = PostBindingUtil.base64Decode(samlRequest);
+            SAMLDocumentHolder samlDocumentHolder = SAMLRequestParser.parseResponseDocument(samlBytes);
+            RequestAbstractType statusResponse = (RequestAbstractType) samlDocumentHolder.getSamlObject();
+            SAMLEndpoint endpoint = getSAMLEndpoint(statusResponse.getIssuer().getValue(), samlRequest, samlResponse, relayState);
+            ResteasyProviderFactory.getInstance().injectProperties(endpoint);
+            return endpoint.postBinding(samlRequest, samlResponse, relayState);
+        } else {
+            byte[] samlBytes = PostBindingUtil.base64Decode(samlResponse);
+            SAMLDocumentHolder samlDocumentHolder = SAMLRequestParser.parseResponseDocument(samlBytes);
+            StatusResponseType statusResponse = (StatusResponseType) samlDocumentHolder.getSamlObject();
+            SAMLEndpoint endpoint = getSAMLEndpoint(statusResponse.getIssuer().getValue(), samlRequest, samlResponse, relayState);
+            ResteasyProviderFactory.getInstance().injectProperties(endpoint);
+            return endpoint.postBinding(samlRequest, samlResponse, relayState);
+        }
     }
-
 
     @GET
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
     @Path(ENDPOINT_PATH)
-    public void getIdpFederationEndpointGET(@QueryParam(GeneralConstants.SAML_RESPONSE_KEY) String samlResponse) {
-        checkForNullSamlResponse(samlResponse);
-        SAMLDocumentHolder samlDocumentHolder = SAMLRequestParser.parseResponseRedirectBinding(samlResponse);
-        StatusResponseType statusResponse = (StatusResponseType)samlDocumentHolder.getSamlObject();
-        String issuer = statusResponse.getIssuer().getValue(); //this should be the entityId
-        String alias = SAMLFederationProvider.getHash(issuer);
-        String fullUrl = Urls.identityProviderAuthnResponse(this.session.getContext().getUri().getBaseUri(), alias, this.realmModel.getName()).toString();
-        String path = fullUrl.replace(this.session.getContext().getUri().getBaseUri().toString(), "/"); //get the subpath from "realms" and on, prepending also a "/"
-       // request.forward(path);
+    public Response getIdpFederationEndpointGET(@QueryParam(GeneralConstants.SAML_REQUEST_KEY) String samlRequest, @QueryParam(GeneralConstants.SAML_RESPONSE_KEY) String samlResponse, @QueryParam(GeneralConstants.RELAY_STATE) String relayState) throws IOException {
+        if (samlResponse == null && samlRequest == null) {
+            return errorForNullSamlResponse();
+        } else if (samlRequest != null) {
+            SAMLDocumentHolder samlDocumentHolder = SAMLRequestParser.parseResponseRedirectBinding(samlRequest);
+            RequestAbstractType statusResponse = (RequestAbstractType) samlDocumentHolder.getSamlObject();
+            SAMLEndpoint endpoint = getSAMLEndpoint(statusResponse.getIssuer().getValue(), samlRequest, samlResponse, relayState);
+            ResteasyProviderFactory.getInstance().injectProperties(endpoint);
+            return endpoint.redirectBinding(samlRequest, samlResponse, relayState);
+        } else {
+            SAMLDocumentHolder samlDocumentHolder = SAMLRequestParser.parseResponseRedirectBinding(samlResponse);
+            StatusResponseType statusResponse = (StatusResponseType) samlDocumentHolder.getSamlObject();
+            SAMLEndpoint endpoint = getSAMLEndpoint(statusResponse.getIssuer().getValue(), samlRequest, samlResponse, relayState);
+            ResteasyProviderFactory.getInstance().injectProperties(endpoint);
+            return endpoint.redirectBinding(samlRequest, samlResponse, relayState);
+        }
     }
 
-    private void checkForNullSamlResponse(String samlResponse){
-        if (samlResponse == null) {
-            event.event(EventType.LOGIN);
-            event.error(Errors.INVALID_REQUEST);
-            throw new ErrorPageException(session, Response.Status.BAD_REQUEST, Messages.INVALID_REQUEST);
+    private SAMLEndpoint getSAMLEndpoint(String issuer,String samlRequest, String samlResponse, String relayState){
+        //issuer should be the entityId -> alias is the hashed entityid
+        String alias = SAMLFederationProvider.getHash(issuer);
+        SAMLIdentityProvider identityProvider = getSAMLIdentityProvider(session, realmModel, alias);
+        SAMLEndpoint endpoint = new SAMLEndpoint(session, identityProvider, identityProvider.getConfig(), this, identityProvider.getDestinationValidator());
+        return  endpoint;
+    }
+
+    private Response errorForNullSamlResponse() {
+        event.event(EventType.LOGIN);
+        event.error(Errors.INVALID_REQUEST);
+        return ErrorPage.error(session, null, Response.Status.BAD_REQUEST, Messages.INVALID_REQUEST);
+    }
+
+    public static SAMLIdentityProvider getSAMLIdentityProvider(KeycloakSession session, RealmModel realm, String alias) {
+        IdentityProviderModel identityProviderModel = realm.getIdentityProviderByAlias(alias);
+
+        if (identityProviderModel != null || ! SAMLIdentityProviderFactory.PROVIDER_ID.equals(identityProviderModel.getProviderId()) ) {
+            SAMLIdentityProviderFactory providerFactory = (SAMLIdentityProviderFactory)((IdentityProviderFactory) session.getKeycloakSessionFactory().getProviderFactory(IdentityProvider.class, SAMLIdentityProviderFactory.PROVIDER_ID));
+
+            if (providerFactory == null) {
+                throw new IdentityBrokerException("Could not find factory for identity provider [" + alias + "].");
+            }
+
+            return providerFactory.create(session, identityProviderModel);
         }
+
+        throw new IdentityBrokerException("Identity Provider [" + alias + "] not found.");
     }
 
     @GET

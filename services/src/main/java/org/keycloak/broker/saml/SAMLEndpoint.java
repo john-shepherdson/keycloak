@@ -325,8 +325,8 @@ public class SAMLEndpoint {
         }
 
         protected Response logoutRequest(LogoutRequestType request, String relayState) {
-            String brokerUserId = config.getAlias() + "." + request.getNameID().getValue();
             if (request.getSessionIndex() == null || request.getSessionIndex().isEmpty()) {
+                String brokerUserId = config.getAlias() + "." + request.getNameID().getValue();
                 AtomicReference<LogoutRequestType> ref = new AtomicReference<>(request);
                 session.sessions().getUserSessionByBrokerUserIdStream(realm, brokerUserId)
                         .filter(userSession -> userSession.getState() != UserSessionModel.State.LOGGING_OUT &&
