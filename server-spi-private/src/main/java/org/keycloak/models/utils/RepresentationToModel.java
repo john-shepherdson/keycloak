@@ -384,9 +384,10 @@ public class RepresentationToModel {
             }
         }
 
-        if ("saml".equals(resourceRep.getProtocol())
+        if ("saml".equals(resourceRep.getProtocol()) && resourceRep.getClientId() != null
                 && (resourceRep.getAttributes() == null
                     || !resourceRep.getAttributes().containsKey("saml.artifact.binding.identifier"))) {
+            //autoUpdated SAML IdP clientId is get from metadata
             client.setAttribute("saml.artifact.binding.identifier", computeArtifactBindingIdentifierString(resourceRep.getClientId()));
         }
 

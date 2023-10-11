@@ -61,6 +61,7 @@ import org.keycloak.representations.idm.ProtocolMapperRepresentation;
 import org.keycloak.representations.idm.RoleRepresentation;
 import org.keycloak.representations.idm.UserRepresentation;
 import org.keycloak.representations.idm.UserSessionRepresentation;
+import org.keycloak.saml.SignatureAlgorithm;
 import org.keycloak.testsuite.Assert;
 import org.keycloak.testsuite.util.AdminEventPaths;
 import org.keycloak.testsuite.util.ClientBuilder;
@@ -85,11 +86,14 @@ import java.util.stream.Collectors;
 import jakarta.ws.rs.BadRequestException;
 import jakarta.ws.rs.NotFoundException;
 import jakarta.ws.rs.core.Response;
+import org.keycloak.protocol.saml.SamlConfigAttributes;
 
 /**
  * @author <a href="mailto:sthorger@redhat.com">Stian Thorgersen</a>
  */
 public class ClientTest extends AbstractAdminTest {
+
+    private static final String entityIdClient="https://eid-proxy.aai-dev.grnet.gr/Edugain/proxy.xml";
 
     @Test
     public void getClients() {
@@ -908,7 +912,56 @@ public class ClientTest extends AbstractAdminTest {
         assertClient(client, storedClient);
     }
 
-    public static void assertClient(ClientRepresentation client, ClientRepresentation storedClient) {
+ private void assertExistSAMLClients(ClientRepresentation client) {
+        assertEquals("False SAML Protocol", "saml", client.getProtocol());
+        assertTrue("Enabled Client", client.isEnabled());
+        assertEquals("one redirect uris", 1, client.getRedirectUris().size());
+        assertThat(client.getAttributes().keySet(), containsInAnyOrder(
+                "saml.assertion.signature",
+                "saml.force.post.binding",
+                "saml.encrypt",
+                "saml_assertion_consumer_url_post",
+                "saml.server.signature",
+                "saml.server.signature.keyinfo.ext",
+                "saml.signing.certificate",
+                "saml.artifact.binding.identifier",
+                "saml.signature.algorithm",
+                "policyUri",
+                "saml_force_name_id_format",
+                "saml.client.signature",
+                "saml.encryption.certificate",
+                "saml.authnstatement",
+                "saml_name_id_format",
+                "saml.allow.ecp.flow",
+                "saml_signature_canonicalization_method",
+                SamlConfigAttributes.SAML_AUTO_UPDATED,
+                SamlConfigAttributes.SAML_METADATA_URL,
+                SamlConfigAttributes.SAML_REFRESH_PERIOD,
+                SamlConfigAttributes.SAML_LAST_REFRESH_TIME,
+                SamlConfigAttributes.SAML_SKIP_REQUESTED_ATTRIBUTES
+        ));
+        assertEquals("true", client.getAttributes().get(SamlConfigAttributes.SAML_SERVER_SIGNATURE));
+        assertEquals(SignatureAlgorithm.RSA_SHA256.toString(), client.getAttributes().get(SamlConfigAttributes.SAML_SIGNATURE_ALGORITHM));
+        assertEquals("true", client.getAttributes().get(SamlConfigAttributes.SAML_AUTHNSTATEMENT));
+        assertEquals("true", client.getAttributes().get(SamlConfigAttributes.SAML_ASSERTION_SIGNATURE));
+        assertEquals("username", client.getAttributes().get(SamlConfigAttributes.SAML_NAME_ID_FORMAT_ATTRIBUTE));
+        assertEquals("true", client.getAttributes().get(SamlConfigAttributes.SAML_ENCRYPT));
+        assertEquals("false", client.getAttributes().get(SamlConfigAttributes.SAML_CLIENT_SIGNATURE_ATTRIBUTE));
+        assertEquals("https://project-seal.eu/node/141", client.getAttributes().get("policyUri"));
+        assertEquals("https://eid-proxy.aai-dev.grnet.gr/Edugain/acs/post", client.getAttributes().get(SamlProtocol.SAML_ASSERTION_CONSUMER_URL_POST_ATTRIBUTE));
+        //no protocol mappers with SAML_SKIP_REQUESTED_ATTRIBUTES true
+        assertNull(client.getProtocolMappers());
+
+    }
+
+    private static void sleep(long ms) {
+        try {
+            Thread.sleep(ms);
+        } catch (InterruptedException ie) {
+            throw new RuntimeException(ie);
+        }
+    }   
+ public static void assertClient(ClientRepresentation client, ClientRepresentation storedClient) {
         if (client.getClientId() != null) Assert.assertEquals(client.getClientId(), storedClient.getClientId());
         if (client.getName() != null) Assert.assertEquals(client.getName(), storedClient.getName());
         if (client.isEnabled() != null) Assert.assertEquals(client.isEnabled(), storedClient.isEnabled());
