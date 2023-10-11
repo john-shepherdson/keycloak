@@ -183,6 +183,8 @@ public class OAuthClient {
 
     private String requestUri;
 
+    private String resource;
+
     private String claims;
 
     private Map<String, String> requestHeaders;
@@ -512,6 +514,9 @@ public class OAuthClient {
         // https://tools.ietf.org/html/rfc7636#section-4.5
         if (codeVerifier != null) {
             parameters.add(new BasicNameValuePair(OAuth2Constants.CODE_VERIFIER, codeVerifier));
+        }
+        if (resource != null) {
+            parameters.add(new BasicNameValuePair(OAuth2Constants.RESOURCE, resource));
         }
 
         UrlEncodedFormEntity formEntity = new UrlEncodedFormEntity(parameters, Charsets.UTF_8);
@@ -1013,6 +1018,9 @@ public class OAuthClient {
         if (clientSessionHost != null) {
             parameters.add(new BasicNameValuePair(AdapterConstants.CLIENT_SESSION_HOST, clientSessionHost));
         }
+        if (resource != null) {
+            parameters.add(new BasicNameValuePair(OAuth2Constants.RESOURCE, resource));
+        }
 
         UrlEncodedFormEntity formEntity;
         try {
@@ -1057,6 +1065,9 @@ public class OAuthClient {
             }
             if (codeChallengeMethod != null) {
                 parameters.add(new BasicNameValuePair(OAuth2Constants.CODE_CHALLENGE_METHOD, codeChallengeMethod));
+            }
+            if (resource != null) {
+                parameters.add(new BasicNameValuePair(OAuth2Constants.RESOURCE, resource));
             }
 
             UrlEncodedFormEntity formEntity;
@@ -1501,6 +1512,9 @@ public class OAuthClient {
         if (codeChallengeMethod != null) {
             b.queryParam(OAuth2Constants.CODE_CHALLENGE_METHOD, codeChallengeMethod);
         }
+//        if (resource != null) {
+//            b.queryParam(OAuth2Constants.RESOURCE, resource);
+//        }
         if (customParameters != null) {
             customParameters.keySet().stream().forEach(i -> b.queryParam(i, customParameters.get(i)));
         }
@@ -1637,6 +1651,11 @@ public class OAuthClient {
 
     public OAuthClient redirectUri(String redirectUri) {
         this.redirectUri = redirectUri;
+        return this;
+    }
+
+    public OAuthClient resource(String resource) {
+        this.resource = resource;
         return this;
     }
 

@@ -104,6 +104,7 @@ public class CachedRealm extends AbstractExtendableRevisioned {
     protected int accessCodeLifespan;
     protected int accessCodeLifespanUserAction;
     protected int accessCodeLifespanLogin;
+    protected String defaultAudValueForAccessToken;
     protected LazyLoader<RealmModel, OAuth2DeviceConfig> deviceConfig;
     protected LazyLoader<RealmModel, CibaConfig> cibaConfig;
     protected LazyLoader<RealmModel, ParConfig> parConfig;
@@ -232,6 +233,7 @@ public class CachedRealm extends AbstractExtendableRevisioned {
         accessCodeLifespanLogin = model.getAccessCodeLifespanLogin();
         actionTokenGeneratedByAdminLifespan = model.getActionTokenGeneratedByAdminLifespan();
         actionTokenGeneratedByUserLifespan = model.getActionTokenGeneratedByUserLifespan();
+        defaultAudValueForAccessToken = model.getDefaultAudValueForAccessToken();
         notBefore = model.getNotBefore();
         passwordPolicy = model.getPasswordPolicy();
         otpPolicy = model.getOTPPolicy();
@@ -505,6 +507,10 @@ public class CachedRealm extends AbstractExtendableRevisioned {
 
     public int getAccessCodeLifespanLogin() {
         return accessCodeLifespanLogin;
+    }
+
+    public String getDefaultAudValueForAccessToken() {
+        return defaultAudValueForAccessToken;
     }
 
     public OAuth2DeviceConfig getOAuth2DeviceConfig(Supplier<RealmModel> modelSupplier) {

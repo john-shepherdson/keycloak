@@ -200,6 +200,7 @@ public class LegacyExportImportManager implements ExportImportManager {
         if (rep.getAccessCodeLifespanLogin() != null)
             newRealm.setAccessCodeLifespanLogin(rep.getAccessCodeLifespanLogin());
         else newRealm.setAccessCodeLifespanLogin(1800);
+        newRealm.setDefaultAudValueForAccessToken(rep.getDefaultAudValueForAccessToken());
 
         if (rep.getActionTokenGeneratedByAdminLifespan() != null)
             newRealm.setActionTokenGeneratedByAdminLifespan(rep.getActionTokenGeneratedByAdminLifespan());
@@ -753,6 +754,7 @@ public class LegacyExportImportManager implements ExportImportManager {
             realm.setActionTokenGeneratedByAdminLifespan(rep.getActionTokenGeneratedByAdminLifespan());
         if (rep.getActionTokenGeneratedByUserLifespan() != null)
             realm.setActionTokenGeneratedByUserLifespan(rep.getActionTokenGeneratedByUserLifespan());
+        realm.setDefaultAudValueForAccessToken(rep.getDefaultAudValueForAccessToken());
 
         if (rep.getClaimsSupported() != null && !rep.getClaimsSupported().isEmpty()) realm.setClaimsSupported(rep.getClaimsSupported());
 

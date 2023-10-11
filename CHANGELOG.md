@@ -27,6 +27,7 @@ Our Keycloak version is working well with PostgreSQL database. For using other S
 - Hide scopes from scopes_supported in discovery endpoint [RCIAM-859](https://jira.argo.grnet.gr/browse/RCIAM-859)
 - Id token lifespan [RCIAM-930](https://jira.argo.grnet.gr/browse/RCIAM-930)
 - Add indexes to related to Federation and Identity Provider tables
+- Resource request parameter and audience in access token [RCIAM-1061](https://jira.argo.grnet.gr/browse/RCIAM-1061)
 
 ### Changed
 - Increase User Attribute Value length to 4000 [EOSC-KC-132](https://github.com/eosc-kc/keycloak/issues/132)

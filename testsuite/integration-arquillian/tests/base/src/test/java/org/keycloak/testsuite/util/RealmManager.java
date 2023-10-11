@@ -186,4 +186,11 @@ public class RealmManager {
         realm.update(rep);
         return this;
     }
+
+    public RealmManager defaultAudValueForAccessToken(String defaultAudValueForAccessToken) {
+        RealmRepresentation realmRepresentation = realm.toRepresentation();
+        realmRepresentation.setDefaultAudValueForAccessToken(defaultAudValueForAccessToken);
+        realm.update(realmRepresentation);
+        return this;
+    }
 }

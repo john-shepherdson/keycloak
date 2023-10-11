@@ -93,6 +93,7 @@ public class MapRealmAdapter extends AbstractRealmModel<MapRealmEntity> implemen
     private static final String FAILURE_FACTOR = "failureFactor";
     private static final String CLAIMS_SUPPORTED = "claimsSupported";
     private static final String ID_TOKEN_LIFESPAN = "idTokenLifespan";
+    private static final String DEFAULT_AUD_VALUE_FOR_ACCESS_TOKEN = "defaultAudValueForAccessToken";
 
     private PasswordPolicy passwordPolicy;
 
@@ -474,6 +475,16 @@ public class MapRealmAdapter extends AbstractRealmModel<MapRealmEntity> implemen
     public int getAccessCodeLifespanLogin() {
         Integer i = entity.getAccessCodeLifespanLogin();
         return i == null ? 0 : i;
+    }
+
+    @Override
+    public String getDefaultAudValueForAccessToken() {
+        return getAttribute(DEFAULT_AUD_VALUE_FOR_ACCESS_TOKEN);
+    }
+
+    @Override
+    public void setDefaultAudValueForAccessToken(String defaultAudValueForAccessToken) {
+        setAttribute(DEFAULT_AUD_VALUE_FOR_ACCESS_TOKEN, defaultAudValueForAccessToken);
     }
 
     @Override

@@ -63,6 +63,7 @@ import jakarta.ws.rs.core.UriBuilder;
 import jakarta.ws.rs.core.UriInfo;
 
 import java.net.URI;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -268,6 +269,9 @@ public class DeviceGrantType {
                 "The authorization request is still pending", Response.Status.BAD_REQUEST);
         }
 
+        List<String> resourceList = formParams.get(OAuth2Constants.RESOURCE);
+        TokenEndpoint.checkResourceList(resourceList, event, cors);
+
         // https://tools.ietf.org/html/rfc7636#section-4.6
         String codeVerifier = formParams.getFirst(OAuth2Constants.CODE_VERIFIER);
         String codeChallenge = deviceCodeModel.getCodeChallenge();
@@ -353,6 +357,6 @@ public class DeviceGrantType {
         // Set nonce as an attribute in the ClientSessionContext. Will be used for the token generation
         clientSessionCtx.setAttribute(OIDCLoginProtocol.NONCE_PARAM, deviceCodeModel.getNonce());
 
-        return tokenEndpoint.createTokenResponse(user, userSession, clientSessionCtx, scopeParam, false, s -> {return new DeviceTokenResponseContext(deviceCodeModel, formParams, clientSession, s);});
+        return tokenEndpoint.createTokenResponse(user, userSession, clientSessionCtx, scopeParam, false, s -> {return new DeviceTokenResponseContext(deviceCodeModel, formParams, clientSession, s);}, resourceList);
     }
 }

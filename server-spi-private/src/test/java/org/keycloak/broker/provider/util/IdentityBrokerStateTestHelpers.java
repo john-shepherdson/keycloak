@@ -1000,6 +1000,16 @@ public class IdentityBrokerStateTestHelpers {
         }
 
         @Override
+        public String getDefaultAudValueForAccessToken() {
+            return null;
+        }
+
+        @Override
+        public void setDefaultAudValueForAccessToken(String defaultAudValueForAccessToken) {
+
+        }
+
+        @Override
         public OAuth2DeviceConfig getOAuth2DeviceConfig() {
             return null;
         }
