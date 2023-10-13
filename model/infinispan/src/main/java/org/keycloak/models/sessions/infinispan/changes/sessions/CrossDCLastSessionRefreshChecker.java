@@ -48,7 +48,7 @@ public class CrossDCLastSessionRefreshChecker {
     public SessionUpdateTask.CrossDCMessageStatus shouldSaveUserSessionToRemoteCache(
             KeycloakSession kcSession, RealmModel realm, SessionEntityWrapper<UserSessionEntity> sessionWrapper, boolean offline, int newLastSessionRefresh) {
 
-        SessionUpdateTask.CrossDCMessageStatus baseChecks = baseChecks(kcSession, realm ,offline);
+        SessionUpdateTask.CrossDCMessageStatus baseChecks = baseChecks(kcSession, realm ,offline, null);
         if (baseChecks != null) {
             return baseChecks;
         }
@@ -80,9 +80,9 @@ public class CrossDCLastSessionRefreshChecker {
 
 
     public SessionUpdateTask.CrossDCMessageStatus shouldSaveClientSessionToRemoteCache(
-            KeycloakSession kcSession, RealmModel realm, SessionEntityWrapper<AuthenticatedClientSessionEntity> sessionWrapper, UserSessionModel userSession, boolean offline, int newTimestamp) {
+            KeycloakSession kcSession, RealmModel realm, SessionEntityWrapper<AuthenticatedClientSessionEntity> sessionWrapper, UserSessionModel userSession, boolean offline, int newTimestamp, String clientRevoke) {
 
-        SessionUpdateTask.CrossDCMessageStatus baseChecks = baseChecks(kcSession, realm ,offline);
+        SessionUpdateTask.CrossDCMessageStatus baseChecks = baseChecks(kcSession, realm ,offline, clientRevoke);
         if (baseChecks != null) {
             return baseChecks;
         }
@@ -110,9 +110,11 @@ public class CrossDCLastSessionRefreshChecker {
     }
 
 
-    private SessionUpdateTask.CrossDCMessageStatus baseChecks(KeycloakSession kcSession, RealmModel realm, boolean offline) {
-        // revokeRefreshToken always writes everything to remoteCache immediately
-        if (realm.isRevokeRefreshToken()) {
+    private SessionUpdateTask.CrossDCMessageStatus baseChecks(KeycloakSession kcSession, RealmModel realm, boolean offline, String clientRevoke) {
+        // (revokeRefreshToken always writes everything to remoteCache immediately
+        // and we are from user session or client revokeRefreshToken is not true)
+        // or also client has revokeRefreshToken equal to true
+        if ((realm.isRevokeRefreshToken() && clientRevoke == null) || Boolean.valueOf(clientRevoke)) {
             return SessionUpdateTask.CrossDCMessageStatus.SYNC;
         }
 
