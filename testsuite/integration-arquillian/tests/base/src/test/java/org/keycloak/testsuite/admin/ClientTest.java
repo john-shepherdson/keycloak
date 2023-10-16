@@ -912,7 +912,42 @@ public class ClientTest extends AbstractAdminTest {
         assertClient(client, storedClient);
     }
 
- private void assertExistSAMLClients(ClientRepresentation client) {
+    @Test
+    public void testSAMLAutoUpdatedClient() {
+
+        ClientRepresentation rep = new ClientRepresentation();
+        rep.setProtocol("saml");
+        rep.setEnabled(true);
+        Map<String, String> attributes = new HashMap<>();
+        attributes.put(SamlConfigAttributes.SAML_AUTO_UPDATED, "true");
+        attributes.put(SamlConfigAttributes.SAML_METADATA_URL, entityIdClient);
+        attributes.put(SamlConfigAttributes.SAML_REFRESH_PERIOD, "80");
+        attributes.put(SamlConfigAttributes.SAML_SKIP_REQUESTED_ATTRIBUTES,"true");
+        rep.setAttributes(attributes);
+        Response response = realm.clients().create(rep);
+        response.close();
+        String id = ApiUtil.getCreatedId(response);
+        getCleanup().addClientUuid(id);
+
+        sleep(60000);
+        ClientResource clientResource = ApiUtil.findClientResourceByClientId(realm, entityIdClient);
+        ClientRepresentation found = clientResource.toRepresentation();
+        assertExistSAMLClients(found);
+        found.getAttributes().put(SamlConfigAttributes.SAML_ENCRYPT, "false");
+        clientResource.update(found);
+        clientResource = ApiUtil.findClientResourceByClientId(realm, entityIdClient);
+        found = clientResource.toRepresentation();
+        assertEquals("false", found.getAttributes().get(SamlConfigAttributes.SAML_ENCRYPT));
+
+        sleep(120000);
+        clientResource = ApiUtil.findClientResourceByClientId(realm, entityIdClient);
+        found = clientResource.toRepresentation();
+        assertEquals("true", found.getAttributes().get(SamlConfigAttributes.SAML_ENCRYPT));
+
+        rep.setId(id);
+    }
+
+    private void assertExistSAMLClients(ClientRepresentation client) {
         assertEquals("False SAML Protocol", "saml", client.getProtocol());
         assertTrue("Enabled Client", client.isEnabled());
         assertEquals("one redirect uris", 1, client.getRedirectUris().size());

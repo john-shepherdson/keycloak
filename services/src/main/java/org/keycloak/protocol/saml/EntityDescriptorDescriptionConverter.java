@@ -32,6 +32,7 @@ import org.keycloak.models.ClientModel;
 import org.keycloak.models.KeycloakSession;
 import org.keycloak.models.KeycloakSessionFactory;
 import org.keycloak.models.utils.KeycloakModelUtils;
+import org.keycloak.protocol.ProtocolMapperUtils;
 import org.keycloak.protocol.saml.mappers.AttributeStatementHelper;
 import org.keycloak.protocol.saml.mappers.UserAttributeStatementMapper;
 import org.keycloak.representations.idm.ClientRepresentation;
@@ -72,7 +73,7 @@ public class EntityDescriptorDescriptionConverter implements ClientDescriptionCo
 
     @Override
     public ClientRepresentation convertToInternal(String description) {
-        return loadEntityDescriptors(new ByteArrayInputStream(description.getBytes()));
+        return loadEntityDescriptors(new ByteArrayInputStream(description.getBytes()), new ClientRepresentation());
     }
 
     /**
@@ -150,7 +151,7 @@ public class EntityDescriptorDescriptionConverter implements ClientDescriptionCo
         return null;
     }
 
-    private static ClientRepresentation loadEntityDescriptors(InputStream is) {
+    public static ClientRepresentation loadEntityDescriptors(InputStream is, ClientRepresentation app) {
         Object metadata;
         try {
             metadata = SAMLParser.getInstance().parse(is);
@@ -173,24 +174,30 @@ public class EntityDescriptorDescriptionConverter implements ClientDescriptionCo
         EntityDescriptorType entity = (EntityDescriptorType) entities.getEntityDescriptor().get(0);
         String entityId = entity.getEntityID();
 
-        ClientRepresentation app = new ClientRepresentation();
-        app.setClientId(entityId);
+        if ( app.getClientId() == null)
+            app.setClientId(entityId);
 
-        Map<String, String> attributes = new HashMap<>();
+        Map<String, String> attributes = app.getAttributes() == null ? new HashMap<>() : app.getAttributes();
         app.setAttributes(attributes);
 
         List<String> redirectUris = new LinkedList<>();
         app.setRedirectUris(redirectUris);
 
-        app.setFullScopeAllowed(true);
-        app.setProtocol(SamlProtocol.LOGIN_PROTOCOL);
-        attributes.put(SamlConfigAttributes.SAML_SERVER_SIGNATURE, SamlProtocol.ATTRIBUTE_TRUE_VALUE); // default to true
-        attributes.put(SamlConfigAttributes.SAML_SERVER_SIGNATURE_KEYINFO_EXT, SamlProtocol.ATTRIBUTE_FALSE_VALUE); // default to false
-        attributes.put(SamlConfigAttributes.SAML_SIGNATURE_ALGORITHM, SignatureAlgorithm.RSA_SHA256.toString());
-        attributes.put(SamlConfigAttributes.SAML_AUTHNSTATEMENT, SamlProtocol.ATTRIBUTE_TRUE_VALUE);
+        if ( app.getId() == null) {
+            //only during creation
+            app.setFullScopeAllowed(true);
+            app.setProtocol(SamlProtocol.LOGIN_PROTOCOL);
+            attributes.put(SamlConfigAttributes.SAML_SERVER_SIGNATURE, SamlProtocol.ATTRIBUTE_TRUE_VALUE); // default to true
+            attributes.put(SamlConfigAttributes.SAML_SERVER_SIGNATURE_KEYINFO_EXT, SamlProtocol.ATTRIBUTE_FALSE_VALUE); // default to false
+            attributes.put(SamlConfigAttributes.SAML_SIGNATURE_ALGORITHM, SignatureAlgorithm.RSA_SHA256.toString());
+            attributes.put(SamlConfigAttributes.SAML_AUTHNSTATEMENT, SamlProtocol.ATTRIBUTE_TRUE_VALUE);
+        }
+
         SPSSODescriptorType spDescriptorType = getSPDescriptor(entity);
         if (spDescriptorType.isWantAssertionsSigned()) {
             attributes.put(SamlConfigAttributes.SAML_ASSERTION_SIGNATURE, SamlProtocol.ATTRIBUTE_TRUE_VALUE);
+        } else {
+            attributes.put(SamlConfigAttributes.SAML_ASSERTION_SIGNATURE, SamlProtocol.ATTRIBUTE_FALSE_VALUE);
         }
         String logoutPost = getLogoutLocation(spDescriptorType, JBossSAMLURIConstants.SAML_HTTP_POST_BINDING.get());
         if (logoutPost != null) attributes.put(SamlProtocol.SAML_SINGLE_LOGOUT_SERVICE_URL_POST_ATTRIBUTE, logoutPost);
@@ -249,8 +256,9 @@ public class EntityDescriptorDescriptionConverter implements ClientDescriptionCo
                 attributes.put(ClientModel.POLICY_URI, spDescriptorType.getExtensions().getUIInfo().getPrivacyStatementURL().stream().filter(dn -> "en".equals(dn.getLang())).findFirst().orElse(spDescriptorType.getExtensions().getUIInfo().getPrivacyStatementURL().get(0)).getValue().toString());
             }
         }
-        
-        app.setProtocolMappers(spDescriptorType.getAttributeConsumingService().stream().flatMap(att -> att.getRequestedAttribute().stream())
+
+        if (!"true".equals(app.getAttributes().get(SamlConfigAttributes.SAML_SKIP_REQUESTED_ATTRIBUTES)))
+          app.setProtocolMappers(spDescriptorType.getAttributeConsumingService().stream().flatMap(att -> att.getRequestedAttribute().stream())
             .map(attr -> {
                 ProtocolMapperRepresentation mapper = new ProtocolMapperRepresentation();
                 mapper.setName(attr.getName());
@@ -262,6 +270,7 @@ public class EntityDescriptorDescriptionConverter implements ClientDescriptionCo
                     config.put(AttributeStatementHelper.FRIENDLY_NAME, attr.getFriendlyName());
                 if (attr.getNameFormat() != null)
                     config.put(AttributeStatementHelper.SAML_ATTRIBUTE_NAMEFORMAT, getSAMLNameFormat(attr.getNameFormat()));
+                config.put(ProtocolMapperUtils.USER_ATTRIBUTE, attr.getFriendlyName() != null ? attr.getFriendlyName() : attr.getName());
                 mapper.setConfig(config);
                 return mapper;
             }).collect(Collectors.toList()));
