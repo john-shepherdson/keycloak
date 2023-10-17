@@ -28,6 +28,8 @@ public interface TimerProvider extends Provider {
 	
     public void schedule(Runnable runnable, long intervalMillis, String taskName);
 
+    public void scheduleOnce(final Runnable runnable, final long delay, String taskName);
+
     public void scheduleTask(ScheduledTask scheduledTask, long intervalMillis, String taskName);
 
 

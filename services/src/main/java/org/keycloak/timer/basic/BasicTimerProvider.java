@@ -59,6 +59,18 @@ public class BasicTimerProvider implements TimerProvider {
         logger.debugf("Starting task '%s' with interval '%d'", taskName, intervalMillis);
         timer.schedule(createTimerTask (runnable, intervalMillis, taskName), intervalMillis, intervalMillis);
     }
+
+    @Override
+    public void scheduleOnce(final Runnable runnable, final long delay, String taskName) {
+
+        logger.debugf("Task '%s' will be executed with delay '%d'", taskName, delay);
+        timer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                runnable.run();
+            }
+        }, delay);
+    }
     
     private TimerTask createTimerTask (final Runnable runnable, final long intervalMillis, String taskName) {
     	TimerTask task = new TimerTask() {

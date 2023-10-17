@@ -44,7 +44,6 @@ public class LegacyDatastoreProviderFactory implements DatastoreProviderFactory,
     private static final Logger logger = Logger.getLogger(LegacyDatastoreProviderFactory.class);
 
     private static final String PROVIDER_ID = "legacy";
-    private static final String SAML_AUTO_UPDATED = "saml.auto.updated";
     private long clientStorageProviderTimeout;
     private long roleStorageProviderTimeout;
     private Runnable onClose;
@@ -110,30 +109,10 @@ public class LegacyDatastoreProviderFactory implements DatastoreProviderFactory,
                 timer.schedule(new ClusterAwareScheduledTaskRunner(sessionFactory, new ClearExpiredClientInitialAccessTokens(), interval), interval, "ClearExpiredClientInitialAccessTokens");
                 timer.schedule(new ClusterAwareScheduledTaskRunner(sessionFactory, new ClearExpiredUserSessions(), interval), interval, ClearExpiredUserSessions.TASK_NAME);
                 timer.schedule(new ClusterAwareScheduledTaskRunner(sessionFactory, new RequiredActionsResetTask(), interval), interval, "RequiredActionsResetTask");
-                autoUpdateTasks(sessionFactory, timer);
-                ExecutorService executor = session.getProvider(ExecutorsProvider.class).getExecutor("idp-scheduled tasks");
-                StartIdPScheduledTasks idPScheduledTasks = new StartIdPScheduledTasks();
-                ScheduledTaskRunner task = new ScheduledTaskRunner(sessionFactory, idPScheduledTasks);
-                executor.submit(task);
+                timer.scheduleOnce(new ClusterAwareScheduledTaskRunner(sessionFactory, new StartAutoUpdatedScheduledTasks(), interval), interval, "StartAutoUpdatedScheduledTasks");
                 UserStorageSyncManager.bootstrapPeriodic(sessionFactory, timer);
             }
         }
-    }
-
-    private static void autoUpdateTasks(final KeycloakSessionFactory sessionFactory, final TimerProvider timer) {
-        KeycloakModelUtils.runJobInTransaction(sessionFactory, new KeycloakSessionTask() {
-
-            @Override
-            public void run(KeycloakSession session) {
-                ConfigureAutoUpdateSAMLClient conf = session.getProvider(ConfigureAutoUpdateSAMLClient.class);
-                session.realms().getRealmsStream().forEach(realm -> realm.getSAMLFederations().stream().forEach(fedModel -> {
-                    FederationProvider federationProvider = SAMLFederationProviderFactory.getSAMLFederationProviderFactoryById(session, fedModel.getProviderId()).create(session, fedModel, realm.getId());
-                    federationProvider.enableUpdateTask();
-                    session.clients().getClientsStream(realm).filter(clientModel ->"saml".equals(clientModel.getProtocol()) && clientModel.getAttributes() != null && Boolean.valueOf(clientModel.getAttributes().get(SAML_AUTO_UPDATED))).forEach( clientModel -> conf.configure(clientModel, realm));
-                }));
-
-            }
-        });
     }
 
     @Override
