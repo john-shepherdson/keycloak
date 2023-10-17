@@ -224,6 +224,8 @@ public class TokenManager {
         }
 
         clientSessionCtx.setAttribute(OIDCLoginProtocol.NONCE_PARAM, oldToken.getNonce());
+        if ( oldTokenScope != null)
+            clientSessionCtx.getClientSession().setNote(OAuth2Constants.SCOPE,oldTokenScope);
 
         // recreate token.
         AccessToken newToken = createClientAccessToken(session, realm, client, user, userSession, clientSessionCtx, resourceList);
@@ -380,8 +382,14 @@ public class TokenManager {
         String oldTokenScope = refreshToken.getScope();
         //The requested scope MUST NOT include any scope not originally granted by the resource owner
         //if scope parameter is not null, remove every scope that is not part of scope parameter
-        if (scopeParameter != null && ! scopeParameter.isEmpty()) {
-            oldTokenScope = Arrays.stream(oldTokenScope.split(" ")).filter(sc -> Arrays.stream(scopeParameter.split(" ")).collect(Collectors.toSet()).contains(sc)).collect(Collectors.joining(" "));
+       if (scopeParameter != null && !scopeParameter.isEmpty() && oldTokenScope != null && !oldTokenScope.isEmpty()) {
+            if (Profile.isFeatureEnabled(Profile.Feature.DYNAMIC_SCOPES)) {
+                Set<String> oldTokenScopeSet = Arrays.stream(oldTokenScope.split(" ")).map(s -> s.split(":")[0]).collect(Collectors.toSet());
+                oldTokenScope = Arrays.stream(scopeParameter.split(" ")).filter(sc -> oldTokenScopeSet.contains(sc.split(":")[0])).collect(Collectors.joining(" "));
+            } else {
+                Set<String> oldTokenScopeSet = Arrays.stream(scopeParameter.split(" ")).collect(Collectors.toSet());
+                oldTokenScope = Arrays.stream(scopeParameter.split(" ")).filter(sc -> oldTokenScopeSet.contains(sc)).collect(Collectors.joining(" "));
+            }
         }
 
         TokenValidation validation = validateToken(session, uriInfo, connection, realm, refreshToken, headers, oldTokenScope, resourceList);
