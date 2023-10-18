@@ -176,6 +176,7 @@
   "userProfileEnabled": "User Profile Enabled",
   "endpoints": "Endpoints",
   "openIDEndpointConfiguration": "OpenID Endpoint Configuration",
+  "claimsSupported": "Claims supported",
   "samlIdentityProviderMetadata": "SAML 2.0 Identity Provider Metadata",
   "loginTheme": "Login theme",
   "accountTheme": "Account theme",
@@ -914,5 +915,6 @@
   "importOverwritten_other": "{{count}} records overwritten.",
   "importSkipped_zero": "No records skipped.",
   "importSkipped_one": "One record skipped.",
-  "importSkipped_other": "{{count}} records skipped."
+  "importSkipped_other": "{{count}} records skipped.",
+  "openIdEndpointConfiguration": "OpenID Endpoint Configuration"
 }
