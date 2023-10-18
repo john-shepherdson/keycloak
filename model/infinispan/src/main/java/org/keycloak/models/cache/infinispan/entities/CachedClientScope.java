@@ -18,6 +18,7 @@
 package org.keycloak.models.cache.infinispan.entities;
 
 import org.keycloak.models.ClientScopeModel;
+import org.keycloak.models.ClientScopePolicyModel;
 import org.keycloak.models.ProtocolMapperModel;
 import org.keycloak.models.RealmModel;
 import org.keycloak.models.RoleModel;
@@ -40,6 +41,7 @@ public class CachedClientScope extends AbstractRevisioned implements InRealm {
     private String protocol;
     private Set<String> scope = new HashSet<>();
     private Set<ProtocolMapperModel> protocolMappers = new HashSet<>();
+    private Set<ClientScopePolicyModel> clientScopePolicies = new HashSet<>();
     private Map<String, String> attributes = new HashMap<>();
 
     public CachedClientScope(Long revision, RealmModel realm, ClientScopeModel model) {
@@ -49,6 +51,7 @@ public class CachedClientScope extends AbstractRevisioned implements InRealm {
         this.realm = realm.getId();
         protocol = model.getProtocol();
         protocolMappers.addAll(model.getProtocolMappersStream().collect(Collectors.toSet()));
+        clientScopePolicies.addAll(model.getClientScopePoliciesStream().collect(Collectors.toSet()));
         scope.addAll(model.getScopeMappingsStream().map(RoleModel::getId).collect(Collectors.toSet()));
         attributes.putAll(model.getAttributes());
     }
@@ -66,6 +69,10 @@ public class CachedClientScope extends AbstractRevisioned implements InRealm {
     }
     public Set<ProtocolMapperModel> getProtocolMappers() {
         return protocolMappers;
+    }
+
+    public Set<ClientScopePolicyModel> getClientScopePolicies() {
+        return clientScopePolicies;
     }
 
     public String getProtocol() {

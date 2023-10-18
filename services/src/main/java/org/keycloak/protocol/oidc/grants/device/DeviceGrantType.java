@@ -65,6 +65,7 @@ import jakarta.ws.rs.core.UriInfo;
 import java.net.URI;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * @author <a href="mailto:h2-wada@nri.co.jp">Hiroyuki Wada</a>
@@ -350,6 +351,7 @@ public class DeviceGrantType {
             throw new CorsErrorResponseException(cors, OAuthErrorException.INVALID_SCOPE,
                 "Client no longer has requested consent from user", Response.Status.BAD_REQUEST);
         }
+        scopeParam = TokenManager.clientScopePolicy(scopeParam, user, realm.getClientScopesStream().collect(Collectors.toList()));
 
         ClientSessionContext clientSessionCtx = DefaultClientSessionContext.fromClientSessionAndScopeParameter(clientSession,
                 scopeParam, session);

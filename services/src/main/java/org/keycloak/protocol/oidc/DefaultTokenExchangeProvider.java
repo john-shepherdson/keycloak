@@ -356,7 +356,7 @@ public class DefaultTokenExchangeProvider implements TokenExchangeProvider {
             //from return scope remove scopes that are not default or optional scopes for targetClient
             scope = Arrays.stream(scope.split(" ")).filter(s -> "openid".equals(s) || (targetClientScopes.contains(Profile.isFeatureEnabled(Profile.Feature.DYNAMIC_SCOPES) ? s.split(":")[0] : s))).collect(Collectors.joining(" "));
         }
-
+        scope= TokenManager.clientScopePolicy(scope, targetUser, realm.getClientScopesStream().collect(Collectors.toList()));
         switch (requestedTokenType) {
             case OAuth2Constants.ACCESS_TOKEN_TYPE:
             case OAuth2Constants.REFRESH_TOKEN_TYPE:

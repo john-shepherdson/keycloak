@@ -100,6 +100,7 @@ import java.util.function.BinaryOperator;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
+import java.util.regex.Pattern;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -1430,6 +1431,18 @@ public class TokenManager {
                             return false;
                         }
                     });
+    }
+
+    public static String clientScopePolicy(String scope, UserModel user, List<ClientScopeModel> clientScopes) {
+        //filter based on client scope policies ( at least one policy is ok)
+        return scope== null ? null : Arrays.stream(scope.split(" ")).filter(x -> {
+            String name = x.split(":")[0];
+            ClientScopeModel sc = clientScopes.stream().filter(cs -> name.equals(cs.getName())).findAny().orElse(null);
+            return sc == null || sc.getClientScopePoliciesStream().count() == 0 || sc.getClientScopePoliciesStream().allMatch(policy -> policy.getClientScopePolicyValues().stream().anyMatch(policyValue -> {
+                boolean check = (policyValue.getRegex() && user.getAttributeStream(policy.getUserAttribute()).anyMatch(attrValue -> Pattern.compile(policyValue.getValue()).matcher(attrValue).matches())) || (!policyValue.getRegex() && user.getAttributeStream(policy.getUserAttribute()).anyMatch(val -> val.equals(policyValue.getValue())));
+                return policyValue.getNegateOutput() ? !check : check;
+            }));
+        }).collect(Collectors.joining(" "));
     }
 
     private Stream<OIDCIdentityProvider> getOIDCIdentityProviders(RealmModel realm, KeycloakSession session) {

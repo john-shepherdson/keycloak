@@ -29,6 +29,7 @@ Our Keycloak version is working well with PostgreSQL database. For using other S
 - Add indexes to related to Federation and Identity Provider tables
 - Resource request parameter and audience in access token [RCIAM-1061](https://jira.argo.grnet.gr/browse/RCIAM-1061)
 - Autoupdated SAML Client [RCIAM-1181](https://jira.argo.grnet.gr/browse/RCIAM-1181)
+- Client scope policy [RCIAM-1241](https://jira.argo.grnet.gr/browse/RCIAM-1241)
 
 ### Changed
 - Increase User Attribute Value length to 4000 [EOSC-KC-132](https://github.com/eosc-kc/keycloak/issues/132)
@@ -52,6 +53,7 @@ Our Keycloak version is working well with PostgreSQL database. For using other S
 - Make optional the use of PKCE for Clients configured with PKCE only for Device Code Flow [RCIAM-1069](https://jira.argo.grnet.gr/browse/RCIAM-1069)
 - No extra checks for confidential clients in token exchange [RCIAM-988](https://jira.argo.grnet.gr/browse/RCIAM-988)
 - Consent extension [RCIAM-791](https://jira.argo.grnet.gr/browse/RCIAM-791)
+- Search in User Attribute with like
 
 ### Fixed
 - Changes in account console and account rest service [RCIAM-860](https://jira.argo.grnet.gr/browse/RCIAM-860)

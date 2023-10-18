@@ -18,6 +18,7 @@
 package org.keycloak.models.cache.infinispan;
 
 import org.keycloak.models.ClientScopeModel;
+import org.keycloak.models.ClientScopePolicyModel;
 import org.keycloak.models.ProtocolMapperModel;
 import org.keycloak.models.RealmModel;
 import org.keycloak.models.RoleModel;
@@ -85,6 +86,18 @@ public class ClientScopeAdapter implements ClientScopeModel {
     }
 
     @Override
+    public Stream<ClientScopePolicyModel> getClientScopePoliciesStream() {
+        if (isUpdated()) return updated.getClientScopePoliciesStream();
+        return cached.getClientScopePolicies().stream();
+    }
+
+    @Override
+    public ClientScopePolicyModel getClientScopePolicy(String id) {
+        if (isUpdated()) return updated.getClientScopePolicy(id);
+        return cached.getClientScopePolicies().stream().filter(x-> id.equals(x.getId())).findAny().orElse(null);
+    }
+
+    @Override
     public ProtocolMapperModel addProtocolMapper(ProtocolMapperModel model) {
         getDelegateForUpdate();
         return updated.addProtocolMapper(model);
@@ -101,8 +114,25 @@ public class ClientScopeAdapter implements ClientScopeModel {
     public void updateProtocolMapper(ProtocolMapperModel mapping) {
         getDelegateForUpdate();
         updated.updateProtocolMapper(mapping);
-
     }
+
+    @Override
+    public ClientScopePolicyModel addClientScopePolicy(ClientScopePolicyModel policy){
+        getDelegateForUpdate();
+        return updated.addClientScopePolicy(policy);
+    };
+
+    @Override
+    public void removeClientScopePolicy(String id){
+        getDelegateForUpdate();
+        updated.removeClientScopePolicy(id);
+    };
+
+    @Override
+    public ClientScopePolicyModel updateClientScopePolicy(ClientScopePolicyModel policy){
+        getDelegateForUpdate();
+        return updated.updateClientScopePolicy(policy);
+    };
 
     @Override
     public ProtocolMapperModel getProtocolMapperById(String id) {

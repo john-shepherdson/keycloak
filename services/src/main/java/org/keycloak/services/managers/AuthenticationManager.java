@@ -1112,6 +1112,8 @@ public class AuthenticationManager {
         if (kcAction != null) {
             return kcAction;
         }
+        authSession.setClientNote(OIDCLoginProtocol.SCOPE_PARAM, TokenManager.clientScopePolicy(authSession.getClientNote(OIDCLoginProtocol.SCOPE_PARAM), authSession.getAuthenticatedUser(), realm.getClientScopesStream().collect(Collectors.toList())));
+        AuthenticationManager.setClientScopesInSession(authSession);
 
         if (client.isConsentRequired() || isOAuth2DeviceVerificationFlow(authSession)) {
 
@@ -1174,6 +1176,9 @@ public class AuthenticationManager {
         // executionActions() method should remove any duplicate actions that might be in the clientSession
         action = executionActions(session, authSession, request, event, realm, user, authSession.getRequiredActions().stream());
         if (action != null) return action;
+
+        authSession.setClientNote(OIDCLoginProtocol.SCOPE_PARAM, TokenManager.clientScopePolicy(authSession.getClientNote(OIDCLoginProtocol.SCOPE_PARAM), authSession.getAuthenticatedUser(), realm.getClientScopesStream().collect(Collectors.toList())));
+        AuthenticationManager.setClientScopesInSession(authSession);
 
         // https://tools.ietf.org/html/draft-ietf-oauth-device-flow-15#section-5.4
         // The spec says "The authorization server SHOULD display information about the device",

@@ -999,7 +999,7 @@ public class JpaUserProvider implements UserProvider, UserCredentialStore {
 
                     attributePredicates.add(builder.and(
                             builder.equal(builder.lower(attributesJoin.get("name")), key.toLowerCase()),
-                            builder.equal(builder.lower(attributesJoin.get("value")), value.toLowerCase())));
+                            Boolean.valueOf(attributes.get(UserModel.EXACT)) ? builder.equal(builder.lower(attributesJoin.get("value")), value.toLowerCase()) : builder.like(builder.lower(attributesJoin.get("value")), "%"+value.toLowerCase()+"%")));
 
                     break;
                 case UserModel.INCLUDE_SERVICE_ACCOUNT: {
