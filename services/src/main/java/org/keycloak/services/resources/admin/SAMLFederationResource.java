@@ -277,7 +277,7 @@ public class SAMLFederationResource {
                 try {
                     realm.addIdentityProviderMapper(new IdentityProviderMapperModel(mapper, alias));
                 } catch (Exception e) {
-                    logger.info("Mapper with id = " + mapperId + " failed to add to Idp with alias = " + alias);
+                    logger.debug("Mapper with id = " + mapperId + " failed to add to Idp with alias = " + alias);
                 }
             });
         } else if (action.equals("update")) {
@@ -290,7 +290,7 @@ public class SAMLFederationResource {
                         realm.updateIdentityProviderMapper(idpMapper);
                     }
                 } catch (Exception e) {
-                    logger.info("Mapper with id = " + mapperId + " failed to update in the Idp with alias = " + alias);
+                    logger.debug("Mapper with id = " + mapperId + " failed to update in the Idp with alias = " + alias);
                 }
             });
         } else if (action.equals("remove")) {
@@ -300,7 +300,7 @@ public class SAMLFederationResource {
                     if (idpMapper != null)
                         realm.removeIdentityProviderMapper(idpMapper);
                 } catch (Exception e) {
-                    logger.info("Mapper with id = " + mapperId + " failed to remove from Idp with alias = " + alias);
+                    logger.debug("Mapper with id = " + mapperId + " failed to remove from Idp with alias = " + alias);
                 }
             });
         } else {

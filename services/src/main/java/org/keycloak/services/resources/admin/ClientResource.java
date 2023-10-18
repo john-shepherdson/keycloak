@@ -153,6 +153,16 @@ public class ClientResource {
             session.setAttribute(ClientSecretConstants.CLIENT_SECRET_ROTATION_ENABLED,Boolean.FALSE);
             session.clientPolicy().triggerOnEvent(new AdminClientUpdateContext(rep, client, auth.adminAuth()));
 
+            updateClientFromRep(rep, client, session);
+
+            ValidationUtil.validateClient(session, client, false, r -> {
+                session.getTransactionManager().setRollbackOnly();
+                throw new ErrorResponseException(
+                        Errors.INVALID_INPUT,
+                        r.getAllLocalizedErrorsAsString(AdminRoot.getMessages(session, realm, auth.adminAuth().getToken().getLocale())),
+                        Response.Status.BAD_REQUEST);
+            });
+
 
             if ("saml".equals(rep.getProtocol()) && rep.getAttributes() != null && Boolean.valueOf(rep.getAttributes().get(SamlConfigAttributes.SAML_AUTO_UPDATED)) && !rep.getAttributes().get(SamlConfigAttributes.SAML_REFRESH_PERIOD).equals(client.getAttributes().get(SamlConfigAttributes.SAML_REFRESH_PERIOD))) {
                 //saml autoupdated schedule task ( autoupdate with different refresh period)
@@ -168,16 +178,6 @@ public class ClientResource {
                 TimerProvider timer = session.getProvider(TimerProvider.class);
                 timer.cancelTask("AutoUpdateSAMLClient_" + client.getId());
             }
-
-            updateClientFromRep(rep, client, session);
-
-            ValidationUtil.validateClient(session, client, false, r -> {
-                session.getTransactionManager().setRollbackOnly();
-                throw new ErrorResponseException(
-                        Errors.INVALID_INPUT,
-                        r.getAllLocalizedErrorsAsString(AdminRoot.getMessages(session, realm, auth.adminAuth().getToken().getLocale())),
-                        Response.Status.BAD_REQUEST);
-            });
 
             session.clientPolicy().triggerOnEvent(new AdminClientUpdatedContext(rep, client, auth.adminAuth()));
 

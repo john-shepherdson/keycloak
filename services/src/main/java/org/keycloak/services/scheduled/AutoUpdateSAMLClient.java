@@ -66,7 +66,7 @@ public class AutoUpdateSAMLClient implements ScheduledTask {
             });
 
             inputStream.close();
-        } catch (IOException e) {
+        } catch (IOException | ErrorResponseException e) {
             e.printStackTrace();
         }
     }
