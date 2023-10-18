@@ -62,6 +62,13 @@ export const ScopeForm = ({ clientScope, save }: ScopeFormProps) => {
       clientScope?.attributes?.["display.on.consent.screen"] ?? "true",
   });
 
+  const hideFromOpenIDProviderMetadata: string = useWatch({
+    control,
+    name: convertAttributeNameToForm("attributes.hide.from.openID.provider.metadata"),
+    defaultValue:
+      clientScope?.attributes?.["hide.from.openID.provider.metadata"] ?? "false",
+  });
+
   const dynamicScope = useWatch({
     control,
     name: convertAttributeNameToForm<ClientScopeDefaultOptionalType>(
@@ -312,6 +319,34 @@ export const ScopeForm = ({ clientScope, save }: ScopeFormProps) => {
           render={({ field }) => (
             <Switch
               id="kc-include-in-token-scope"
+              label={t("common:on")}
+              labelOff={t("common:off")}
+              isChecked={field.value === "true"}
+              onChange={(value) => field.onChange(value.toString())}
+            />
+          )}
+        />
+      </FormGroup>
+      <FormGroup
+        hasNoPaddingTop
+        label={t("hideFromOpenIDProviderMetadata")}
+        labelIcon={
+          <HelpItem
+            helpText={t("client-scopes-help:hideFromOpenIDProviderMetadata")}
+            fieldLabelId="client-scopes:hideFromOpenIDProviderMetadata"
+          />
+        }
+        fieldId="kc-hide-from-openid-provider-metadata"
+      >
+        <Controller
+          name={convertAttributeNameToForm<ClientScopeDefaultOptionalType>(
+            "attributes.hide.from.openID.provider.metadata",
+          )}
+          control={control}
+          defaultValue={hideFromOpenIDProviderMetadata}
+          render={({ field }) => (
+            <Switch
+              id="kc-hide-from-openid-provider-metadata"
               label={t("common:on")}
               labelOff={t("common:off")}
               isChecked={field.value === "true"}
