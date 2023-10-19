@@ -639,8 +639,8 @@ public class SAMLFederationProvider extends AbstractIdPFederationProvider <SAMLF
 
 		identityProviderModel.getConfig().put(SAMLIdentityProviderConfig.SINGLE_LOGOUT_SERVICE_URL, singleLogoutServiceUrl);
 		identityProviderModel.getConfig().put(SAMLIdentityProviderConfig.SINGLE_SIGN_ON_SERVICE_URL, singleSignOnServiceUrl);
-		identityProviderModel.getConfig().put(SAMLIdentityProviderConfig.WANT_AUTHN_REQUESTS_SIGNED, idpDescriptor.isWantAuthnRequestsSigned().toString());
-		identityProviderModel.getConfig().put(SAMLIdentityProviderConfig.VALIDATE_SIGNATURE, idpDescriptor.isWantAuthnRequestsSigned().toString());
+		identityProviderModel.getConfig().put(SAMLIdentityProviderConfig.WANT_AUTHN_REQUESTS_SIGNED, idpDescriptor.isWantAuthnRequestsSigned() != null ? idpDescriptor.isWantAuthnRequestsSigned().toString(): "false");
+		identityProviderModel.getConfig().put(SAMLIdentityProviderConfig.VALIDATE_SIGNATURE, idpDescriptor.isWantAuthnRequestsSigned() != null ? idpDescriptor.isWantAuthnRequestsSigned().toString(): "false");
 		identityProviderModel.getConfig().put(SAMLIdentityProviderConfig.POST_BINDING_AUTHN_REQUEST, postBindingRequest.toString());
 		identityProviderModel.getConfig().put(SAMLIdentityProviderConfig.POST_BINDING_LOGOUT, postBindingLogout.toString());
 
