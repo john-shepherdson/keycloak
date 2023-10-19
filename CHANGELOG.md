@@ -30,6 +30,7 @@ Our Keycloak version is working well with PostgreSQL database. For using other S
 - Resource request parameter and audience in access token [RCIAM-1061](https://jira.argo.grnet.gr/browse/RCIAM-1061)
 - Autoupdated SAML Client [RCIAM-1181](https://jira.argo.grnet.gr/browse/RCIAM-1181)
 - Client scope policy [RCIAM-1241](https://jira.argo.grnet.gr/browse/RCIAM-1241)
+- Sort Identity Providers by guiOrder and displayname
 
 ### Changed
 - Increase User Attribute Value length to 4000 [EOSC-KC-132](https://github.com/eosc-kc/keycloak/issues/132)

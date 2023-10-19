@@ -42,6 +42,7 @@ import org.keycloak.models.cache.infinispan.DefaultLazyLoader;
 import org.keycloak.models.cache.infinispan.LazyLoader;
 
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -251,7 +252,11 @@ public class CachedRealm extends AbstractExtendableRevisioned {
 
         this.federations  = model.getSAMLFederations();
 
-        this.identityProviders = model.getIdentityProvidersStream().collect(Collectors.toList());
+        this.identityProviders = model.getIdentityProvidersStream().sorted((x,y)->{
+            Integer guiOrderX = x.getConfig() != null && x.getConfig().get("guiOrder") != null ? Integer.valueOf(x.getConfig().get("guiOrder")) : Integer.MAX_VALUE;
+            Integer guiOrderY = y.getConfig() != null && y.getConfig().get("guiOrder") != null ? Integer.valueOf(y.getConfig().get("guiOrder")) : Integer.MAX_VALUE;
+            return guiOrderX.equals(guiOrderY) ? (x.getDisplayName() != null && y.getDisplayName()!= null ? x.getDisplayName().compareTo(y.getDisplayName()) : Integer.MAX_VALUE) : (guiOrderX < guiOrderY ? Integer.MIN_VALUE : Integer.MAX_VALUE);
+        }).collect(Collectors.toList());
         this.identityProviders = Collections.unmodifiableList(this.identityProviders);
 
         this.identityProviderMapperSet = model.getIdentityProviderMappersStream().collect(Collectors.toSet());
