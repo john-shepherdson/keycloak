@@ -26,6 +26,7 @@
   "idpInitiatedSsoRelayState": "Estat de retransmissió que vols enviar amb una petició SAML quan s''inicia un SSO iniciat per l''IDP",
   "masterSamlProcessingUrl": "Si està configurada, aquesta URL es fara servir per a cada enllaç al proveïdor del servei del consumidor d''assercions i serveis de desconnexió únics. Pot ser sobreescrit de forma individual per a cada enllaç i servei en el punt final de configuració fina de SAML.",
   "accessTokenLifespan": "Temps màxim abans que un token d''accés expiri. Es recomana que aquest valor sigui curt en relació al temps màxim de SSO",
+  "revokeRefreshToken": "If enabled a refresh token can only be used up to 'Refresh Token Max Reuse' and is revoked when a different token is used. Otherwise refresh tokens are not revoked when used and can be used multiple times.",
   "assertionConsumerServicePostBindingURL": "SAML POST Binding URL for the client''s assertion consumer service (login responses).  You can leave this blank if you do not have a URL for this binding.",
   "assertionConsumerServiceRedirectBindingURL": "Assertion Consumer Service Redirect Binding URL",
   "logoutServicePostBindingURL": "URL d''enllaç SAML POST per a la desconnexió única del client. Pots deixar-ho en blanc si estàs fent servir un enllaç diferent.",

@@ -39,7 +39,7 @@ export const AdvancedSettings = ({
   hasConfigureAccess,
 }: AdvancedSettingsProps) => {
   const { t } = useTranslation("clients");
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState("");
 
   const [realm, setRealm] = useState<RealmRepresentation>();
   const { realm: realmName } = useRealm();
@@ -86,6 +86,47 @@ export const AdvancedSettings = ({
       )}
       {protocol === "openid-connect" && (
         <>
+           <FormGroup
+            id={'revokeRefreshToken'}
+            label={t(`clients:revokeRefreshToken`)}
+            fieldId={"clients:revokeRefreshToken"}
+            labelIcon={
+              <HelpItem
+                helpText={t(`clients-help:revokeRefreshToken`)}
+                fieldLabelId={`clients:revokeRefreshToken`}
+              />
+            }
+          >
+           <Controller
+              name={convertAttributeNameToForm<FormFields>(
+                "attributes.revoke.refresh.token",
+              )}
+              defaultValue={undefined}
+              control={control}
+              render={({ field }) => (                
+                <Select
+                  variant={SelectVariant.single}
+                  toggleId="revokeRefreshToken"
+                  onToggle={()=>{setOpen('revokeRefreshToken')}}
+                  isOpen={open==='revokeRefreshToken'}
+                  onSelect={(_, value) => {
+                    field.onChange(value);
+                    setOpen('');
+                  }}
+                  selections={[field.value || t('inherited')]}
+                >
+                  {[undefined, "True", "False"].map((v,index) => {
+                    return(
+                      <SelectOption key={index} value={v}>
+                        {v || t('inherited')}
+                      </SelectOption>
+                      )
+                    } 
+                  )}
+                </Select>
+              )}
+            /> 
+          </FormGroup>
           <TokenLifespan
             id="accessTokenLifespan"
             name={convertAttributeNameToForm(
@@ -185,11 +226,11 @@ export const AdvancedSettings = ({
                 <Select
                   toggleId="keyForCodeExchange"
                   variant={SelectVariant.single}
-                  onToggle={setOpen}
-                  isOpen={open}
+                  onToggle={()=>setOpen('keyForCodeExchange')}
+                  isOpen={open=='keyForCodeExchange'}
                   onSelect={(_, value) => {
                     field.onChange(value);
-                    setOpen(false);
+                    setOpen('');
                   }}
                   selections={[field.value || t("common:choose")]}
                 >

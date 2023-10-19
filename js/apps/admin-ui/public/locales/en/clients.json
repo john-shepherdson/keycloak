@@ -505,6 +505,7 @@
   "artifactResolutionService": "Artifact Resolution Service",
   "advancedSettings": "Advanced Settings",
   "assertionLifespan": "Assertion Lifespan",
+  "revokeRefreshToken": "Revoke Refresh Token",
   "accessTokenLifespan": "Access Token Lifespan",
   "clientSessionIdle": "Client Session Idle",
   "clientSessionMax": "Client Session Max",

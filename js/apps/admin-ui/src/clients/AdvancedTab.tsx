@@ -191,6 +191,7 @@ export const AdvancedTab = ({ save, client }: AdvancedProps) => {
                       "access.token.lifespan",
                       "tls.client.certificate.bound.access.tokens",
                       "pkce.code.challenge.method",
+                      "revoke.refresh.token"
                     ]);
                   }}
                 />
