@@ -50,7 +50,7 @@ public class AutoUpdateIdentityProviders implements ScheduledTask {
             idp.getConfig().put(IdentityProviderModel.LAST_REFRESH_TIME, String.valueOf(Instant.now().toEpochMilli()));
             realm.updateIdentityProvider(idp);
             inputStream.close();
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
