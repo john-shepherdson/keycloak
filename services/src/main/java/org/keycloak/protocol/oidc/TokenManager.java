@@ -417,7 +417,7 @@ public class TokenManager {
 
         if (generateRefreshToken) {
             //refresh token must have same scope as old refresh token (type, scope, expiration)
-            responseBuilder.generateRefreshToken(refreshToken.getScope());
+            responseBuilder.generateRefreshToken(refreshToken.getScope(), clientSession);
         }
 
         if (validation.newToken.getAuthorization() != null
@@ -1101,12 +1101,14 @@ public class TokenManager {
             return this;
         }
 
-        public AccessTokenResponseBuilder generateRefreshToken(String scope) {
+        public AccessTokenResponseBuilder generateRefreshToken(String scope, AuthenticatedClientSessionModel clientSession) {
             if (accessToken == null) {
                 throw new IllegalStateException("accessToken not set");
             }
 
             boolean offlineTokenRequested = Arrays.asList(scope.split(" ")).contains(OAuth2Constants.OFFLINE_ACCESS) ;
+            if (offlineTokenRequested)
+                clientSessionCtx = DefaultClientSessionContext.fromClientSessionAndScopeParameter(clientSession, scope, session);
             generateRefreshToken(offlineTokenRequested);
             refreshToken.setScope(scope);
             return this;
