@@ -452,7 +452,6 @@ public class ModelToRepresentation {
         rep.setAccessCodeLifespanLogin(realm.getAccessCodeLifespanLogin());
         rep.setActionTokenGeneratedByAdminLifespan(realm.getActionTokenGeneratedByAdminLifespan());
         rep.setActionTokenGeneratedByUserLifespan(realm.getActionTokenGeneratedByUserLifespan());
-        rep.setDefaultAudValueForAccessToken(realm.getDefaultAudValueForAccessToken());
         rep.setOAuth2DeviceCodeLifespan(realm.getOAuth2DeviceConfig().getLifespan());
         rep.setOAuth2DevicePollingInterval(realm.getOAuth2DeviceConfig().getPoolingInterval());
         rep.setSmtpServer(new HashMap<>(realm.getSmtpConfig()));

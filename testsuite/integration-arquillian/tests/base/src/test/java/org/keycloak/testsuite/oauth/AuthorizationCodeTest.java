@@ -53,6 +53,8 @@ import java.util.Map;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.keycloak.testsuite.admin.AbstractAdminTest.loadJson;
+import java.net.MalformedURLException;
+import org.keycloak.protocol.oidc.OIDCLoginProtocol;
 
 /**
  * @author <a href="mailto:sthorger@redhat.com">Stian Thorgersen</a>
@@ -153,6 +155,21 @@ public class AuthorizationCodeTest extends AbstractKeycloakTest {
 
         assertTrue(errorPage.isCurrent());
         assertEquals("Invalid parameter: redirect_uri", errorPage.getError());
+    }
+
+    @Test
+    public void testInvalidResourceParameter() throws MalformedURLException {
+        oauth.resource("data://www.keycloak.org/guides");
+
+        UriBuilder b = UriBuilder.fromUri(oauth.getLoginFormUrl());
+        driver.navigate().to(b.build().toURL());
+
+        String error = driver.findElement(By.id("error")).getText();
+        String errorDescription = driver.findElement(By.id("error_description")).getText();
+        assertEquals(OAuthErrorException.INVALID_TARGET, error);
+        assertEquals("The requested resource is invalid or malformed.", errorDescription);
+
+        oauth.resource(null);
     }
 
     @Test

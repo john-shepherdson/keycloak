@@ -10,6 +10,7 @@ import org.keycloak.crypto.KeyType;
 import org.keycloak.keys.Attributes;
 import org.keycloak.keys.ImportedRsaKeyProviderFactory;
 import org.keycloak.keys.KeyProvider;
+import org.keycloak.models.jpa.entities.RealmAttributes;
 import org.keycloak.representations.idm.ComponentRepresentation;
 import org.keycloak.representations.idm.RealmRepresentation;
 import org.keycloak.testsuite.admin.ApiUtil;
@@ -189,7 +190,7 @@ public class RealmManager {
 
     public RealmManager defaultAudValueForAccessToken(String defaultAudValueForAccessToken) {
         RealmRepresentation realmRepresentation = realm.toRepresentation();
-        realmRepresentation.setDefaultAudValueForAccessToken(defaultAudValueForAccessToken);
+        realmRepresentation.getAttributes().put(RealmAttributes.DEFAULT_AUD_VALUE_FOR_ACCESS_TOKEN,defaultAudValueForAccessToken);
         realm.update(realmRepresentation);
         return this;
     }
