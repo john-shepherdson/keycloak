@@ -48,7 +48,7 @@ import { ClientPoliciesTab, toClientPolicies } from "./routes/ClientPolicies";
 import { RealmSettingsTab, toRealmSettings } from "./routes/RealmSettings";
 import { SecurityDefenses } from "./security-defences/SecurityDefenses";
 import { UserProfileTab } from "./user-profile/UserProfileTab";
-import { OpenIdEndpointConigurationTab } from "./OpenIdEndpointConigurationTab";
+import { OpenIdEndpointConfigurationTab } from "./OpenIdEndpointConfigurationTab";
 
 type RealmSettingsHeaderProps = {
   onChange: (value: boolean) => void;
@@ -358,7 +358,7 @@ export const RealmSettingsTabs = ({
             data-testid="rs-openid-tab"
             {...openIdEndpointConfigurationTab}
           >
-            <OpenIdEndpointConigurationTab realm={realm} save={save} />
+            <OpenIdEndpointConfigurationTab realm={realm} save={save} />
           </Tab>
           <Tab
             title={<TabTitleText>{t("realm-settings:tokens")}</TabTitleText>}

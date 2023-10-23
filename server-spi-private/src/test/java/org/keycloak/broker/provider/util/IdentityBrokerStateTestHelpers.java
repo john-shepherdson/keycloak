@@ -1889,6 +1889,7 @@ public class IdentityBrokerStateTestHelpers {
         public void decreaseRemainingCount(ClientInitialAccessModel clientInitialAccess) {
 
         }
+
     }
 
 }

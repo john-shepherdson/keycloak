@@ -12,55 +12,28 @@ import { Controller, useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import { FormAccess } from "../components/form/FormAccess";
 import { HelpItem } from "ui-shared";
-import { addTrailingSlash } from "../util";
-import { adminClient } from "../admin-client";
 import { MinusIcon, PlusIcon } from "@patternfly/react-icons";
-import { getAuthorizationHeaders } from "../utils/getAuthorizationHeaders";
 
 type RealmSettingsThemesTabProps = {
   realm: RealmRepresentation;
   save: (realm: RealmRepresentation) => void;
 };
 
-export const OpenIdEndpointConigurationTab = ({
+export const OpenIdEndpointConfigurationTab = ({
   realm,
   save,
 }: RealmSettingsThemesTabProps) => {
   const { t } = useTranslation();
 
-  const [newClaim, setNewClaim] = useState<string>("");
+  const [newClaim, setNewClaim] = useState("");
   const { control, handleSubmit, setValue } = useForm<RealmRepresentation>();
 
   const setupForm = () => {
-    const attributes = realm.attributes || {};
-    if (!("claimsSupported" in attributes)) {
-      getOpenIdEndpointConfiguration().then((result) => {
-        attributes.claimsSupported = result.claims_supported.join(",");
-      });
-    }
+    let attributes = realm.attributes || {};
     setValue("attributes", attributes);
   };
 
   useEffect(setupForm, []);
-
-  async function getOpenIdEndpointConfiguration(): Promise<any> {
-    const response = await fetch(
-      `${addTrailingSlash(adminClient.baseUrl)}/realms/${
-        realm.realm
-      }/.well-known/openid-configuration`,
-      {
-        method: "GET",
-        headers: getAuthorizationHeaders(await adminClient.getAccessToken()),
-      },
-    );
-
-    if (!response.ok) {
-      throw new Error(
-        `Server responded with invalid status: ${response.statusText}`,
-      );
-    }
-    return response.json();
-  }
 
   return (
     <PageSection variant="light">
@@ -71,12 +44,12 @@ export const OpenIdEndpointConigurationTab = ({
         onSubmit={handleSubmit(save)}
       >
         <FormGroup
-          label={t("claimsSupported")}
+          label={t("realm-settings:claimsSupported")}
           fieldId="kc-claims-supported"
           labelIcon={
             <HelpItem
               helpText={t("realm-settings-help:claimsSupported")}
-              fieldLabelId="realm-settings:claimsSupported"
+              fieldLabelId="claimsSupported"
             />
           }
         >
@@ -89,58 +62,50 @@ export const OpenIdEndpointConigurationTab = ({
                 : [];
               return (
                 <>
-                  {claimsSupported.map((claim: string, index: number) => {
-                    if (claim) {
-                      return (
+                  {claimsSupported.filter(Boolean).map((claim: string, index: number) => (
                         <InputGroup key={index}>
                           <TextInput
-                            id={"textInput" + index}
                             value={claim}
                             onChange={(value) => {
+                              let attributes = field.value || {};
                               claimsSupported[index] = value;
-                              field.value &&
-                                (field.value.claimsSupported =
-                                  claimsSupported.join(","));
-                              field.onChange(field.value);
+                              attributes.claimsSupported = claimsSupported.join(",");
+                              field.onChange(attributes);
                             }}
-                            aria-label="input with button"
+                            aria-label={t("realm-settings:edit-claim-input")}
                           />
                           <Button
-                            id={"inputButtonRemove" + index}
                             icon={<MinusIcon />}
+                            aria-label={t("realm-settings:remove-claim-button")}
                             onClick={() => {
+                              let attributes = field.value || {};
                               claimsSupported.splice(index, 1);
-                              field.value &&
-                                (field.value.claimsSupported =
-                                  claimsSupported.join(","));
-                              field.onChange(field.value);
+                              attributes.claimsSupported = claimsSupported.join(",");
+                              field.onChange(attributes);
                             }}
                             variant="control"
                           />
                         </InputGroup>
-                      );
-                    }
-                  })}
+                      )
+                   )}
                   <InputGroup>
                     <TextInput
-                      id="textInputAdd"
                       value={newClaim}
                       onChange={(value) => {
                         setNewClaim(value);
                       }}
-                      aria-label="input with button"
+                      aria-label={t("realm-settings:new-claim-input")}
                     />
                     <Button
-                      id={"inputButtonAdd"}
                       icon={<PlusIcon />}
+                      aria-label={t("realm-settings:add-claim-button")}
                       onClick={() => {
                         if (newClaim) {
+                          let attributes = field.value || {};
                           claimsSupported.push(newClaim);
-                          field.value &&
-                            (field.value.claimsSupported =
-                              claimsSupported.join(","));
+                          attributes.claimsSupported = claimsSupported.join(","); 
                           setNewClaim("");
-                          field.onChange(field.value);
+                          field.onChange(attributes);
                         }
                       }}
                       variant="control"
@@ -157,6 +122,7 @@ export const OpenIdEndpointConigurationTab = ({
             variant="primary"
             type="submit"
             data-testid="openid-configuration-tab-save"
+            aria-label={t("realm-settings:submit")}
           >
             {t("save")}
           </Button>

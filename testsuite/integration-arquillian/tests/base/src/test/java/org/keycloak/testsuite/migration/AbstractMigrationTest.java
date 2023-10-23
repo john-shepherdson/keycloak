@@ -40,8 +40,8 @@ import org.keycloak.models.AuthenticationExecutionModel;
 import org.keycloak.models.Constants;
 import org.keycloak.models.LDAPConstants;
 import org.keycloak.models.UserModel;
+import org.keycloak.models.jpa.entities.RealmAttributes;
 import org.keycloak.models.utils.DefaultAuthenticationFlows;
-import org.keycloak.models.utils.RepresentationToModel;
 import org.keycloak.models.utils.TimeBasedOTP;
 import org.keycloak.protocol.oidc.OIDCConfigAttributes;
 import org.keycloak.protocol.oidc.OIDCLoginProtocolFactory;
@@ -340,8 +340,6 @@ public abstract class AbstractMigrationTest extends AbstractKeycloakTest {
     }
 
     protected void testMigrationTo18_0_0() {
-        testDefaultClaimsSupported(masterRealm);
-        testDefaultClaimsSupported(migrationRealm);
         // check that all expected scopes exist in the migrated realm.
         testRealmDefaultClientScopes(migrationRealm);
     }
@@ -369,6 +367,8 @@ public abstract class AbstractMigrationTest extends AbstractKeycloakTest {
     protected void testMigrationTo22_0_0_1_0() {
         testNewAccountRoles(masterRealm);
         testNewAccountRoles(migrationRealm);
+        testDefaultClaimsSupported(masterRealm);
+        testDefaultClaimsSupported(migrationRealm);
     }
 
     protected void testMigrationTo22_0_10() {
@@ -1171,9 +1171,9 @@ public abstract class AbstractMigrationTest extends AbstractKeycloakTest {
     }
 
     private void testDefaultClaimsSupported(RealmResource realm){
-        List<String> claimsSupported = realm.toRepresentation().getClaimsSupported();
+        String claimsSupported = realm.toRepresentation().getAttributes().get(RealmAttributes.CLAIMS_SUPPORTED);
         Assert.assertNotNull(claimsSupported);
-        Assert.assertNames(claimsSupported, OIDCWellKnownProvider.DEFAULT_CLAIMS_SUPPORTED.toArray(new String[OIDCWellKnownProvider.DEFAULT_CLAIMS_SUPPORTED.size()]));
+        Assert.assertNames(Arrays.asList(claimsSupported.split(",")), OIDCWellKnownProvider.DEFAULT_CLAIMS_SUPPORTED.toArray(new String[OIDCWellKnownProvider.DEFAULT_CLAIMS_SUPPORTED.size()]));
     }
 
     protected void testRealmAttributesMigration() {

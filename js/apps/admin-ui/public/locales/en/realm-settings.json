@@ -916,5 +916,10 @@
   "importSkipped_zero": "No records skipped.",
   "importSkipped_one": "One record skipped.",
   "importSkipped_other": "{{count}} records skipped.",
-  "openIdEndpointConfiguration": "OpenID Endpoint Configuration"
+  "openIdEndpointConfiguration": "OpenID Endpoint Configuration",
+  "submit": "Submit",
+  "add-claim-button": "Add new Supported Claim Button",
+  "new-claim-input": "New Supported Claim Input",
+  "remove-claim-button":"Remove Supported Claim Button",
+  "edit-claim-input" : "Edit Supported Claim Input"
 }
