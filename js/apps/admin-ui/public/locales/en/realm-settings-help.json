@@ -99,5 +99,6 @@
   "attributePermissionDescription": "This section contains permissions for who can edit and who can view the attribute.",
   "whoCanEditHelp": "If enabled, users or administrators can view and edit the attribute. Otherwise, users or administrators don't have access to write to the attribute.",
   "whoCanViewHelp": "If enabled, users or administrators can view the attribute. Otherwise, users or administrators don't have access to the attribute.",
-  "editUsername": "If enabled, the username field is editable, readonly otherwise."
+  "editUsername": "If enabled, the username field is editable, readonly otherwise.",
+  "defaultAudValueAccessToken": "Default optional aud value for access token. If resource parameter is not present, aud claim is set equal to this value. Extra aud claim values can be added with Audience and AudienceResolver protocol mappers."
 }

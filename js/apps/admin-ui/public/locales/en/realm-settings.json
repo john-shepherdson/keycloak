@@ -921,5 +921,6 @@
   "add-claim-button": "Add new Supported Claim Button",
   "new-claim-input": "New Supported Claim Input",
   "remove-claim-button":"Remove Supported Claim Button",
-  "edit-claim-input" : "Edit Supported Claim Input"
+  "edit-claim-input" : "Edit Supported Claim Input",
+  "defaultAudValueAccessToken": "Default aud value for access token"
 }

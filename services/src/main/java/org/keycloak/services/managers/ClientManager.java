@@ -190,7 +190,7 @@ public class ClientManager {
             ProtocolMapperModel protocolMapper = UserSessionNoteMapper.createClaimMapper(ServiceAccountConstants.CLIENT_ID_PROTOCOL_MAPPER,
                     ServiceAccountConstants.CLIENT_ID,
                     ServiceAccountConstants.CLIENT_ID, "String",
-                    true, true);
+                    true, true, true);
             client.addProtocolMapper(protocolMapper);
         }
 
@@ -200,7 +200,7 @@ public class ClientManager {
             ProtocolMapperModel protocolMapper = UserSessionNoteMapper.createClaimMapper(ServiceAccountConstants.CLIENT_HOST_PROTOCOL_MAPPER,
                     ServiceAccountConstants.CLIENT_HOST,
                     ServiceAccountConstants.CLIENT_HOST, "String",
-                    true, true);
+                    true, true, true);
             client.addProtocolMapper(protocolMapper);
         }
 
@@ -209,7 +209,7 @@ public class ClientManager {
             ProtocolMapperModel protocolMapper = UserSessionNoteMapper.createClaimMapper(ServiceAccountConstants.CLIENT_ADDRESS_PROTOCOL_MAPPER,
                     ServiceAccountConstants.CLIENT_ADDRESS,
                     ServiceAccountConstants.CLIENT_ADDRESS, "String",
-                    true, true);
+                    true, true, true);
             client.addProtocolMapper(protocolMapper);
         }
     }

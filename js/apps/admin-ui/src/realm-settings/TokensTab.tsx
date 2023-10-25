@@ -398,6 +398,21 @@ export const RealmSettingsTokensTab = ({
               />
             </FormGroup>
           )}
+          <FormGroup
+            label={t("defaultAudValueAccessToken")}
+            fieldId="defaultAudValueAccessToken"
+            labelIcon={
+              <HelpItem
+                helpText={t("realm-settings-help:defaultAudValueAccessToken")}
+                fieldLabelId="realm-settings:defaultAudValueAccessToken"
+              />
+            }
+          >
+            <KeycloakTextInput
+              id="defaultAudValueAccessToken"
+              {...form.register("attributes.defaultAudValueForAccessToken")}
+            />
+          </FormGroup>
         </FormAccess>
       </FormPanel>
       <FormPanel

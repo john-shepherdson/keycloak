@@ -106,7 +106,7 @@ public class TokenIntrospectionEndpoint {
 
         try {
 
-            Response response = provider.introspect(token);
+            Response response = provider.introspect(token, event);
 
             this.event.success();
 

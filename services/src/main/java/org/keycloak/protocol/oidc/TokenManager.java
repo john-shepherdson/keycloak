@@ -61,6 +61,7 @@ import org.keycloak.models.utils.SessionExpirationUtils;
 import org.keycloak.models.utils.RoleUtils;
 import org.keycloak.protocol.ProtocolMapper;
 import org.keycloak.protocol.ProtocolMapperUtils;
+import org.keycloak.protocol.oidc.mappers.TokenIntrospectionTokenMapper;
 import org.keycloak.protocol.oidc.mappers.OIDCAccessTokenMapper;
 import org.keycloak.protocol.oidc.mappers.OIDCAccessTokenResponseMapper;
 import org.keycloak.protocol.oidc.mappers.OIDCIDTokenMapper;
@@ -244,9 +245,12 @@ public class TokenManager {
      * @param updateTimestamps
      * @return
      */
-    public boolean checkTokenValidForIntrospection(KeycloakSession session, RealmModel realm, AccessToken token, boolean updateTimestamps) {
+    public boolean checkTokenValidForIntrospection(KeycloakSession session, RealmModel realm, AccessToken token, boolean updateTimestamps, EventBuilder eventBuilder) {
         ClientModel client = realm.getClientByClientId(token.getIssuedFor());
         if (client == null || !client.isEnabled()) {
+            logger.warn(client == null ? "Introspection access token : client does not exist":"Introspection access token : client is disabled");
+            logger.warn("token issuer: " + token.getIssuedFor());
+            eventBuilder.detail("Client not found", String.format("Could not find client for %s", token.getIssuedFor()));            
             return false;
         }
 
@@ -255,7 +259,8 @@ public class TokenManager {
                     .withChecks(NotBeforeCheck.forModel(client), TokenVerifier.IS_ACTIVE, new TokenRevocationCheck(session))
                     .verify();
         } catch (VerificationException e) {
-            logger.debugf("JWT check failed: %s", e.getMessage());
+            logger.warnf("Introspection access token for "+token.getIssuedFor() +" client: JWT check failed: %s", e.getMessage());
+            eventBuilder.detail("Introspection access token for "+token.getIssuedFor() +" client: JWT check failed", e.getMessage());
             return false;
         }
 
@@ -300,6 +305,8 @@ public class TokenManager {
             if (((client.getAttribute(OIDCConfigAttributes.REVOKE_REFRESH_TOKEN) == null && realm.isRevokeRefreshToken()) || Boolean.valueOf(client.getAttribute(OIDCConfigAttributes.REVOKE_REFRESH_TOKEN)))
                     && (tokenType.equals(TokenUtil.TOKEN_TYPE_REFRESH) || tokenType.equals(TokenUtil.TOKEN_TYPE_OFFLINE))
                     && !validateTokenReuseForIntrospection(session, realm, token)) {
+                logger.warn("Introspection access token for "+token.getIssuedFor() +" client: failed to validate Token reuse for introspection");
+                eventBuilder.detail("Token not valid for introspection", "Realm revoke refresh token = true, token type is "+tokenType+ " and token is not eligible for introspection");
                 return false;
             }
 
@@ -310,8 +317,12 @@ public class TokenManager {
                     clientSession.setTimestamp(currentTime);
                 }
             }
+            eventBuilder.detail("Token valid for introspection", String.valueOf(valid));
+            
         }
 
+        if (!valid)
+            logger.warn("Introspection access token: Failed to valid access token for introspection");
         return valid;
     }
 
@@ -331,15 +342,18 @@ public class TokenManager {
             validateTokenReuse(session, realm, token, clientSession, false);
             return true;
         } catch (OAuthErrorException e) {
+            logger.warn("validateTokenReuseForIntrospection is false",e);
             return false;
         }
     }
 
     private boolean isUserValid(KeycloakSession session, RealmModel realm, AccessToken token, UserModel user) {
         if (user == null) {
+            logger.warnf("User does not exist for token introspection");
             return false;
         }
         if (!user.isEnabled()) {
+            logger.warnf("User is disable for token introspection");
             return false;
         }
         try {
@@ -347,7 +361,7 @@ public class TokenManager {
                     .withChecks(NotBeforeCheck.forModel(session ,realm, user))
                     .verify();
         } catch (VerificationException e) {
-            logger.debugf("JWT check failed: %s", e.getMessage());
+            logger.warnf("JWT check failed: %s", e.getMessage());
             return false;
         }
         return true;
@@ -747,7 +761,7 @@ public class TokenManager {
                 return false;
             }
         }
-        
+
         return true;
     }
 
@@ -806,6 +820,17 @@ public class TokenManager {
                     @Override
                     protected AccessToken applyMapper(AccessToken token, Map.Entry<ProtocolMapperModel, ProtocolMapper> mapper) {
                         return ((UserInfoTokenMapper) mapper.getValue()).transformUserInfoToken(token, mapper.getKey(), session, userSession, clientSessionCtx);
+                    }
+                });
+    }
+
+    public AccessToken transformIntrospectionAccessToken(KeycloakSession session, AccessToken token,
+                                                         UserSessionModel userSession, ClientSessionContext clientSessionCtx) {
+        return ProtocolMapperUtils.getSortedProtocolMappers(session, clientSessionCtx, mapper -> mapper.getValue() instanceof TokenIntrospectionTokenMapper)
+                .collect(new TokenCollector<AccessToken>(token) {
+                    @Override
+                    protected AccessToken applyMapper(AccessToken token, Map.Entry<ProtocolMapperModel, ProtocolMapper> mapper) {
+                        return ((TokenIntrospectionTokenMapper) mapper.getValue()).transformIntrospectionToken(token, mapper.getKey(), session, userSession, clientSessionCtx);
                     }
                 });
     }
