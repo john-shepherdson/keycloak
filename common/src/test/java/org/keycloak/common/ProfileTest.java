@@ -27,7 +27,7 @@ public class ProfileTest {
     private static final Profile.Feature DEFAULT_FEATURE = Profile.Feature.AUTHORIZATION;
     private static final Profile.Feature DISABLED_BY_DEFAULT_FEATURE = Profile.Feature.DOCKER;
     private static final Profile.Feature PREVIEW_FEATURE = Profile.Feature.ADMIN_FINE_GRAINED_AUTHZ;
-    private static final Profile.Feature EXPERIMENTAL_FEATURE = Profile.Feature.DYNAMIC_SCOPES;
+    private static final Profile.Feature EXPERIMENTAL_FEATURE = Profile.Feature.MAP_STORAGE;
     private static Profile.Feature DEPRECATED_FEATURE = null;
 
     @Rule
@@ -74,7 +74,6 @@ public class ProfileTest {
             Profile.Feature.FIPS,
             Profile.Feature.ACCOUNT3,
             Profile.Feature.ADMIN_FINE_GRAINED_AUTHZ,
-            Profile.Feature.DYNAMIC_SCOPES,
             Profile.Feature.DOCKER,
             Profile.Feature.MULTI_SITE,
             Profile.Feature.RECOVERY_CODES,

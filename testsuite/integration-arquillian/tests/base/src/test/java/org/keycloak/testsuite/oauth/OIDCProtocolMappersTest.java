@@ -65,6 +65,8 @@ import jakarta.ws.rs.client.Client;
 import jakarta.ws.rs.core.Response;
 
 import java.nio.charset.StandardCharsets;
+import java.util.AbstractMap;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
@@ -72,6 +74,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.anyOf;
@@ -1742,8 +1746,15 @@ public class OIDCProtocolMappersTest extends AbstractKeycloakTest {
             put(ClientScopeModel.DYNAMIC_SCOPE_REGEXP, "dyn-scope-with-mapper:*");
         }});
         // create the attribute mapper
-        ProtocolMapperRepresentation protocolMapperRepresentation = createHardcodedClaim("dynamic-scope-hardcoded-mapper", "hardcoded-foo", "hardcoded-bar", "String", true, true, true);
-        scopeRep.setProtocolMappers(Collections.singletonList(protocolMapperRepresentation));
+        List<ProtocolMapperRepresentation> mappers = new ArrayList<>();
+        mappers.add(createHardcodedClaim("dynamic-scope-hardcoded-mapper", "hardcoded-foo", "hardcoded-bar", "String", true, true, true));
+        mappers.add(createClaimMapper("dyn-scope-with-mapper", "dyn-scope", "dyn-scope-with-mapper", "String", true, true,true, true));
+        scopeRep.setProtocolMappers(mappers);
+
+        UserRepresentation userRep = adminClient.realm("test").users().search("test-user@localhost").get(0);
+        List<String> attributeValues = Stream.of("value","valueCut").collect(Collectors.toList());
+        userRep.setAttributes(Stream.of(new AbstractMap.SimpleEntry<>("dyn-scope",attributeValues)).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)));
+        adminClient.realm("test").users().get(userRep.getId()).update(userRep);
 
         try (Response resp = adminClient.realm("test").clientScopes().create(scopeRep)) {
             assertEquals(201, resp.getStatus());
@@ -1766,6 +1777,12 @@ public class OIDCProtocolMappersTest extends AbstractKeycloakTest {
         assertNotNull(accessToken.getOtherClaims().get("hardcoded-foo"));
         assertTrue(accessToken.getOtherClaims().get("hardcoded-foo") instanceof String);
         assertEquals("hardcoded-bar", accessToken.getOtherClaims().get("hardcoded-foo"));
+        List<String> claimValue =(List) accessToken.getOtherClaims().get("dyn-scope-with-mapper");
+        assertEquals(claimValue.size(),1);
+        assertEquals(claimValue.get(0),"value");
+
+        userRep.getAttributes().remove("dyn-scope");
+        adminClient.realm("test").users().get(userRep.getId()).update(userRep);
     }
 
     private void assertRoles(List<String> actualRoleList, String ...expectedRoles){

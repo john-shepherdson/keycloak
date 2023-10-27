@@ -28,6 +28,7 @@ import org.keycloak.TokenVerifier;
 import org.keycloak.broker.oidc.OIDCIdentityProvider;
 import org.keycloak.broker.oidc.OIDCIdentityProviderConfig;
 import org.keycloak.broker.provider.util.SimpleHttp;
+import org.keycloak.common.Profile;
 import org.keycloak.common.VerificationException;
 import org.keycloak.common.util.Time;
 import org.keycloak.connections.httpclient.HttpClientProvider;
@@ -213,7 +214,7 @@ public class AccessTokenIntrospectionProvider implements TokenIntrospectionProvi
         AuthenticatedClientSessionModel clientSession = userSession.getAuthenticatedClientSessionByClient(client.getId());
         ClientSessionContext clientSessionCtx = DefaultClientSessionContext.fromClientSessionScopeParameter(clientSession, session);
         AccessToken smallToken = getAccessTokenFromStoredData(token, userSession);
-        return tokenManager.transformIntrospectionAccessToken(session, smallToken, userSession, clientSessionCtx);
+        return tokenManager.transformIntrospectionAccessToken(session, smallToken, userSession, clientSessionCtx, smallToken.getScope());
     }
 
     private AccessToken getAccessTokenFromStoredData(AccessToken token, UserSessionModel userSession) {

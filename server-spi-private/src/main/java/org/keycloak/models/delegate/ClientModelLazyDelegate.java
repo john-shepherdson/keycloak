@@ -545,6 +545,16 @@ public class ClientModelLazyDelegate implements ClientModel {
     }
 
     @Override
+    public String getFilteredClaim() {
+        return getDelegate().getFilteredClaim();
+    }
+
+    @Override
+    public void setFilteredClaim(String filteredClaim) {
+        getDelegate().setFilteredClaim(filteredClaim);
+    }
+
+    @Override
     public boolean isHideFromOpenIDProviderMetadata() {
         return getDelegate().isHideFromOpenIDProviderMetadata();
     }

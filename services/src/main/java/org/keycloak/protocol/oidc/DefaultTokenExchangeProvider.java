@@ -407,6 +407,8 @@ public class DefaultTokenExchangeProvider implements TokenExchangeProvider {
         ClientSessionContext clientSessionCtx = TokenManager.attachAuthenticationSession(this.session, targetUserSession, authSession);
 
         updateUserSessionFromClientAuth(targetUserSession);
+        if ( scope != null)
+            clientSessionCtx.getClientSession().setNote(OAuth2Constants.SCOPE,scope);
 
         TokenManager.AccessTokenResponseBuilder responseBuilder = tokenManager.responseBuilder(realm, targetClient, event, this.session, targetUserSession, clientSessionCtx)
                 .generateAccessToken();
@@ -421,13 +423,15 @@ public class DefaultTokenExchangeProvider implements TokenExchangeProvider {
             targetUserSession.setNote(IMPERSONATOR_CLIENT.toString(), client.getId());
         }
 
-        if (requestedTokenType.equals(OAuth2Constants.REFRESH_TOKEN_TYPE)
-            && OIDCAdvancedConfigWrapper.fromClientModel(client).isUseRefreshToken()) {
+        String scopeParam = clientSessionCtx.getClientSession().getNote(OAuth2Constants.SCOPE);
+        authSession.setClientNote(OIDCLoginProtocol.SCOPE_PARAM, scopeParam);
+        if ((requestedTokenType.equals(OAuth2Constants.REFRESH_TOKEN_TYPE)
+            && OIDCAdvancedConfigWrapper.fromClientModel(client).isUseRefreshToken() ) || TokenUtil.hasScope(scopeParam, OAuth2Constants.OFFLINE_ACCESS )) {
             responseBuilder.generateRefreshToken();
             responseBuilder.getRefreshToken().issuedFor(client.getClientId());
         }
 
-        String scopeParam = clientSessionCtx.getClientSession().getNote(OAuth2Constants.SCOPE);
+
         if (TokenUtil.isOIDCRequest(scopeParam)) {
             responseBuilder.generateIDToken().generateAccessTokenHash();
         }

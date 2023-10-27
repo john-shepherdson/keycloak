@@ -46,10 +46,7 @@ import org.keycloak.protocol.oidc.OIDCAdvancedConfigWrapper;
 import org.keycloak.protocol.oidc.OIDCLoginProtocol;
 import org.keycloak.representations.AccessToken;
 import org.keycloak.representations.RefreshToken;
-import org.keycloak.representations.idm.ClientRepresentation;
-import org.keycloak.representations.idm.ClientScopeRepresentation;
-import org.keycloak.representations.idm.RealmRepresentation;
-import org.keycloak.representations.idm.UserRepresentation;
+import org.keycloak.representations.idm.*;
 import org.keycloak.testsuite.AbstractKeycloakTest;
 import org.keycloak.testsuite.Assert;
 import org.keycloak.testsuite.AssertEvents;
@@ -69,14 +66,15 @@ import jakarta.ws.rs.core.HttpHeaders;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import java.io.UnsupportedEncodingException;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+import static org.keycloak.testsuite.util.ProtocolMapperUtil.createClaimMapper;
 
 /**
  * @author <a href="mailto:sthorger@redhat.com">Stian Thorgersen</a>
@@ -196,7 +194,17 @@ public class ResourceOwnerPasswordCredentialsGrantTest extends AbstractKeycloakT
             put(ClientScopeModel.DYNAMIC_SCOPE_REGEXP, "dynamic-scope:*");
         }});
         clientScope.setProtocol(OIDCLoginProtocol.LOGIN_PROTOCOL);
+        // create the attribute mapper
+        List<ProtocolMapperRepresentation> mappers = new ArrayList<>();
+        mappers.add(createClaimMapper("dynamic-scope-mapper", "dynamic", "dynamic-scope", "String", true, true,true, true));
+        clientScope.setProtocolMappers(mappers);
         RealmResource realmResource = adminClient.realm("test");
+
+        UserRepresentation userRep = realmResource.users().search("direct-login").get(0);
+        List<String> attributeValues = Stream.of("123","456").collect(Collectors.toList());
+        userRep.setAttributes(Stream.of(new AbstractMap.SimpleEntry<>("dynamic",attributeValues)).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)));
+        realmResource.users().get(userRep.getId()).update(userRep);
+
         try(Response response = realmResource.clientScopes().create(clientScope)) {
             String scopeId = ApiUtil.getCreatedId(response);
             getCleanup().addClientScopeId(scopeId);
@@ -206,16 +214,20 @@ public class ResourceOwnerPasswordCredentialsGrantTest extends AbstractKeycloakT
             resourceOwnerPublicClient.addOptionalClientScope(scopeId);
         }
 
-        oauth.scope("dynamic-scope:123");
+        oauth.scope("dynamic-scope:123 dynamic-scope:789");
         oauth.clientId("resource-owner-public");
 
         OAuthClient.AccessTokenResponse response = oauth.doGrantAccessTokenRequest("secret", "direct-login", "password");
 
         assertTrue(response.getScope().contains("dynamic-scope:123"));
+        AccessToken accessToken = oauth.verifyToken(response.getAccessToken());
+        List<String> claimValue =(List) accessToken.getOtherClaims().get("dynamic-scope");
+        assertEquals(claimValue.size(),1);
+        assertEquals(claimValue.get(0),"123");
 
         assertEquals(200, response.getStatusCode());
 
-        AccessToken accessToken = oauth.verifyToken(response.getAccessToken());
+        accessToken = oauth.verifyToken(response.getAccessToken());
         RefreshToken refreshToken = oauth.parseRefreshToken(response.getRefreshToken());
 
         events.expectLogin()
@@ -232,6 +244,12 @@ public class ResourceOwnerPasswordCredentialsGrantTest extends AbstractKeycloakT
                 .assertEvent();
 
         assertTrue(accessToken.getScope().contains("dynamic-scope:123"));
+        claimValue =(List) accessToken.getOtherClaims().get("dynamic-scope");
+        assertEquals(claimValue.size(),1);
+        assertEquals(claimValue.get(0),"123");
+
+        userRep.getAttributes().remove("dynamic");
+        adminClient.realm("test").users().get(userRep.getId()).update(userRep);
     }
 
     @Test
