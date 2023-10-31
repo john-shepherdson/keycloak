@@ -16,7 +16,10 @@ import { useAlerts } from "../../components/alert/Alerts";
 import { FormAccess } from "../../components/form/FormAccess";
 import { ViewHeader } from "../../components/view-header/ViewHeader";
 import { useRealm } from "../../context/realm-context/RealmContext";
-import { convertFormValuesToObject } from "../../util";
+import {
+  convertAttributeNameToForm,
+  convertFormValuesToObject,
+} from "../../util";
 import { FormFields } from "../ClientDetails";
 import { toClient } from "../routes/Client";
 import { toClients } from "../routes/Clients";
@@ -52,6 +55,9 @@ export default function NewClientForm() {
   });
   const { getValues, watch, trigger } = form;
   const protocol = watch("protocol");
+  const autoUpdated = watch(
+    convertAttributeNameToForm("attributes.saml.auto.updated"),
+  ) as unknown as string;
 
   const save = async () => {
     const client = convertFormValuesToObject(getValues());
@@ -78,7 +84,11 @@ export default function NewClientForm() {
   };
 
   const isFinalStep = () =>
-    protocol === "openid-connect" ? step === 2 : step === 1;
+    protocol === "openid-connect"
+      ? step === 2
+      : autoUpdated === "true"
+      ? step === 0
+      : step === 1;
 
   const back = () => {
     setStep(step - 1);
@@ -123,16 +133,20 @@ export default function NewClientForm() {
                     },
                   ]
                 : []),
-              {
-                id: "loginSettings",
-                name: t("loginSettings"),
-                component: (
-                  <FormAccess isHorizontal role="manage-clients">
-                    <LoginSettings protocol={protocol} />
-                  </FormAccess>
-                ),
-                canJumpTo: step >= 1,
-              },
+              ...(!(autoUpdated === "true")
+                ? [
+                    {
+                      id: "loginSettings",
+                      name: t("loginSettings"),
+                      component: (
+                        <FormAccess isHorizontal role="manage-clients">
+                          <LoginSettings protocol={protocol} />
+                        </FormAccess>
+                      ),
+                      canJumpTo: step >= 1,
+                    },
+                  ]
+                : []),
             ]}
             footer={
               <WizardFooter>

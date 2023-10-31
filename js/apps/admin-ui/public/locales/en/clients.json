@@ -544,5 +544,12 @@
     "never": "Never expires"
   },
   "mappers": "Mappers",
-  "sessions": "Sessions"
+  "sessions": "Sessions",
+  "autoUpdate": "Auto update",
+  "metadataUrl": "Metadata URL",
+  "metadataUrlInvalid": "Metadata URL is not a valid URL",
+  "refreshPeriod":"Refresh period",
+  "refreshPeriodInvalid": "Refresh period cannot be empty or zero",
+  "skipRequestedAttrubues": "Skip requested attributes",
+  "lastRefresh": "Last Refresh"
 }
