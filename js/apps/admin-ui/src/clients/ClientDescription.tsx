@@ -10,6 +10,7 @@ import { Toggle } from "./add/SamlConfig";
 import { FormFields } from "./ClientDetails";
 import { Fragment } from "react";
 import { TimeSelector } from "../components/time-selector/TimeSelector";
+import { Countries } from "./add/Countries";
 
 type ClientDescriptionProps = {
   protocol?: string;
@@ -153,6 +154,13 @@ export const ClientDescription = ({
           },
         }}
       />
+      <TextControl
+        name="attributes.contacts"
+        label={t("clients:contacts")}
+        labelIcon={t("clients-help:contacts")}
+        type="text"
+      />
+      <Countries />
       <DefaultSwitchControl
         name="alwaysDisplayInConsole"
         label={t("alwaysDisplayInUI")}

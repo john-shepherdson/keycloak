@@ -189,5 +189,7 @@
   "metadataUrl": "Metadata URL from which SAML Client will be autoupdated",
   "refreshPeriod":"Every how many time SAML Client will be autoupdated",
   "skipRequestedAttrubues": "Skip requested attribues from parsing during autoupdate SAML SP metadata",
-  "lastUpdated": "Last time SP was autoupdated"
+  "lastUpdated": "Last time SP was autoupdated",
+  "contacts": "Comma-separated list of contacts. This list is shown in the client consent.",
+  "country": "Country selection is shown in the client consent."
 }

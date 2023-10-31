@@ -551,5 +551,7 @@
   "refreshPeriod":"Refresh period",
   "refreshPeriodInvalid": "Refresh period cannot be empty or zero",
   "skipRequestedAttrubues": "Skip requested attributes",
-  "lastRefresh": "Last Refresh"
+  "lastRefresh": "Last Refresh",
+  "contacts": "Contacts",
+  "country": "Country"
 }
