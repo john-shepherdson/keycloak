@@ -53,7 +53,7 @@ public class KcOidcFirstBrokerLoginDetectExistingUserTest extends AbstractInitia
 
         // Updates the FirstBrokerLoginFlowAlias for the identity provider
         IdentityProviderResource identityConsumerResource = consumerRealm.identityProviders().get(bc.getIDPAlias());
-        IdentityProviderRepresentation identityProviderRepresentation = consumerRealm.identityProviders().findAll(false,"",-1,-1).get(0);
+        IdentityProviderRepresentation identityProviderRepresentation = consumerRealm.identityProviders().findAll("",false,null, null).get(0);
         identityProviderRepresentation.setFirstBrokerLoginFlowAlias(detectExistingFlowAlias);
         identityProviderRepresentation.getConfig().put(IdentityProviderModel.SYNC_MODE, IdentityProviderSyncMode.FORCE.toString());
         identityConsumerResource.update(identityProviderRepresentation);

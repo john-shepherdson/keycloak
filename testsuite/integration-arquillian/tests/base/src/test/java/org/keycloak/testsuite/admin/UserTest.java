@@ -190,7 +190,7 @@ public class UserTest extends AbstractAdminTest {
 
     @After
     public void after() {
-        realm.identityProviders().findAll(false,"",-1,-1).stream()
+        realm.identityProviders().findAll("",false,null, null).stream()
                 .forEach(ip -> realm.identityProviders().get(ip.getAlias()).remove());
 
         realm.groups().groups()
@@ -1383,7 +1383,7 @@ public class UserTest extends AbstractAdminTest {
     }
 
     private void addSampleIdentityProvider(final String alias, final int expectedInitialIdpCount) {
-        List<IdentityProviderRepresentation> providers = realm.identityProviders().findAll(false,"",-1,-1);
+        List<IdentityProviderRepresentation> providers = realm.identityProviders().findAll("",false,null, null);
         Assert.assertEquals(expectedInitialIdpCount, providers.size());
 
         IdentityProviderRepresentation rep = new IdentityProviderRepresentation();

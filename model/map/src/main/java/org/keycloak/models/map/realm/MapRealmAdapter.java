@@ -986,12 +986,11 @@ public class MapRealmAdapter extends AbstractRealmModel<MapRealmEntity> implemen
 
     @Override
     public Stream<IdentityProviderModel> searchIdentityProviders(String keyword, Integer firstResult, Integer maxResults){
-        final String lowercaseKeyword = keyword.toLowerCase();
         Stream<MapIdentityProviderEntity> result = entity.getIdentityProviders().stream();
         if(keyword!=null && !keyword.isEmpty()){
             result = result.filter(idp -> {
                     String name = idp.getDisplayName() == null ? "" : idp.getDisplayName();
-                    return name.toLowerCase().contains(lowercaseKeyword) || idp.getAlias().toLowerCase().contains(lowercaseKeyword);
+                    return keyword == null || name.toLowerCase().contains(keyword.toLowerCase()) || idp.getAlias().toLowerCase().contains(keyword.toLowerCase());
                 });
         }
         if(firstResult>=0 && maxResults>=0)

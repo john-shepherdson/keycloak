@@ -43,6 +43,7 @@ import org.keycloak.representations.idm.IdentityProviderRepresentation;
 import org.keycloak.services.ErrorResponse;
 import org.keycloak.services.resources.KeycloakOpenAPI;
 import org.keycloak.services.resources.admin.permissions.AdminPermissionEvaluator;
+import org.keycloak.utils.ReservedCharValidator;
 
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.MultivaluedMap;
@@ -50,6 +51,8 @@ import jakarta.ws.rs.core.Response;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.*;
+import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -69,8 +72,8 @@ public class IdentityProvidersResource {
 
     private final RealmModel realm;
     private final KeycloakSession session;
-    private AdminPermissionEvaluator auth;
-    private AdminEventBuilder adminEvent;
+    private final AdminPermissionEvaluator auth;
+    private final AdminEventBuilder adminEvent;
 
     public IdentityProvidersResource(RealmModel realm, KeycloakSession session, AdminPermissionEvaluator auth, AdminEventBuilder adminEvent) {
         this.realm = realm;
@@ -80,7 +83,7 @@ public class IdentityProvidersResource {
     }
 
     /**
-     * Get identity providers
+     * Get the identity provider factory for a provider id.
      *
      * @param providerId Provider id
      * @return
@@ -162,8 +165,7 @@ public class IdentityProvidersResource {
         }
     }
 
-
-    /**
+   /**
      * Get used (initiated) identity provider providerId(s).  i.e. ['saml', 'oidc', 'github']
      *
      * @return
@@ -177,34 +179,39 @@ public class IdentityProvidersResource {
         return realm.getIdentityProvidersStream().map(IdentityProviderModel::getProviderId).collect(Collectors.toCollection(HashSet::new));
     }
 
+
     /**
-     * Get all or search identity providers
+     * List identity providers.
      *
-     * @return
+     * @param search Filter to search specific providers by name. Search can be prefixed (name*), contains (*name*) or exact (\"name\"). Default prefixed.
+     * @param briefRepresentation Boolean which defines whether brief representations are returned (default: false)
+     * @param firstResult Pagination offset
+     * @param maxResults Maximum results size (defaults to 100)
+     * @return The list of providers.
      */
     @GET
     @Path("instances")
     @NoCache
     @Produces(MediaType.APPLICATION_JSON)
     @Tag(name = KeycloakOpenAPI.Admin.Tags.IDENTITY_PROVIDERS)
-    @Operation( summary = "Get identity providers")
-    public List<IdentityProviderRepresentation> getIdentityProviders(
-            @QueryParam("brief") @DefaultValue("false") Boolean brief,
-            @QueryParam("keyword") @DefaultValue("") String keyword,
-            @QueryParam("first") @DefaultValue("-1") Integer firstResult,
-            @QueryParam("max") @DefaultValue("-1") Integer maxResults
-    ) {
+    @Operation(summary = "List identity providers")
+    public Stream<IdentityProviderRepresentation> getIdentityProviders(
+            @Parameter(description = "Filter specific providers by name. Search can be prefix (name*), contains (*name*) or exact (\"name\"). Default prefixed.") @QueryParam("search") String search,
+            @Parameter(description = "Boolean which defines whether brief representations are returned (default: false)") @DefaultValue ("true") @QueryParam("briefRepresentation") Boolean briefRepresentation,
+            @Parameter(description = "Pagination offset") @DefaultValue ("0") @QueryParam("first") Integer firstResult,
+            @Parameter(description = "Maximum results size (defaults to 100)") @DefaultValue ("100") @QueryParam("max") Integer maxResults) {
         this.auth.realm().requireViewIdentityProviders();
 
-        Stream<IdentityProviderModel> identityProviders = (keyword.isEmpty() && firstResult == -1 && maxResults == -1) ?
-                realm.getIdentityProvidersStream() :
-                realm.searchIdentityProviders(keyword, firstResult, maxResults);
-        return (brief) ?
-            identityProviders.map(idpModel -> StripSecretsUtils.strip(ModelToRepresentation.toBriefRepresentation(realm, idpModel))).collect(Collectors.toList()) :
-            identityProviders.map(idpModel -> StripSecretsUtils.strip(ModelToRepresentation.toRepresentation(realm, idpModel))).collect(Collectors.toList());
+        Function<IdentityProviderModel, IdentityProviderRepresentation> toRepresentation = briefRepresentation != null && briefRepresentation
+                ? m -> ModelToRepresentation.toBriefRepresentation(realm, m)
+                : m -> StripSecretsUtils.strip(ModelToRepresentation.toRepresentation(realm, m));
+
+        Stream<IdentityProviderModel> stream = realm.searchIdentityProviders(search, firstResult, maxResults);
+
+        return stream.map(toRepresentation);
     }
 
-    /**
+     /**
      * get IdPs alias per federation
      * @param federationId
      * @return

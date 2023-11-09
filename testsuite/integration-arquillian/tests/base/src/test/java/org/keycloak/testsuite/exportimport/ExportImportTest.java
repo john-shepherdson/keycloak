@@ -167,7 +167,7 @@ public class ExportImportTest extends AbstractKeycloakTest {
 
         RealmResource testRealmRealm = adminClient.realm("test-realm");
         RealmRepresentation realmRepresentation = testRealmRealm.toRepresentation();
-        realmRepresentation.setIdentityProviders(testRealmRealm.identityProviders().findAll(false,"",-1,-1));
+        realmRepresentation.setIdentityProviders(testRealmRealm.identityProviders().findAll("",false,null, null));
         ExportImportUtil.assertDataImportedInRealm(adminClient, testingClient, realmRepresentation);
 
         // There should be 6 files in target directory (3 realm, 3 user)
@@ -189,7 +189,7 @@ public class ExportImportTest extends AbstractKeycloakTest {
 
         RealmResource testRealmRealm = adminClient.realm("test-realm");
         RealmRepresentation realmRepresentation = testRealmRealm.toRepresentation();
-        realmRepresentation.setIdentityProviders(testRealmRealm.identityProviders().findAll(false,"",-1,-1));
+        realmRepresentation.setIdentityProviders(testRealmRealm.identityProviders().findAll("",false,null, null));
         ExportImportUtil.assertDataImportedInRealm(adminClient, testingClient, realmRepresentation);
 
         // There should be 4 files in target directory (1 realm, 12 users, 5 users per file)
@@ -236,7 +236,7 @@ public class ExportImportTest extends AbstractKeycloakTest {
 
         RealmResource testRealmRealm = adminClient.realm("test-realm");
         RealmRepresentation realmRepresentation = testRealmRealm.toRepresentation();
-        realmRepresentation.setIdentityProviders(testRealmRealm.identityProviders().findAll(false,"",-1,-1));
+        realmRepresentation.setIdentityProviders(testRealmRealm.identityProviders().findAll("",false,null, null));
         ExportImportUtil.assertDataImportedInRealm(adminClient, testingClient, realmRepresentation);
     }
 

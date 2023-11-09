@@ -816,24 +816,19 @@ public class ModelToRepresentation {
     public static IdentityProviderRepresentation toBriefRepresentation(RealmModel realm, IdentityProviderModel identityProviderModel) {
         IdentityProviderRepresentation providerRep = new IdentityProviderRepresentation();
 
+        // brief representation means IDs, names and enabled
         providerRep.setInternalId(identityProviderModel.getInternalId());
         providerRep.setProviderId(identityProviderModel.getProviderId());
         providerRep.setAlias(identityProviderModel.getAlias());
         providerRep.setDisplayName(identityProviderModel.getDisplayName());
         providerRep.setEnabled(identityProviderModel.isEnabled());
-        providerRep.setLinkOnly(identityProviderModel.isLinkOnly());
 
         return providerRep;
     }
 
     public static IdentityProviderRepresentation toRepresentation(RealmModel realm, IdentityProviderModel identityProviderModel) {
-        IdentityProviderRepresentation providerRep = new IdentityProviderRepresentation();
+        IdentityProviderRepresentation providerRep = toBriefRepresentation(realm, identityProviderModel);
 
-        providerRep.setInternalId(identityProviderModel.getInternalId());
-        providerRep.setProviderId(identityProviderModel.getProviderId());
-        providerRep.setAlias(identityProviderModel.getAlias());
-        providerRep.setDisplayName(identityProviderModel.getDisplayName());
-        providerRep.setEnabled(identityProviderModel.isEnabled());
         providerRep.setLinkOnly(identityProviderModel.isLinkOnly());
         providerRep.setStoreToken(identityProviderModel.isStoreToken());
         providerRep.setTrustEmail(identityProviderModel.isTrustEmail());

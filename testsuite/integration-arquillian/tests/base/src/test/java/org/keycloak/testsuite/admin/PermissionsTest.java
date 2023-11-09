@@ -1682,7 +1682,7 @@ public class PermissionsTest extends AbstractKeycloakTest {
     public void identityProviders() {
         invoke(new Invocation() {
             public void invoke(RealmResource realm) {
-                realm.identityProviders().findAll(false,"",-1,-1);
+                realm.identityProviders().findAll("",false,null, null);
             }
         }, Resource.IDENTITY_PROVIDER, false);
         invoke(new InvocationWithResponse() {

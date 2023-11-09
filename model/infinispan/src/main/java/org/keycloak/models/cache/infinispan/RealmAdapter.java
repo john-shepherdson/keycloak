@@ -890,12 +890,12 @@ public class RealmAdapter implements CachedRealmModel {
 
     @Override
     public Stream<IdentityProviderModel> searchIdentityProviders(String keyword, Integer firstResult, Integer maxResults){
-        final String lowercaseKeyword = keyword.toLowerCase();
-        Stream<IdentityProviderModel> result = isUpdated() ? updated.getIdentityProvidersStream() : cached.getIdentityProviders().stream();
+        if (isUpdated()) return updated.searchIdentityProviders(keyword, firstResult, maxResults);
+        Stream<IdentityProviderModel> result = cached.getIdentityProviders().stream();
         return result
             .filter(idp -> {
                 String name = idp.getDisplayName() == null ? "" : idp.getDisplayName();
-                return name.toLowerCase().contains(lowercaseKeyword) || idp.getAlias().toLowerCase().contains(lowercaseKeyword);
+                return keyword == null || name.toLowerCase().contains(keyword.toLowerCase()) || idp.getAlias().toLowerCase().contains(keyword.toLowerCase());
             })
             .skip(firstResult)
             .limit(maxResults);
