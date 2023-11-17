@@ -11,14 +11,14 @@ import {
 import { useState } from "react";
 import { Controller, useFormContext, useWatch } from "react-hook-form";
 import { useTranslation } from "react-i18next";
-
 import { HelpItem } from "ui-shared";
 import { KeycloakTextArea } from "../../components/keycloak-text-area/KeycloakTextArea";
 import { KeycloakTextInput } from "../../components/keycloak-text-input/KeycloakTextInput";
 import { FormGroupField } from "../component/FormGroupField";
 import { SwitchField } from "../component/SwitchField";
-
 import "./discovery-settings.css";
+import { AutoUpdateFields } from "../component/AutoUpdateFields";
+import { PrincipalTable } from "../component/PrincipalTable";
 
 type DescriptorSettingsProps = {
   readOnly: boolean;
@@ -33,9 +33,7 @@ const Fields = ({ readOnly }: DescriptorSettingsProps) => {
     control,
     formState: { errors },
   } = useFormContext<IdentityProviderRepresentation>();
-  const [namedPolicyDropdownOpen, setNamedPolicyDropdownOpen] = useState(false);
-  const [principalTypeDropdownOpen, setPrincipalTypeDropdownOpen] =
-    useState(false);
+
   const [signatureAlgorithmDropdownOpen, setSignatureAlgorithmDropdownOpen] =
     useState(false);
   const [encryptionAlgorithmDropdownOpen, setEncryptionAlgorithmDropdownOpen] =
@@ -60,13 +58,9 @@ const Fields = ({ readOnly }: DescriptorSettingsProps) => {
     name: "config.validateSignature",
   });
 
-  const principalType = useWatch({
-    control,
-    name: "config.principalType",
-  });
-
   return (
     <div className="pf-c-form pf-m-horizontal">
+      {!readOnly && <AutoUpdateFields />}
       <FormGroup
         label={t("serviceProviderEntityId")}
         fieldId="kc-saml-service-provider-entity-id"
@@ -159,158 +153,9 @@ const Fields = ({ readOnly }: DescriptorSettingsProps) => {
         data-testid="backchannelLogout"
         isReadOnly={readOnly}
       />
-      <FormGroup
-        label={t("nameIdPolicyFormat")}
-        labelIcon={
-          <HelpItem
-            helpText={th("nameIdPolicyFormat")}
-            fieldLabelId="identity-providers:nameIdPolicyFormat"
-          />
-        }
-        fieldId="kc-nameIdPolicyFormat"
-        helperTextInvalid={t("common:required")}
-      >
-        <Controller
-          name="config.nameIDPolicyFormat"
-          defaultValue={"urn:oasis:names:tc:SAML:2.0:nameid-format:persistent"}
-          control={control}
-          render={({ field }) => (
-            <Select
-              toggleId="kc-nameIdPolicyFormat"
-              onToggle={(isExpanded) => setNamedPolicyDropdownOpen(isExpanded)}
-              isOpen={namedPolicyDropdownOpen}
-              onSelect={(_, value) => {
-                field.onChange(value as string);
-                setNamedPolicyDropdownOpen(false);
-              }}
-              selections={field.value}
-              variant={SelectVariant.single}
-              isDisabled={readOnly}
-            >
-              <SelectOption
-                data-testid="persistent-option"
-                value={"urn:oasis:names:tc:SAML:2.0:nameid-format:persistent"}
-                isPlaceholder
-              >
-                {t("persistent")}
-              </SelectOption>
-              <SelectOption
-                data-testid="transient-option"
-                value="urn:oasis:names:tc:SAML:2.0:nameid-format:transient"
-              >
-                {t("transient")}
-              </SelectOption>
-              <SelectOption
-                data-testid="email-option"
-                value="urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress"
-              >
-                {t("email")}
-              </SelectOption>
-              <SelectOption
-                data-testid="kerberos-option"
-                value="urn:oasis:names:tc:SAML:2.0:nameid-format:kerberos"
-              >
-                {t("kerberos")}
-              </SelectOption>
 
-              <SelectOption
-                data-testid="x509-option"
-                value="urn:oasis:names:tc:SAML:1.1:nameid-format:X509SubjectName"
-              >
-                {t("x509")}
-              </SelectOption>
+      <PrincipalTable readOnly={readOnly} />
 
-              <SelectOption
-                data-testid="windowsDomainQN-option"
-                value="urn:oasis:names:tc:SAML:1.1:nameid-format:WindowsDomainQualifiedName"
-              >
-                {t("windowsDomainQN")}
-              </SelectOption>
-
-              <SelectOption
-                data-testid="unspecified-option"
-                value={"urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified"}
-              >
-                {t("unspecified")}
-              </SelectOption>
-            </Select>
-          )}
-        ></Controller>
-      </FormGroup>
-
-      <FormGroup
-        label={t("principalType")}
-        labelIcon={
-          <HelpItem
-            helpText={th("principalType")}
-            fieldLabelId="identity-providers:principalType"
-          />
-        }
-        fieldId="kc-principalType"
-        helperTextInvalid={t("common:required")}
-      >
-        <Controller
-          name="config.principalType"
-          defaultValue={t("subjectNameId")}
-          control={control}
-          render={({ field }) => (
-            <Select
-              toggleId="kc-principalType"
-              onToggle={(isExpanded) =>
-                setPrincipalTypeDropdownOpen(isExpanded)
-              }
-              isOpen={principalTypeDropdownOpen}
-              onSelect={(_, value) => {
-                field.onChange(value.toString());
-                setPrincipalTypeDropdownOpen(false);
-              }}
-              selections={field.value}
-              variant={SelectVariant.single}
-              isDisabled={readOnly}
-            >
-              <SelectOption
-                data-testid="subjectNameId-option"
-                value="SUBJECT"
-                isPlaceholder
-              >
-                {t("subjectNameId")}
-              </SelectOption>
-              <SelectOption
-                data-testid="attributeName-option"
-                value="ATTRIBUTE"
-              >
-                {t("attributeName")}
-              </SelectOption>
-              <SelectOption
-                data-testid="attributeFriendlyName-option"
-                value="FRIENDLY_ATTRIBUTE"
-              >
-                {t("attributeFriendlyName")}
-              </SelectOption>
-            </Select>
-          )}
-        ></Controller>
-      </FormGroup>
-
-      {principalType?.includes("ATTRIBUTE") && (
-        <FormGroup
-          label={t("principalAttribute")}
-          labelIcon={
-            <HelpItem
-              helpText={th("principalAttribute")}
-              fieldLabelId="identity-providers:principalAttribute"
-            />
-          }
-          fieldId="principalAttribute"
-        >
-          <KeycloakTextInput
-            id="principalAttribute"
-            data-testid="principalAttribute"
-            isReadOnly={readOnly}
-            {...register("config.principalAttribute")}
-          />
-        </FormGroup>
-      )}
       <SwitchField
         field="config.allowCreate"
         label="allowCreate"
@@ -332,6 +177,12 @@ const Fields = ({ readOnly }: DescriptorSettingsProps) => {
       <SwitchField
         field="config.postBindingLogout"
         label="httpPostBindingLogout"
+        isReadOnly={readOnly}
+      />
+
+      <SwitchField
+        field="config.postBindingLogoutReceivingRequest"
+        label="postBindingLogoutReceivingRequest"
         isReadOnly={readOnly}
       />
 
@@ -422,6 +273,12 @@ const Fields = ({ readOnly }: DescriptorSettingsProps) => {
       )}
 
       <SwitchField
+        field="config.wantLogoutRequestsSigned"
+        label="wantLogoutRequestsSigned"
+        isReadOnly={readOnly}
+      />
+
+      <SwitchField
         field="config.wantAssertionsSigned"
         label="wantAssertionsSigned"
         isReadOnly={readOnly}
@@ -504,7 +361,6 @@ const Fields = ({ readOnly }: DescriptorSettingsProps) => {
         data-testid="passSubject"
         isReadOnly={readOnly}
       />
-
       <FormGroup
         label={t("allowedClockSkew")}
         labelIcon={
@@ -543,7 +399,6 @@ const Fields = ({ readOnly }: DescriptorSettingsProps) => {
           }}
         />
       </FormGroup>
-
       <FormGroup
         label={t("attributeConsumingServiceIndex")}
         labelIcon={

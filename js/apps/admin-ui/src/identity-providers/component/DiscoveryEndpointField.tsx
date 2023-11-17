@@ -7,6 +7,7 @@ import { HelpItem } from "ui-shared";
 import { adminClient } from "../../admin-client";
 import { KeycloakTextInput } from "../../components/keycloak-text-input/KeycloakTextInput";
 import environment from "../../environment";
+import { AutoUpdateFields } from "./AutoUpdateFields";
 
 type DiscoveryEndpointFieldProps = {
   id: string;
@@ -40,6 +41,12 @@ export const DiscoveryEndpointField = ({
   };
 
   useEffect(() => {
+    if (id === "saml") {
+      setValue("config.metadataUrl", discoveryUrl);
+    }
+  }, [discoveryUrl]);
+
+  useEffect(() => {
     if (!discoveryUrl) {
       setDiscovering(false);
       return;
@@ -60,7 +67,6 @@ export const DiscoveryEndpointField = ({
           message: (error as Error).message,
         });
       }
-
       setDiscovering(false);
     })();
   }, [discovering]);
@@ -153,8 +159,11 @@ export const DiscoveryEndpointField = ({
           />
         </FormGroup>
       )}
+
       {!discovery && fileUpload}
+
       {discovery && !errors.discoveryError && children(true)}
+      {discovery && id === "saml" && <AutoUpdateFields hideMetadata />}
       {!discovery && children(false)}
     </>
   );

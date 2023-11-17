@@ -58,7 +58,7 @@
   "windowsDomainQN": "Windows Domain Qualified Name",
   "unspecified": "Unspecified",
   "principalType": "Principal type",
-  "principalAttribute": "Principal attribute",
+  "principalAttribute": "Principal attribute/NameID Policy Format",
   "allowCreate": "Allow create",
   "subjectNameId": "Subject NameID",
   "attributeName": "Attribute [Name]",
@@ -73,7 +73,9 @@
   "httpPostBindingResponse": "HTTP-POST binding response",
   "httpPostBindingAuthnRequest": "HTTP-POST binding for AuthnRequest",
   "httpPostBindingLogout": "HTTP-POST binding logout",
+  "postBindingLogoutReceivingRequest": "HTTP-POST Binding Receiving Logout Request",
   "wantAuthnRequestsSigned": "Want AuthnRequests signed",
+  "wantLogoutRequestsSigned": "Want Logout Requests Signed",
   "signatureAlgorithm": "Signature algorithm",
   "encryptionAlgorithm": "Encryption Algorithm",
   "samlSignatureKeyName": "SAML signature key name",
@@ -183,5 +185,9 @@
     "local": "LOCAL",
     "brokerId": "BROKER_ID",
     "brokerUsername": "BROKER_USERNAME"
-  }
+  },
+  "principals": "Principals",
+  "actions": "Actions",
+  "order": "Order",
+  "promotedLoginbutton": "Promoted login button"
 }

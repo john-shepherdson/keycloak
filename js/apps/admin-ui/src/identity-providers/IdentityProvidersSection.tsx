@@ -94,9 +94,6 @@ export default function IdentityProvidersSection() {
   useFetch(
     async () => {
       const providers = await adminClient.identityProviders.find();
-      if (!providers) {
-        throw new Error(t("common:notFound"));
-      }
       return providers;
     },
     (providers) => {
