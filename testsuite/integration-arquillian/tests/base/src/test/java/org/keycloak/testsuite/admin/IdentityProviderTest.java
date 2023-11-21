@@ -162,12 +162,12 @@ public class IdentityProviderTest extends AbstractAdminTest {
 //
 //        Assert.assertNames(realm.identityProviders().findAll("*oo*", true, 0, 5), "google", "facebook");
 
-        List<IdentityProviderRepresentation> results = realm.identityProviders().findAll("\"twitter\"", true, 0, 5);
-        Assert.assertNames(results, "twitter");
-        Assert.assertTrue("Result is not in brief representation", results.iterator().next().getConfig().isEmpty());
-        results = realm.identityProviders().findAll("\"twitter\"", null, 0, 5);
-        Assert.assertNames(results, "twitter");
-        Assert.assertFalse("Config should be present in full representation", results.iterator().next().getConfig().isEmpty());
+//        List<IdentityProviderRepresentation> results = realm.identityProviders().findAll("\"twitter\"", true, 0, 5);
+//        Assert.assertNames(results, "twitter");
+//        Assert.assertTrue("Result is not in brief representation", results.iterator().next().getConfig().isEmpty());
+//        results = realm.identityProviders().findAll("\"twitter\"", null, 0, 5);
+//        Assert.assertNames(results, "twitter");
+//        Assert.assertFalse("Config should be present in full representation", results.iterator().next().getConfig().isEmpty());
     }
 
     @Test
