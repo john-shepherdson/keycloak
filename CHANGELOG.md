@@ -62,6 +62,7 @@ Our Keycloak version is working well with PostgreSQL database. For using other S
 - Search in User Attribute with like
 - Protocol mapper that can combine multiple user attributes [RCIAM-1267](https://jira.argo.grnet.gr/browse/RCIAM-1267)
 - Change SAML 2.0 Identity Provider Metadata [RCIAM-1288](https://jira.argo.grnet.gr/browse/RCIAM-1288)
+- SAML federation alias use URL encoded of base64 entityId[Refactor SAML federation to use base64 instead of SHA256 for IdP aliases](https://trello.com/c/pDtqcm3L/2324-refactor-saml-federation-to-use-base64-instead-of-sha256-for-idp-aliases)
 
 ### Fixed
 - Changes in account console and account rest service [RCIAM-860](https://jira.argo.grnet.gr/browse/RCIAM-860)

@@ -19,22 +19,16 @@ package org.keycloak.broker.saml.federation;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringWriter;
+import java.io.UnsupportedEncodingException;
 import java.net.URI;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.security.KeyPair;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.cert.X509Certificate;
 import java.time.Instant;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import jakarta.ws.rs.core.MediaType;
@@ -102,7 +96,6 @@ import org.keycloak.services.managers.RealmManager;
 import org.keycloak.services.scheduled.ClusterAwareScheduledTaskRunner;
 import org.keycloak.services.scheduled.UpdateFederation;
 import org.keycloak.timer.TimerProvider;
-import org.keycloak.validation.ClientValidationContext;
 import org.keycloak.validation.ClientValidationProvider;
 import org.keycloak.validation.ValidationUtil;
 import org.w3c.dom.Document;
@@ -250,7 +243,7 @@ public class SAMLFederationProvider extends AbstractIdPFederationProvider <SAMLF
 
 				try {
 					//Idp parsing
-					String alias = getHash(entity.getEntityID());
+					String alias = getBase64(entity.getEntityID());
 					IdentityProviderModel identityProviderModel = null;
 
 					//check if this federation has already included this IdP
@@ -575,7 +568,7 @@ public class SAMLFederationProvider extends AbstractIdPFederationProvider <SAMLF
     private void parseIdP(IdentityProviderModel identityProviderModel, Date validUntil, EntityDescriptorType entity,
 							 IDPSSODescriptorType idpDescriptor, String preferredLang) {
 		identityProviderModel.setEnabled(validUntil!= null &&  validUntil.before(new Date()) ? false : true);
-       	identityProviderModel.getConfig().put("entityId", entity.getEntityID());
+       	identityProviderModel.getConfig().put(SAMLIdentityProviderConfig.IDP_ENTITY_ID, entity.getEntityID());
 
         LocalizedNameType displayName = idpDescriptor.getExtensions() != null
             && idpDescriptor.getExtensions().getUIInfo() != null
@@ -731,23 +724,9 @@ public class SAMLFederationProvider extends AbstractIdPFederationProvider <SAMLF
 	}
 
 
-
-
-	public static String getHash(String str) {
-		byte[] hashBytes;
-		try {
-			hashBytes = MessageDigest.getInstance("SHA-256").digest(str.getBytes());
-		}
-		catch (NoSuchAlgorithmException e) {
-            throw new RuntimeException(e);
-        }
-		StringBuilder sb = new StringBuilder();
-        for(byte b : hashBytes) {
-            sb.append(String.format("%02x", b));
-        }
-        return sb.toString();
+	public static String getBase64(String str) throws UnsupportedEncodingException {
+		return URLEncoder.encode(Base64.getEncoder().withoutPadding().encodeToString(str.getBytes()), StandardCharsets.UTF_8.toString());
 	}
-
 
 
 	@Override

@@ -121,6 +121,7 @@ import javax.xml.transform.stream.StreamSource;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
@@ -488,9 +489,9 @@ public class IdentityBrokerService implements IdentityProvider.AuthenticationCal
         }
     }
 
-    private SAMLEndpoint getSAMLEndpoint(String issuer,String samlRequest, String samlResponse, String relayState){
-        //issuer should be the entityId -> alias is the hashed entityid
-        String alias = SAMLFederationProvider.getHash(issuer);
+    private SAMLEndpoint getSAMLEndpoint(String issuer,String samlRequest, String samlResponse, String relayState) throws UnsupportedEncodingException {
+        //issuer should be the entityId -> alias is the url_encvode(of base64 entityid)
+        String alias = SAMLFederationProvider.getBase64(issuer);
         SAMLIdentityProvider identityProvider = getSAMLIdentityProvider(session, realmModel, alias);
         SAMLEndpoint endpoint = new SAMLEndpoint(session, identityProvider, identityProvider.getConfig(), this, identityProvider.getDestinationValidator());
         return  endpoint;

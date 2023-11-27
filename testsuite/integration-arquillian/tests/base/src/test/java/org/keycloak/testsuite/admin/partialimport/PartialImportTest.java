@@ -115,8 +115,8 @@ public class PartialImportTest extends AbstractAuthTest {
     private static final String CLIENT_ROLE_PREFIX = "clientRole";
     private static final String[] IDP_ALIASES = {"twitter", "github", "facebook", "google", "linkedin-openid-connect", "microsoft", "stackoverflow"};
     private static final Set<String> aliasIdPsFederationSet = new HashSet<>(
-            Arrays.asList(new String[]{"6b6b716bef3c495083e31e1a71e8622e07d69b955cc3d9764fe28be5d0e8fb02",
-                    "00092d0295bee88b7b381b7c662cb0cc5919fe2d37b29896fa59923e107afda1", "5168734e074c0bd8e432066851abed4a6b34f1d291b6ae8e8d0f163a71e48983"}));
+            Arrays.asList(new String[]{"aHR0cHM6Ly9pZHAucmFzaC5hbC9zaW1wbGVzYW1sL3NhbWwyL2lkcC9tZXRhZGF0YS5waHA",
+                    "aHR0cHM6Ly9odWMuaWRwLmtuYXcubmwvc2ltcGxlc2FtbC9zYW1sMi9pZHAvbWV0YWRhdGEucGhw", "aHR0cHM6Ly9pZHAuYWRtaW4uZ3JuZXQuZ3IvaWRwL3NoaWJib2xldGg"}));
     private static final int NUM_ENTITIES = IDP_ALIASES.length;
     private static final ResourceServerRepresentation resourceServerSampleSettings;
 
