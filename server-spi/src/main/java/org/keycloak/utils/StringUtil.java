@@ -16,6 +16,10 @@
  */
 package org.keycloak.utils;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
+import java.util.Base64;
 import java.util.Collection;
 
 public class StringUtil {
@@ -85,5 +89,9 @@ public class StringUtil {
             }
         }
         return sb == null? str : sb.toString();
+    }
+
+    public static String getBase64(String str) throws UnsupportedEncodingException {
+        return URLEncoder.encode(Base64.getEncoder().withoutPadding().encodeToString(str.getBytes()), StandardCharsets.UTF_8.toString());
     }
 }

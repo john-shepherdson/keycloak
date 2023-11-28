@@ -78,6 +78,7 @@ public class LegacyMigrationManager implements MigrationManager {
             new MigrateTo21_0_0(),
             new MigrateTo22_0_0(),
             new MigrateTo22_0_0_1_0(),
+            new MigrateTo22_0_0_1_1(),
             new MigrateTo22_0_10()
     };
 

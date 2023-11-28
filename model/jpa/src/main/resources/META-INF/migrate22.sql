@@ -1,0 +1,2 @@
+--change client.offline.session.idle.timeout to client.offline.session.max.timeout
+update client_attributes set "name" ='client.offline.session.max.timeout' where "name" ='client.offline.session.idle.timeout';

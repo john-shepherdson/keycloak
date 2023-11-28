@@ -96,6 +96,7 @@ import org.keycloak.services.managers.RealmManager;
 import org.keycloak.services.scheduled.ClusterAwareScheduledTaskRunner;
 import org.keycloak.services.scheduled.UpdateFederation;
 import org.keycloak.timer.TimerProvider;
+import org.keycloak.utils.StringUtil;
 import org.keycloak.validation.ClientValidationProvider;
 import org.keycloak.validation.ValidationUtil;
 import org.w3c.dom.Document;
@@ -243,7 +244,7 @@ public class SAMLFederationProvider extends AbstractIdPFederationProvider <SAMLF
 
 				try {
 					//Idp parsing
-					String alias = getBase64(entity.getEntityID());
+					String alias = StringUtil.getBase64(entity.getEntityID());
 					IdentityProviderModel identityProviderModel = null;
 
 					//check if this federation has already included this IdP
@@ -271,8 +272,7 @@ public class SAMLFederationProvider extends AbstractIdPFederationProvider <SAMLF
 
 							config.put(IdentityProviderModel.SYNC_MODE, model.getConfig().get(IdentityProviderModel.SYNC_MODE));
 							config.put("loginHint", "false");
-
-					                config.put(SAMLIdentityProviderConfig.WANT_ASSERTIONS_ENCRYPTED, wantAssertionsEncrypted);
+							config.put(SAMLIdentityProviderConfig.WANT_ASSERTIONS_ENCRYPTED, wantAssertionsEncrypted);
 							config.put(SAMLIdentityProviderConfig.WANT_ASSERTIONS_SIGNED, String.valueOf(model.isWantAssertionsSigned()));
 							config.put(SAMLIdentityProviderConfig.WANT_LOGOUT_REQUESTS_SIGNED, String.valueOf(model.isWantLogoutRequestsSigned()));
 							config.put(SAMLIdentityProviderConfig.ENTITY_ID, model.getConfig().get(SAMLIdentityProviderConfig.ENTITY_ID));
@@ -721,11 +721,6 @@ public class SAMLFederationProvider extends AbstractIdPFederationProvider <SAMLF
 	@Override
 	public void close() {
 		// TODO Auto-generated method stub
-	}
-
-
-	public static String getBase64(String str) throws UnsupportedEncodingException {
-		return URLEncoder.encode(Base64.getEncoder().withoutPadding().encodeToString(str.getBytes()), StandardCharsets.UTF_8.toString());
 	}
 
 

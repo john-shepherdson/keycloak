@@ -113,6 +113,7 @@ import jakarta.ws.rs.core.HttpHeaders;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.Response.Status;
 import jakarta.ws.rs.core.UriBuilder;
+import org.keycloak.utils.StringUtil;
 
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
@@ -491,7 +492,7 @@ public class IdentityBrokerService implements IdentityProvider.AuthenticationCal
 
     private SAMLEndpoint getSAMLEndpoint(String issuer,String samlRequest, String samlResponse, String relayState) throws UnsupportedEncodingException {
         //issuer should be the entityId -> alias is the url_encvode(of base64 entityid)
-        String alias = SAMLFederationProvider.getBase64(issuer);
+        String alias = StringUtil.getBase64(issuer);
         SAMLIdentityProvider identityProvider = getSAMLIdentityProvider(session, realmModel, alias);
         SAMLEndpoint endpoint = new SAMLEndpoint(session, identityProvider, identityProvider.getConfig(), this, identityProvider.getDestinationValidator());
         return  endpoint;
