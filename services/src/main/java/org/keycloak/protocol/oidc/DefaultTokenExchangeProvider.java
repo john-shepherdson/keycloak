@@ -340,6 +340,11 @@ public class DefaultTokenExchangeProvider implements TokenExchangeProvider {
         String scope = formParams.getFirst(OAuth2Constants.SCOPE);
         if (token != null && token.getScope() != null && scope == null) {
             scope = token.getScope();
+            Set<String> targetClientScopes = new HashSet<String>();
+            targetClientScopes.addAll(targetClient.getClientScopes(true).keySet());
+            targetClientScopes.addAll(targetClient.getClientScopes(false).keySet());
+            //from return scope remove scopes that are not default or optional scopes for targetClient
+            scope = Arrays.stream(scope.split(" ")).filter(s -> "openid".equals(s) || (targetClientScopes.contains(Profile.isFeatureEnabled(Profile.Feature.DYNAMIC_SCOPES) ? s.split(":")[0] : s))).collect(Collectors.joining(" "));
         } else if (token != null && token.getScope() != null) {
             String subjectTokenScopes = token.getScope();
             if (Profile.isFeatureEnabled(Profile.Feature.DYNAMIC_SCOPES)) {
