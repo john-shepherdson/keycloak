@@ -1,0 +1,15 @@
+{
+    "samlFederations": "Create a federation of identity providers using saml.",
+    "importFromURL": "Import metadata from a remote SAML IdP federation entity descriptor.",
+    "alias": "Pick an alias name for the IdP federation",
+    "updateFrequency": "The frequency by which the federation will be updated from the given URL, in minutes.",
+    "category": "SAML federation can consists IdentityProviders or Clients or both of them.",
+    "identityProvidersFederation": "Allows you to configure Identity Providers part of SAML federation.",
+    "serviceProviderEntityId": "The Entity ID that will be used to uniquely identify this SAML Service Provider. The value is inherited by all Federation Identity Providers upon creation but it can be overridden for each Individual Identity Provider.",
+    "syncMode":"Default sync mode for created Identity Providers. The sync mode determines when user data will be synced using the mappers. Possible values are: 'import' to only import the user once during first login of the user with this identity provider, 'force' to always update the user during every login with this identity provider.",
+    "nameIdPolicyFormat": "Specifies the URI reference corresponding to a name identifier format.",
+    "wantAssertionsEncrypted": "Indicates whether this service provider expects an encrypted Assertion.",
+    "attributeConsumingServiceIndex":"Index of the Attribute Consuming Service profile to request during authentication",
+    "attributeConsumingServiceName":"Name of the Attribute Consuming Service profile to advertise in the SP metadata. Default value equal to the realm display name when configured, otherwise equal to the realm name.",
+    "signSpMetadata":"Enable/disable signature of the provider SAML metadata"
+}

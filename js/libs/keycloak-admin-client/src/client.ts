@@ -8,6 +8,7 @@ import { ClientScopes } from "./resources/clientScopes.js";
 import { Components } from "./resources/components.js";
 import { Groups } from "./resources/groups.js";
 import { IdentityProviders } from "./resources/identityProviders.js";
+import { IdentityFederations } from "./resources/identityFederations.js";
 import { Realms } from "./resources/realms.js";
 import { Roles } from "./resources/roles.js";
 import { ServerInfo } from "./resources/serverInfo.js";
@@ -39,6 +40,7 @@ export class KeycloakAdminClient {
   public clientScopes: ClientScopes;
   public clientPolicies: ClientPolicies;
   public identityProviders: IdentityProviders;
+  public identityFederations: IdentityFederations;
   public components: Components;
   public serverInfo: ServerInfo;
   public whoAmI: WhoAmI;
@@ -72,6 +74,7 @@ export class KeycloakAdminClient {
     this.clientScopes = new ClientScopes(this);
     this.clientPolicies = new ClientPolicies(this);
     this.identityProviders = new IdentityProviders(this);
+    this.identityFederations = new IdentityFederations(this);
     this.components = new Components(this);
     this.authenticationManagement = new AuthenticationManagement(this);
     this.serverInfo = new ServerInfo(this);

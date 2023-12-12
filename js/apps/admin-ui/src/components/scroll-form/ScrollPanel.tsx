@@ -4,14 +4,16 @@ import { Title } from "@patternfly/react-core";
 import { HTMLProps } from "react";
 
 import "./form-panel.css";
+import { HelpItem } from "ui-shared";
 
 type ScrollPanelProps = HTMLProps<HTMLFormElement> & {
+  helpText?: string;
   title: string;
   scrollId: string;
 };
 
 export const ScrollPanel = (props: ScrollPanelProps) => {
-  const { title, children, scrollId, ...rest } = props;
+  const { title, children, helpText, scrollId, ...rest } = props;
   return (
     <section {...rest} className="kc-form-panel__panel">
       <>
@@ -23,7 +25,15 @@ export const ScrollPanel = (props: ScrollPanelProps) => {
           tabIndex={0} // so that jumpLink sends focus to the section for a11y
         >
           {title}
+          <span style={{ display: "inline-block", width: "0.5rem" }} />
+          {helpText && (
+            <HelpItem
+              helpText={helpText}
+              fieldLabelId={"helpItem." + helpText}
+            />
+          )}
         </Title>
+
         {children}
       </>
     </section>

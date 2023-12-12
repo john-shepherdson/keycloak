@@ -17,6 +17,7 @@ import "./scroll-form.css";
 
 type ScrollSection = {
   title: string;
+  helpText?: string;
   panel: ReactNode;
   isHidden?: boolean;
 };
@@ -44,7 +45,7 @@ export const ScrollForm = ({
   return (
     <Grid hasGutter {...rest}>
       <GridItem md={8} sm={12}>
-        {shownSections.map(({ title, panel }) => {
+        {shownSections.map(({ title, panel, helpText }) => {
           const scrollId = spacesToHyphens(title.toLowerCase());
 
           return (
@@ -58,7 +59,11 @@ export const ScrollForm = ({
                   {panel}
                 </FormPanel>
               ) : (
-                <ScrollPanel scrollId={scrollId} title={title}>
+                <ScrollPanel
+                  scrollId={scrollId}
+                  title={title}
+                  helpText={helpText}
+                >
                   {panel}
                 </ScrollPanel>
               )}

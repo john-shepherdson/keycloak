@@ -2,7 +2,6 @@ import IdentityProviderRepresentation from "@keycloak/keycloak-admin-client/lib/
 import { FormGroup } from "@patternfly/react-core";
 import { Controller, useFormContext } from "react-hook-form";
 import { useTranslation } from "react-i18next";
-
 import { HelpItem } from "ui-shared";
 import { KeycloakTextInput } from "../../components/keycloak-text-input/KeycloakTextInput";
 import { SwitchField } from "./SwitchField";

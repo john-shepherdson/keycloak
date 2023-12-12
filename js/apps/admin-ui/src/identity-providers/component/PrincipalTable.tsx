@@ -9,7 +9,7 @@ import {
 } from "@patternfly/react-core";
 import { useFormContext } from "react-hook-form";
 import { useTranslation } from "react-i18next";
-import { useRef, useState } from "react";
+import { useRef, useState, useEffect } from "react";
 import { HelpItem } from "ui-shared";
 import "../add/discovery-settings.css";
 import {
@@ -26,6 +26,7 @@ import styles from "@patternfly/react-styles/css/components/Table/table";
 
 type PrincipalTableProps = {
   readOnly: boolean;
+  required?: boolean;
 };
 
 const nameIdOptions = {
@@ -44,12 +45,18 @@ const defaultPrincipal = {
   nameIDPolicyFormat: "urn:oasis:names:tc:SAML:2.0:nameid-format:persistent",
 };
 
-export const PrincipalTable = ({ readOnly }: PrincipalTableProps) => {
+export const PrincipalTable = ({ readOnly, required }: PrincipalTableProps) => {
   const { t } = useTranslation("identity-providers");
   const { t: th } = useTranslation("identity-providers-help");
   const bodyRef = useRef<HTMLTableSectionElement | null>(null);
 
-  const { watch, setValue } = useFormContext<IdentityProviderRepresentation>();
+  const {
+    watch,
+    setValue,
+    formState: { errors },
+    setError,
+    clearErrors,
+  } = useFormContext<IdentityProviderRepresentation>();
 
   const multiplePrincipals = watch("config.multiplePrincipals") || "[]";
   const [principal, setPrincipal] = useState<any>(defaultPrincipal);
@@ -59,6 +66,14 @@ export const PrincipalTable = ({ readOnly }: PrincipalTableProps) => {
     null,
   );
   const [isDragging, setIsDragging] = useState(false);
+
+  useEffect(() => {
+    if (required && JSON.parse(multiplePrincipals).length < 1) {
+      setError("config.multiplePrincipals", { message: t("required") });
+    } else {
+      clearErrors("config.multiplePrincipals");
+    }
+  }, [multiplePrincipals]);
 
   const onDragStart: TrProps["onDragStart"] = (evt) => {
     evt.dataTransfer.effectAllowed = "move";
@@ -168,6 +183,8 @@ export const PrincipalTable = ({ readOnly }: PrincipalTableProps) => {
           fieldLabelId="identity-providers:principals"
         />
       }
+      isRequired={required}
+      validated={errors.config?.multiplePrincipals ? "error" : "default"}
       fieldId="kc-principals"
       helperTextInvalid={t("common:required")}
     >

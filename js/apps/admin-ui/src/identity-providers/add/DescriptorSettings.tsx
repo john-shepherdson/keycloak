@@ -34,6 +34,7 @@ const Fields = ({ readOnly }: DescriptorSettingsProps) => {
     formState: { errors },
   } = useFormContext<IdentityProviderRepresentation>();
 
+  const [namedPolicyDropdownOpen, setNamedPolicyDropdownOpen] = useState(false);
   const [signatureAlgorithmDropdownOpen, setSignatureAlgorithmDropdownOpen] =
     useState(false);
   const [encryptionAlgorithmDropdownOpen, setEncryptionAlgorithmDropdownOpen] =
@@ -154,6 +155,84 @@ const Fields = ({ readOnly }: DescriptorSettingsProps) => {
         isReadOnly={readOnly}
       />
 
+      <FormGroup
+        label={t("nameIdPolicyFormat")}
+        labelIcon={
+          <HelpItem
+            helpText={th("nameIdPolicyFormat")}
+            fieldLabelId="identity-providers:nameIdPolicyFormat"
+          />
+        }
+        fieldId="kc-nameIdPolicyFormat"
+        helperTextInvalid={t("common:required")}
+      >
+        <Controller
+          name="config.nameIDPolicyFormat"
+          defaultValue={"urn:oasis:names:tc:SAML:2.0:nameid-format:persistent"}
+          control={control}
+          render={({ field }) => (
+            <Select
+              toggleId="kc-nameIdPolicyFormat"
+              onToggle={(isExpanded) => setNamedPolicyDropdownOpen(isExpanded)}
+              isOpen={namedPolicyDropdownOpen}
+              onSelect={(_, value) => {
+                field.onChange(value as string);
+                setNamedPolicyDropdownOpen(false);
+              }}
+              selections={field.value}
+              variant={SelectVariant.single}
+              isDisabled={readOnly}
+            >
+              <SelectOption
+                data-testid="persistent-option"
+                value={"urn:oasis:names:tc:SAML:2.0:nameid-format:persistent"}
+                isPlaceholder
+              >
+                {t("persistent")}
+              </SelectOption>
+              <SelectOption
+                data-testid="transient-option"
+                value="urn:oasis:names:tc:SAML:2.0:nameid-format:transient"
+              >
+                {t("transient")}
+              </SelectOption>
+              <SelectOption
+                data-testid="email-option"
+                value="urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress"
+              >
+                {t("email")}
+              </SelectOption>
+              <SelectOption
+                data-testid="kerberos-option"
+                value="urn:oasis:names:tc:SAML:2.0:nameid-format:kerberos"
+              >
+                {t("kerberos")}
+              </SelectOption>
+
+              <SelectOption
+                data-testid="x509-option"
+                value="urn:oasis:names:tc:SAML:1.1:nameid-format:X509SubjectName"
+              >
+                {t("x509")}
+              </SelectOption>
+
+              <SelectOption
+                data-testid="windowsDomainQN-option"
+                value="urn:oasis:names:tc:SAML:1.1:nameid-format:WindowsDomainQualifiedName"
+              >
+                {t("windowsDomainQN")}
+              </SelectOption>
+
+              <SelectOption
+                data-testid="unspecified-option"
+                value={"urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified"}
+              >
+                {t("unspecified")}
+              </SelectOption>
+            </Select>
+          )}
+        ></Controller>
+      </FormGroup>
       <PrincipalTable readOnly={readOnly} />
 
       <SwitchField

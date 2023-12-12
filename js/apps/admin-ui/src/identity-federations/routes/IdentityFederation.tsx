@@ -1,0 +1,31 @@
+import { lazy } from "react";
+import type { Path } from "react-router-dom";
+import { generateEncodedPath } from "../../utils/generateEncodedPath";
+import type { AppRouteObject } from "../../routes";
+
+export type IdentityFederationTab = "settings" | "mappers";
+
+export type IdentityFederationParams = {
+  realm: string;
+  providerId: string;
+  internalId: string;
+};
+
+const EditIdentityFederation = lazy(
+  () => import("../add/EditIdentityFederation"),
+);
+
+export const IdentityFederationRoute: AppRouteObject = {
+  path: "/:realm/identity-federations/:providerId/:internalId",
+  element: <EditIdentityFederation />,
+  breadcrumb: (t) => t("identity-federations:federationDetails"),
+  handle: {
+    access: "view-identity-providers",
+  },
+};
+
+export const toIdentityFederation = (
+  params: IdentityFederationParams,
+): Partial<Path> => ({
+  pathname: generateEncodedPath(IdentityFederationRoute.path, params),
+});

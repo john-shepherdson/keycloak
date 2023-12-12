@@ -139,6 +139,7 @@
   "realmSettings": "Realm settings",
   "authentication": "Authentication",
   "identityProviders": "Identity providers",
+  "idenityFederations": "Identity Federation",
   "userFederation": "User federation",
   "settings": "Settings",
   "details": "Details",
@@ -215,5 +216,6 @@
   "forbidden_other": "Forbidden, permissions needed:",
   "noRealmRolesToAssign": "There are no realm roles to assign",
   "loadingRealms": "Loading realms…",
-  "customAttribute": "Custom Attribute…"
+  "customAttribute": "Custom Attribute…",
+  "url": "Url"
 }
