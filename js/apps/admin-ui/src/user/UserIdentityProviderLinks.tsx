@@ -1,5 +1,6 @@
 import type FederatedIdentityRepresentation from "@keycloak/keycloak-admin-client/lib/defs/federatedIdentityRepresentation";
 import type IdentityProviderRepresentation from "@keycloak/keycloak-admin-client/lib/defs/identityProviderRepresentation";
+import type { IdentityProvidersQuery } from "@keycloak/keycloak-admin-client/lib/resources/identityProviders";
 import {
   AlertVariant,
   Button,
@@ -51,7 +52,6 @@ export const UserIdentityProviderLinks = ({
 
   const getFederatedIdentities = async () => {
     const allProviders = await adminClient.identityProviders.find();
-
     const allFedIds = (await adminClient.users.listFederatedIdentities({
       id: userId,
     })) as WithProviderId[];
@@ -60,26 +60,27 @@ export const UserIdentityProviderLinks = ({
         (item) => item.alias === element.identityProvider,
       )?.providerId!;
     }
-
     return allFedIds;
-  };
-
-  const getAvailableIdPs = async () => {
-    return (await adminClient.realms.findOne({ realm }))!.identityProviders;
   };
 
   const linkedIdPsLoader = async () => {
     return getFederatedIdentities();
   };
 
-  const availableIdPsLoader = async () => {
+  const loader = async (first?: number, max?: number, search?: string) => {
     const linkedNames = (await getFederatedIdentities()).map(
       (x) => x.identityProvider,
     );
+    const params: IdentityProvidersQuery = {
+      first: first!,
+      max: max!,
+    };
+    if (search) {
+      params.search = search;
+    }
+    const providers = await adminClient.identityProviders.find({ ...params });
 
-    return (await getAvailableIdPs())?.filter(
-      (item) => !linkedNames.includes(item.alias),
-    )!;
+    return providers.filter((item) => !linkedNames.includes(item.alias))! || [];
   };
 
   const [toggleUnlinkDialog, UnlinkConfirm] = useConfirmDialog({
@@ -248,9 +249,9 @@ export const UserIdentityProviderLinks = ({
             </Text>
           </TextContent>
           <KeycloakDataTable
-            loader={availableIdPsLoader}
+            loader={loader}
             key={key}
-            isPaginated={false}
+            isPaginated
             ariaLabelKey="users:LinkedIdPs"
             className="kc-linked-IdPs-table"
             columns={[
