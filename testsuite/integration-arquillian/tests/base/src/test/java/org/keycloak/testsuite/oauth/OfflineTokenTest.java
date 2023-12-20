@@ -944,6 +944,7 @@ public class OfflineTokenTest extends AbstractKeycloakTest {
             TokenSignatureUtil.changeRealmTokenSignatureProvider(adminClient, expectedIdTokenAlg);
             TokenSignatureUtil.changeClientAccessTokenSignatureProvider(ApiUtil.findClientByClientId(adminClient.realm("test"), "offline-client"), expectedAccessAlg);
             offlineTokenRequest(expectedRefreshAlg, expectedAccessAlg, expectedIdTokenAlg);
+            offlineTokenRequestWithScopeParameter(expectedRefreshAlg, expectedAccessAlg, expectedIdTokenAlg);
         } finally {
             TokenSignatureUtil.changeRealmTokenSignatureProvider(adminClient, Algorithm.RS256);
             TokenSignatureUtil.changeClientAccessTokenSignatureProvider(ApiUtil.findClientByClientId(adminClient.realm("test"), "offline-client"), Algorithm.RS256);
