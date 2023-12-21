@@ -78,3 +78,4 @@ Our Keycloak version is working well with PostgreSQL database. For using other S
 - Update changes related to service account with Client registration 
 - Dynamic scopes( default enabled): bug corrections, filtering and consent [RCIAM-848](https://jira.argo.grnet.gr/browse/RCIAM-848)
 - Fix Token Exchange without scope parameter bug in scope 
+- OIDC Protocol Mappers add value to existing claims instead of overwriting it[Mapper for generating SAML attribute values or Claim values using other SAML attribute/Claim values as input](https://trello.com/c/8K46f2mo/1642-mapper-for-generating-saml-attribute-values-or-claim-values-using-other-saml-attribute-claim-values-as-input)

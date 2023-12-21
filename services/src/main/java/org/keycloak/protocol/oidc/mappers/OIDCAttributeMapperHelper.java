@@ -40,6 +40,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 
 /**
@@ -73,6 +74,7 @@ public class OIDCAttributeMapperHelper {
 
     private static final Logger logger = Logger.getLogger(OIDCAttributeMapperHelper.class);
 
+    private static final List<String> primaryClaims = Stream.of(IDToken.NAME, IDToken.GIVEN_NAME, IDToken.FAMILY_NAME, IDToken.EMAIL, IDToken.PREFERRED_USERNAME).collect(Collectors.toList());
     /**
      * Interface for a token property setter in a class T that accept claims.
      * @param <T> The token class for the property
@@ -309,8 +311,24 @@ public class OIDCAttributeMapperHelper {
         int i = 0;
         for (String component : split) {
             i++;
-            if (i == length) {
+            if (i == length && length == 1 && primaryClaims.contains(split.get(0))) {
                 jsonObject.put(component, attributeValue);
+            } else if (i == length) {
+                Object values = jsonObject.get(component);
+                if (values == null) {
+                    jsonObject.put(component, attributeValue);
+                } else {
+                    Collection collectionValues = values instanceof Collection ? (Collection) values : Stream.of(values).collect(Collectors.toSet());
+                    if (attributeValue instanceof Collection) {
+                        ((Collection) attributeValue).stream().forEach(val -> {
+                            if (!collectionValues.contains(val))
+                                collectionValues.add(val);
+                        });
+                    } else if (!collectionValues.contains(attributeValue)) {
+                        collectionValues.add(attributeValue);
+                    }
+                    jsonObject.put(component, collectionValues);
+                }
             } else {
                 @SuppressWarnings("unchecked")
                 Map<String, Object> nested = (Map<String, Object>) jsonObject.get(component);
