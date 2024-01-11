@@ -5,7 +5,12 @@ import org.keycloak.broker.federation.SAMLFederationProviderFactory;
 import org.keycloak.events.admin.OperationType;
 import org.keycloak.migration.ModelVersion;
 import org.keycloak.models.*;
+import org.keycloak.models.utils.KeycloakModelUtils;
 import org.keycloak.representations.idm.RealmRepresentation;
+import org.keycloak.services.scheduled.ClusterAwareScheduledTaskRunner;
+import org.keycloak.services.scheduled.RemoveFederation;
+import org.keycloak.services.scheduled.UpgradeTo22Task;
+import org.keycloak.timer.TimerProvider;
 import org.keycloak.utils.StringUtil;
 
 import java.io.UnsupportedEncodingException;
@@ -48,12 +53,11 @@ public class MigrateTo22_0_0_1_1 implements Migration {
             });
         });
         for (FederationModel oldFederation : realm.getSAMLFederations()){
-            FederationModel newFederation = new FederationModel(oldFederation);
-            FederationProvider federationProvider = SAMLFederationProviderFactory.getSAMLFederationProviderFactoryById(session, oldFederation.getProviderId()).create(session,oldFederation,realm.getId());
-            federationProvider.removeFederation();
-            FederationProvider federationProvider2 = SAMLFederationProviderFactory.getSAMLFederationProviderFactoryById(session, newFederation.getProviderId()).create(session,newFederation,realm.getId());
-            federationProvider2.updateFederation();
-            federationProvider2.enableUpdateTask();
+              realm.upgrateTo22IdPFederation(oldFederation.getInternalId());
+//            UpgradeTo22Task upgradeTo22Task = new UpgradeTo22Task(oldFederation.getInternalId(), realm.getId());
+//            ClusterAwareScheduledTaskRunner taskRunner = new ClusterAwareScheduledTaskRunner(session.getKeycloakSessionFactory(), upgradeTo22Task,60 * 1000);
+//            TimerProvider timer = session.getProvider(TimerProvider.class);
+//            timer.scheduleOnce(taskRunner, 30 * 1000, " UpgradeTo22Federation" + oldFederation.getInternalId());
         }
     }
 

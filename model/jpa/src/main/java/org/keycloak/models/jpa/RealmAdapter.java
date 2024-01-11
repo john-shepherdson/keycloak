@@ -21,6 +21,7 @@ import org.keycloak.Config;
 import org.jboss.logging.Logger;
 import org.keycloak.broker.provider.IdentityProvider;
 import org.keycloak.broker.provider.IdentityProviderFactory;
+import org.keycloak.broker.saml.SAMLIdentityProviderConfig;
 import org.keycloak.broker.social.SocialIdentityProvider;
 import org.keycloak.common.enums.SslRequired;
 import org.keycloak.common.util.MultivaluedHashMap;
@@ -37,6 +38,9 @@ import jakarta.persistence.LockModeType;
 import jakarta.persistence.TypedQuery;
 import jakarta.persistence.NoResultException;
 import jakarta.persistence.NonUniqueResultException;
+import org.keycloak.utils.StringUtil;
+
+import java.io.UnsupportedEncodingException;
 import java.util.*;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
@@ -1572,14 +1576,41 @@ public class RealmAdapter implements LegacyRealmModel, JpaModel<RealmEntity> {
     }
 
     @Override
-	public void removeSAMLFederation(String internalId) {
-		logger.info("Removing the IdP federation entry with id: "+ internalId);
+	public void removeSAMLFederation(FederationModel federationModel) {
+		logger.info("Removing the IdP federation entry with id: "+ federationModel.getInternalId());
 
-		FederationEntity federationEntity = realm.getSamlFederations().stream().filter(idpf -> idpf.getInternalId().equals(internalId)).findAny().orElse(null);
+		FederationEntity federationEntity = realm.getSamlFederations().stream().filter(idpf -> idpf.getInternalId().equals(federationModel.getInternalId())).findAny().orElse(null);
 
-		em.remove(federationEntity);
-		em.flush();
+        List<String> existingIdps = getIdentityProvidersByFederation(federationModel.getInternalId());
+        existingIdps.stream().forEach(idpAlias -> removeFederationIdp(federationModel, idpAlias));
+        em.remove(federationEntity);
+        em.flush();
+
 	}
+
+    @Override
+    public void upgrateTo22IdPFederation(String federationId) {
+        logger.info("upgrating to 22 the IdP federation entry with id: "+ federationId);
+        List<IdentityProviderEntity> existingIdps = findIdPsByFederation(federationId);
+        existingIdps.stream().forEach(idp -> {
+            try {
+                String newAlias = StringUtil.getBase64(idp.getConfig().get(SAMLIdentityProviderConfig.ENTITY_ID));
+//                findIdentityProviderMappersByRealmAndAlias(idp.getAlias()).forEach(mapper -> {
+//                    mapper.setIdentityProviderAlias(newAlias);
+//                });
+                idp.getConfig().put(SAMLIdentityProviderConfig.IDP_ENTITY_ID,idp.getConfig().get(SAMLIdentityProviderConfig.ENTITY_ID));
+                idp.getConfig().put(SAMLIdentityProviderConfig.ENTITY_ID,idp.getConfig().get("spEntityId"));
+                idp.getConfig().remove("spEntityId");
+                idp.getConfig().put("oldAlias",idp.getAlias());
+                idp.setAlias(newAlias);
+            } catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
+            }
+        });
+        em.flush();
+        logger.info("finishing upgrade to 22 the IdP federation entry with id: "+ federationId);
+      
+    }
 
 
     private void modelToEntity(IdentityProviderEntity entity, IdentityProviderModel identityProvider) {
@@ -1730,9 +1761,22 @@ public class RealmAdapter implements LegacyRealmModel, JpaModel<RealmEntity> {
 
     @Override
     public List<String> getIdentityProvidersByFederation(String federationId) {
-        TypedQuery<String> query = em.createNamedQuery("findIdentityProviderByFederation", String.class);
+        TypedQuery<String> query = em.createNamedQuery("findIdPAliasByFederation", String.class);
         query.setParameter("federationId", federationId);
         return query.getResultList();
+    }
+
+    private List<IdentityProviderEntity> findIdPsByFederation(String federationId) {
+        TypedQuery<IdentityProviderEntity> query = em.createNamedQuery("findIdPsByFederation", IdentityProviderEntity.class);
+        query.setParameter("federationId", federationId);
+        return query.getResultList();
+    }
+
+    private Stream<IdentityProviderMapperEntity> findIdentityProviderMappersByRealmAndAlias(String alias) {
+        TypedQuery<IdentityProviderMapperEntity> query = em.createNamedQuery("findIdentityProviderMappersByRealmAndAlias", IdentityProviderMapperEntity.class);
+        query.setParameter("alias", alias);
+        query.setParameter("realmId", realm.getId());
+        return query.getResultList().stream();
     }
 
     @Override

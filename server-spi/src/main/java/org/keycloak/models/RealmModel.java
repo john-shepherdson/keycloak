@@ -458,7 +458,8 @@ public interface RealmModel extends RoleContainerModel {
     void addSAMLFederation(FederationModel federationModel);
     void updateSAMLFederation(FederationModel federationModel);
     void taskExecutionFederation(FederationModel federationModel, List<IdentityProviderModel> addIdPs, List<IdentityProviderModel> updatedIdPs, List<String> removedIdPs);
-    void removeSAMLFederation(String internalId);
+    void removeSAMLFederation(FederationModel federationModel);
+    default void upgrateTo22IdPFederation(String federationId){};
     List<FederationMapperModel> getIdentityProviderFederationMappers(String federationId);
     FederationMapperModel getIdentityProviderFederationMapper(String federationId, String id);
     void addIdentityProvidersFederationMapper(FederationMapperModel federationMapperModel);

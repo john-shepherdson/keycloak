@@ -1234,7 +1234,7 @@ public class MapRealmAdapter extends AbstractRealmModel<MapRealmEntity> implemen
     }
 
     @Override
-    public void removeSAMLFederation(String internalId){
+    public void removeSAMLFederation(FederationModel federationModel){
       //  entity.removeIdentityProvidersFederation(internalId);
     }
 

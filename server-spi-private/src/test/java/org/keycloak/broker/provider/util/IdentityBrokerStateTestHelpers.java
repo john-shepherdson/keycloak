@@ -1436,7 +1436,7 @@ public class IdentityBrokerStateTestHelpers {
         }
 
         @Override
-        public void removeSAMLFederation(String internalId) {
+        public void removeSAMLFederation(FederationModel federationModel) {
 
         }
 

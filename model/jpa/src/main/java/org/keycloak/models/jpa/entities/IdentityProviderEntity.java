@@ -57,7 +57,8 @@ import java.util.Set;
         @NamedQuery(name="findIdentityProviderByRealmAndKeyword", query="select identityProvider from IdentityProviderEntity identityProvider where identityProvider.realm.id = :realmId and (lower(identityProvider.alias) like :keyword or lower(identityProvider.displayName) like :keyword )"),
         @NamedQuery(name="findIdentityProviderByRealmAndAlias", query="select identityProvider from IdentityProviderEntity identityProvider where identityProvider.alias = :alias and identityProvider.realm.id = :realmId"),
         @NamedQuery(name="findUtilizedIdentityProviderTypesOfRealm", query="select distinct identityProvider.providerId from IdentityProviderEntity identityProvider where identityProvider.realm.id = :realmId"),
-        @NamedQuery(name="findIdentityProviderByFederation", query="select identityProvider.alias from IdentityProviderEntity identityProvider join identityProvider.federations f where f.internalId = :federationId"),
+        @NamedQuery(name="findIdPAliasByFederation", query="select identityProvider.alias from IdentityProviderEntity identityProvider join identityProvider.federations f where f.internalId = :federationId"),
+        @NamedQuery(name="findIdPsByFederation", query="select identityProvider from IdentityProviderEntity identityProvider join identityProvider.federations f where f.internalId = :federationId"),
         @NamedQuery(name="findAutoUpdatedIdentityProviders", query="select i from IdentityProviderEntity i inner join i.config c where i.realm.id = :realmId and KEY(c) = 'refreshPeriod' ")
 })
 public class IdentityProviderEntity {

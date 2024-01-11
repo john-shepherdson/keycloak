@@ -981,10 +981,16 @@ public class RealmAdapter implements CachedRealmModel {
     }
 
     @Override
-	public void removeSAMLFederation(String internalId) {
+	public void removeSAMLFederation(FederationModel federationModel) {
 		getDelegateForUpdate();
-		updated.removeSAMLFederation(internalId);
+		updated.removeSAMLFederation(federationModel);
 	}
+
+    @Override
+    public void upgrateTo22IdPFederation(String federationId) {
+        getDelegateForUpdate();
+        updated.upgrateTo22IdPFederation(federationId);
+    }
 	
 	@Override
 	public List<FederationMapperModel> getIdentityProviderFederationMappers(String federationId){

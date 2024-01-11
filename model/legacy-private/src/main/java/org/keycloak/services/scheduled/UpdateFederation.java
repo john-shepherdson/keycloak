@@ -26,7 +26,7 @@ public class UpdateFederation implements ScheduledTask {
 
 	@Override
 	public void run(KeycloakSession session) {
-		logger.info(" Updating identity providers of federation with id " + federationId + " and alias " + realmId);
+		logger.info(" Updating identity providers of federation with id " + federationId + " and realm id " + realmId);
 		RealmModel realm = session.realms().getRealm(realmId);
 		if ( realm != null) {
 			FederationModel federationModel = realm.getSAMLFederationById(federationId);
