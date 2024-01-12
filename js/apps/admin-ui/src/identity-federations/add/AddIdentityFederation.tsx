@@ -38,8 +38,12 @@ export default function AddIdentityFederation() {
   return (
     <PageSection variant="light">
       <FormProvider {...form}>
-        <ViewHeader titleKey={"Add Saml Federation"} />
-        <IdentityFederationForm type={"create"} onSubmit={onSubmit} />
+        <ViewHeader titleKey={"Add Saml Federation"} divider={false} />
+        <IdentityFederationForm
+          type={"create"}
+          providerId={id}
+          onSubmit={onSubmit}
+        />
       </FormProvider>
     </PageSection>
   );

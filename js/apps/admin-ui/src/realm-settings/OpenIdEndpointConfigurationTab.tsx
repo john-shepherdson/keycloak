@@ -29,7 +29,7 @@ export const OpenIdEndpointConfigurationTab = ({
   const { control, handleSubmit, setValue } = useForm<RealmRepresentation>();
 
   const setupForm = () => {
-    let attributes = realm.attributes || {};
+    const attributes = realm.attributes || {};
     setValue("attributes", attributes);
   };
 
@@ -62,32 +62,35 @@ export const OpenIdEndpointConfigurationTab = ({
                 : [];
               return (
                 <>
-                  {claimsSupported.filter(Boolean).map((claim: string, index: number) => (
-                        <InputGroup key={index}>
-                          <TextInput
-                            value={claim}
-                            onChange={(value) => {
-                              let attributes = field.value || {};
-                              claimsSupported[index] = value;
-                              attributes.claimsSupported = claimsSupported.join(",");
-                              field.onChange(attributes);
-                            }}
-                            aria-label={t("realm-settings:edit-claim-input")}
-                          />
-                          <Button
-                            icon={<MinusIcon />}
-                            aria-label={t("realm-settings:remove-claim-button")}
-                            onClick={() => {
-                              let attributes = field.value || {};
-                              claimsSupported.splice(index, 1);
-                              attributes.claimsSupported = claimsSupported.join(",");
-                              field.onChange(attributes);
-                            }}
-                            variant="control"
-                          />
-                        </InputGroup>
-                      )
-                   )}
+                  {claimsSupported
+                    .filter(Boolean)
+                    .map((claim: string, index: number) => (
+                      <InputGroup key={index}>
+                        <TextInput
+                          value={claim}
+                          onChange={(value) => {
+                            const attributes = field.value || {};
+                            claimsSupported[index] = value;
+                            attributes.claimsSupported =
+                              claimsSupported.join(",");
+                            field.onChange(attributes);
+                          }}
+                          aria-label={t("realm-settings:edit-claim-input")}
+                        />
+                        <Button
+                          icon={<MinusIcon />}
+                          aria-label={t("realm-settings:remove-claim-button")}
+                          onClick={() => {
+                            const attributes = field.value || {};
+                            claimsSupported.splice(index, 1);
+                            attributes.claimsSupported =
+                              claimsSupported.join(",");
+                            field.onChange(attributes);
+                          }}
+                          variant="control"
+                        />
+                      </InputGroup>
+                    ))}
                   <InputGroup>
                     <TextInput
                       value={newClaim}
@@ -101,9 +104,10 @@ export const OpenIdEndpointConfigurationTab = ({
                       aria-label={t("realm-settings:add-claim-button")}
                       onClick={() => {
                         if (newClaim) {
-                          let attributes = field.value || {};
+                          const attributes = field.value || {};
                           claimsSupported.push(newClaim);
-                          attributes.claimsSupported = claimsSupported.join(","); 
+                          attributes.claimsSupported =
+                            claimsSupported.join(",");
                           setNewClaim("");
                           field.onChange(attributes);
                         }

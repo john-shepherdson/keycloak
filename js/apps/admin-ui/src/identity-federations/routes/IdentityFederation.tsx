@@ -9,6 +9,7 @@ export type IdentityFederationParams = {
   realm: string;
   providerId: string;
   internalId: string;
+  tab: IdentityFederationTab;
 };
 
 const EditIdentityFederation = lazy(
@@ -16,7 +17,7 @@ const EditIdentityFederation = lazy(
 );
 
 export const IdentityFederationRoute: AppRouteObject = {
-  path: "/:realm/identity-federations/:providerId/:internalId",
+  path: "/:realm/identity-federations/:providerId/:internalId/:tab",
   element: <EditIdentityFederation />,
   breadcrumb: (t) => t("identity-federations:federationDetails"),
   handle: {

@@ -17,7 +17,7 @@ import { toIdentityFederations } from "../routes/IdentityFederations";
 
 export default function EditIdentityFederation() {
   const { t } = useTranslation("identity-federations");
-  const { internalId } = useParams<IdentityFederationParams>();
+  const { internalId, tab, providerId } = useParams<IdentityFederationParams>();
   const form = useForm<IdentityFederationRepresentation>();
   const { reset } = form;
   const [federation, setFederation] =
@@ -58,9 +58,15 @@ export default function EditIdentityFederation() {
 
   return (
     <PageSection variant="light">
-      <ViewHeader titleKey={federation?.alias || ""} />
+      <ViewHeader titleKey={federation?.alias || ""} divider={false} />
       <FormProvider {...form}>
-        <IdentityFederationForm type={"edit"} onSubmit={onSubmit} />
+        <IdentityFederationForm
+          type={"edit"}
+          internalId={internalId}
+          providerId={providerId}
+          tab={tab}
+          onSubmit={onSubmit}
+        />
       </FormProvider>
     </PageSection>
   );

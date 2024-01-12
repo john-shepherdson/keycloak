@@ -14,7 +14,7 @@ const IdentityFederationsSection = lazy(
 export const IdentityFederationsRoute: AppRouteObject = {
   path: "/:realm/identity-federations",
   element: <IdentityFederationsSection />,
-  breadcrumb: (t) => t("identityFederations"),
+  breadcrumb: (t) => t("identity-federations:identityFederations"),
   handle: {
     access: "manage-identity-providers",
   },

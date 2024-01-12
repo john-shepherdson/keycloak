@@ -5,6 +5,8 @@ import type { AppRouteObject } from "../../routes";
 
 export type IdentityFederationCreateParams = {
   realm: string;
+  tab?: string;
+  providerId: string;
 };
 
 const AddIdentityFederation = lazy(
@@ -12,7 +14,7 @@ const AddIdentityFederation = lazy(
 );
 
 export const IdentityFederationCreateRoute: AppRouteObject = {
-  path: "/:realm/identity-federations/add",
+  path: "/:realm/identity-federations/:providerId/add/:tab",
   element: <AddIdentityFederation />,
   breadcrumb: (t) => t("addIdentityFederation"),
   handle: {

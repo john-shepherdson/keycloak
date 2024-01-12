@@ -1,6 +1,6 @@
 {
     "addIdentityFederation":"Add Identity Federation",
-    "identityFederations":"Identity Federation",
+    "identityFederations":"Identity federations",
     "updateFrequency":"Update frequency (minutes)",
     "validUntil":"Valid until",
     "lastUpdatedTime": "Last updated time",
@@ -21,5 +21,18 @@
     "samlFederationV2":"SAML v2.0 Federation",
     "getStarted": "To get started, select a provider from the list below",
     "deletedSuccessIdentityFederation":"Identity Federation Deleted Successfully",
-    "deletedErrorIdentityFederation": "Identity Federation could not be deleted due to an unexpected error."
+    "deletedErrorIdentityFederation": "Identity Federation could not be deleted due to an unexpected error.",
+    "addMapperConfirm": "Are you sure you want to add the mapper {{mapper}} on all Identity Providers of this Federation?",
+    "updateMapperConfirm": "Are you sure you want to update the mapper {{mapper}} on all Identity Providers of this Federation?",
+    "removeMapperConfirm": "Are you sure you want to permanently delete the mapper {{mapper}} on all Identity Providers of this Federation?",
+    "addMapper": "Add to Federation",
+    "updateMapper": "Apply to Federation",
+    "removeMapper": "Remove from Federation",
+    "createMapper": "Create Mapper",
+    "remove": "Remove",
+    "update": "Update",
+    "add": "Add",
+    "addMapperSuccess":"Mapper added to all Identity Providers of this Federation.",
+    "updateMapperSuccess":"Mapper updated on all Identity Providers of this Federation.",
+    "removeMapperSuccess":"Mapper removed from all Identity Providers of this Federation. "
 }

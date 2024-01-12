@@ -217,5 +217,6 @@
   "noRealmRolesToAssign": "There are no realm roles to assign",
   "loadingRealms": "Loading realms…",
   "customAttribute": "Custom Attribute…",
-  "url": "Url"
+  "url": "Url",
+  "identityFederations":"Identity federations"
 }

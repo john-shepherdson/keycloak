@@ -1,5 +1,7 @@
 import type { KeycloakAdminClient } from "../client.js";
+import type IdentityProviderMapperRepresentation from "../defs/identityProviderMapperRepresentation.js";
 import type IdentityFederationRepresentation from "../defs/identityFederationRepresentation.js";
+import type { IdentityProviderMapperTypeRepresentation } from "../defs/identityProviderMapperTypeRepresentation.js";
 import Resource from "./resource.js";
 
 export interface PaginatedQuery {
@@ -66,4 +68,72 @@ export class IdentityFederations extends Resource<{ realm?: string }> {
       getBaseUrl: () => client.baseUrl,
     });
   }
+
+  public findMapperTypes = this.makeRequest<
+    Record<string, IdentityProviderMapperTypeRepresentation>
+  >({
+    method: "GET",
+    path: "/mapper-types",
+  });
+
+  public findOneMapper = this.makeRequest<
+    { internalId: string; id: string },
+    IdentityProviderMapperRepresentation | undefined
+  >({
+    method: "GET",
+    path: "/instances/{internalId}/mappers/{id}",
+    urlParamKeys: ["internalId", "id"],
+    catchNotFound: true,
+  });
+
+  public findMappers = this.makeRequest<
+    { internalId: string },
+    IdentityProviderMapperRepresentation[]
+  >({
+    method: "GET",
+    path: "/instances/{internalId}/mappers",
+    urlParamKeys: ["internalId"],
+  });
+
+  public createMapper = this.makeRequest<
+    {
+      federationId: string;
+      identityProviderMapper: IdentityProviderMapperRepresentation;
+    },
+    { id: string }
+  >({
+    method: "POST",
+    path: "/instances/{federationId}/mappers",
+    urlParamKeys: ["federationId"],
+    payloadKey: "identityProviderMapper",
+    returnResourceIdInLocationHeader: { field: "id" },
+  });
+
+  public updateMapper = this.makeUpdateRequest<
+    { internalId: string; id: string },
+    IdentityProviderMapperRepresentation,
+    void
+  >({
+    method: "PUT",
+    path: "/instances/{internalId}/mappers/{id}",
+    urlParamKeys: ["internalId", "id"],
+  });
+
+  public delMapper = this.makeRequest<{ internalId: string; id: string }, void>(
+    {
+      method: "DELETE",
+      path: "/instances/{internalId}/mappers/{id}",
+      urlParamKeys: ["internalId", "id"],
+    },
+  );
+
+  public updateFederationMapper = this.makeRequest<{
+    internalId: string;
+    mapperId: string;
+    action: string;
+  }>({
+    method: "POST",
+    path: "/instances/{internalId}/mappers/{mapperId}/idp/{action}",
+    urlParamKeys: ["internalId", "mapperId", "action"],
+  });
 }

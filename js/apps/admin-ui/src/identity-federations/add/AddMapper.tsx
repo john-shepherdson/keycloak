@@ -31,10 +31,10 @@ import { useFetch } from "../../utils/useFetch";
 import useLocaleSort, { mapByKey } from "../../utils/useLocaleSort";
 import { useParams } from "../../utils/useParams";
 import {
-  IdentityProviderEditMapperParams,
-  toIdentityProviderEditMapper,
+  IdentityFederationEditMapperParams,
+  toIdentityFederationEditMapper,
 } from "../routes/EditMapper";
-import { toIdentityProvider } from "../routes/IdentityProvider";
+import { toIdentityFederation } from "../routes/IdentityFederation";
 import { AddMapperForm } from "./AddMapperForm";
 
 export type IdPMapperRepresentationWithAttributes =
@@ -61,8 +61,36 @@ export default function AddMapper() {
 
   const { realm } = useRealm();
 
-  const { id, providerId, alias } =
-    useParams<IdentityProviderEditMapperParams>();
+  useFetch(
+    () =>
+      Promise.all([
+        id
+          ? adminClient.identityFederations.findOneMapper({ internalId, id })
+          : null,
+        adminClient.identityFederations.findMapperTypes(),
+      ]),
+    ([mapper, mapperTypes]) => {
+      const mappers = localeSort(
+        Object.values(
+          mapperTypes,
+        ) as IdentityProviderMapperTypeRepresentation[],
+        mapByKey("name"),
+      );
+      if (mapper) {
+        setCurrentMapper(
+          mappers.find(({ id }) => id === mapper.identityProviderMapper),
+        );
+        setupForm(mapper);
+      } else {
+        setCurrentMapper(mappers[0]);
+      }
+      setMapperTypes(mappers);
+    },
+    [],
+  );
+
+  const { id, providerId, internalId } =
+    useParams<IdentityFederationEditMapperParams>();
 
   const [mapperTypes, setMapperTypes] =
     useState<IdentityProviderMapperTypeRepresentation[]>();
@@ -78,15 +106,15 @@ export default function AddMapper() {
       config: {
         ...mapper.config,
       },
-      identityProviderAlias: alias!,
+      federationId: internalId!,
     };
 
     if (id) {
       try {
-        await adminClient.identityProviders.updateMapper(
+        await adminClient.identityFederations.updateMapper(
           {
             id: id!,
-            alias: alias!,
+            internalId: internalId!,
           },
           { ...identityProviderMapper },
         );
@@ -96,16 +124,17 @@ export default function AddMapper() {
       }
     } else {
       try {
-        const createdMapper = await adminClient.identityProviders.createMapper({
-          identityProviderMapper,
-          alias: alias!,
-        });
+        const createdMapper =
+          await adminClient.identityFederations.createMapper({
+            identityProviderMapper,
+            federationId: internalId!,
+          });
 
         addAlert(t("mapperCreateSuccess"), AlertVariant.success);
         navigate(
-          toIdentityProviderEditMapper({
+          toIdentityFederationEditMapper({
             realm,
-            alias,
+            internalId,
             providerId: providerId,
             id: createdMapper.id,
           }),
@@ -125,40 +154,24 @@ export default function AddMapper() {
     continueButtonVariant: ButtonVariant.danger,
     onConfirm: async () => {
       try {
-        await adminClient.identityProviders.delMapper({
-          alias: alias,
+        await adminClient.identityFederations.delMapper({
+          internalId: internalId,
           id: id!,
         });
         addAlert(t("deleteMapperSuccess"), AlertVariant.success);
         navigate(
-          toIdentityProvider({ providerId, alias, tab: "mappers", realm }),
+          toIdentityFederation({
+            providerId,
+            internalId,
+            tab: "mappers",
+            realm,
+          }),
         );
       } catch (error) {
         addError("identity-providers:deleteErrorError", error);
       }
     },
   });
-
-  useFetch(
-    () =>
-      Promise.all([
-        id ? adminClient.identityProviders.findOneMapper({ alias, id }) : null,
-        adminClient.identityProviders.findMapperTypes({ alias }),
-      ]),
-    ([mapper, mapperTypes]) => {
-      const mappers = localeSort(Object.values(mapperTypes), mapByKey("name"));
-      if (mapper) {
-        setCurrentMapper(
-          mappers.find(({ id }) => id === mapper.identityProviderMapper),
-        );
-        setupForm(mapper);
-      } else {
-        setCurrentMapper(mappers[0]);
-      }
-      setMapperTypes(mappers);
-    },
-    [],
-  );
 
   const setupForm = (mapper: IdentityProviderMapperRepresentation) => {
     convertToFormValues(mapper, form.setValue);
@@ -250,10 +263,10 @@ export default function AddMapper() {
             component={(props) => (
               <Link
                 {...props}
-                to={toIdentityProvider({
+                to={toIdentityFederation({
                   realm,
                   providerId,
-                  alias: alias!,
+                  internalId: internalId!,
                   tab: "mappers",
                 })}
               />

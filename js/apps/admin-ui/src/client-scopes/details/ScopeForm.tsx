@@ -64,9 +64,12 @@ export const ScopeForm = ({ clientScope, save }: ScopeFormProps) => {
 
   const hideFromOpenIDProviderMetadata: string = useWatch({
     control,
-    name: convertAttributeNameToForm("attributes.hide.from.openID.provider.metadata"),
+    name: convertAttributeNameToForm(
+      "attributes.hide.from.openID.provider.metadata",
+    ),
     defaultValue:
-      clientScope?.attributes?.["hide.from.openID.provider.metadata"] ?? "false",
+      clientScope?.attributes?.["hide.from.openID.provider.metadata"] ??
+      "false",
   });
 
   const dynamicScope = useWatch({

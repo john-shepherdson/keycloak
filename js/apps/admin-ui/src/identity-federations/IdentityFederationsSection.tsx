@@ -44,6 +44,7 @@ const DetailLink = (identityFederation: any) => {
         realm,
         providerId: identityFederation.providerId!,
         internalId: identityFederation.internalId,
+        tab: "settings",
       })}
     >
       {identityFederation.alias}
@@ -59,7 +60,7 @@ export default function IdentityFederationsSection() {
     useState(false);
   const [selectedFederation, setSelectedFederation] =
     useState<IdentityFederationRepresentation>();
-  const { t } = useTranslation();
+  const { t } = useTranslation("identity-federations");
   const { realm } = useRealm();
   const { addAlert, addError } = useAlerts();
   const [key, setKey] = useState(0);
@@ -84,7 +85,13 @@ export default function IdentityFederationsSection() {
     <DropdownItem
       key="link"
       component={
-        <Link to={toIdentityFederationCreate({ realm })}>
+        <Link
+          to={toIdentityFederationCreate({
+            providerId: "saml",
+            realm,
+            tab: "settings",
+          })}
+        >
           {t("identity-federations:samlFederationV2")}
         </Link>
       }
@@ -173,7 +180,7 @@ export default function IdentityFederationsSection() {
             }
             actions={[
               {
-                title: t("delete"),
+                title: t("common:delete"),
                 onRowClick: (identityFederation) => {
                   setSelectedFederation(identityFederation);
                   toggleDeleteDialog();
@@ -222,7 +229,15 @@ export default function IdentityFederationsSection() {
             <Gallery hasGutter>
               <ClickableCard
                 key={"saml"}
-                onClick={() => navigate(toIdentityFederationCreate({ realm }))}
+                onClick={() =>
+                  navigate(
+                    toIdentityFederationCreate({
+                      providerId: "saml",
+                      realm,
+                      tab: "settings",
+                    }),
+                  )
+                }
               >
                 <CardTitle>
                   <Split hasGutter>
