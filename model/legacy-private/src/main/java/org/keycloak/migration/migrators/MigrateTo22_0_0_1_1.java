@@ -1,22 +1,12 @@
 package org.keycloak.migration.migrators;
 
-import org.keycloak.broker.federation.FederationProvider;
-import org.keycloak.broker.federation.SAMLFederationProviderFactory;
-import org.keycloak.events.admin.OperationType;
 import org.keycloak.migration.ModelVersion;
 import org.keycloak.models.*;
-import org.keycloak.models.utils.KeycloakModelUtils;
 import org.keycloak.representations.idm.RealmRepresentation;
-import org.keycloak.services.scheduled.ClusterAwareScheduledTaskRunner;
-import org.keycloak.services.scheduled.RemoveFederation;
-import org.keycloak.services.scheduled.UpgradeTo22Task;
-import org.keycloak.timer.TimerProvider;
 import org.keycloak.utils.StringUtil;
 
 import java.io.UnsupportedEncodingException;
 import java.util.Collections;
-import java.util.HashMap;
-import java.util.stream.Stream;
 
 public class MigrateTo22_0_0_1_1 implements Migration {
 

@@ -601,6 +601,7 @@ public class SAMLFederationTest extends AbstractAdminTest {
 
     private void removeFederation(String id) {
         realm.samlFederation().delete(id);
+        sleep(60*1000);
 
         // federation and its idps must be deleted
         try {
