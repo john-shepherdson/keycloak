@@ -57,6 +57,8 @@ import jakarta.transaction.InvalidTransactionException;
 import jakarta.transaction.SystemException;
 import jakarta.transaction.Transaction;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.security.Key;
 import java.security.KeyPair;
 import java.security.PrivateKey;
@@ -79,6 +81,7 @@ import org.keycloak.provider.Provider;
 import org.keycloak.provider.ProviderFactory;
 import org.keycloak.sessions.AuthenticationSessionModel;
 import org.keycloak.sessions.RootAuthenticationSessionModel;
+import org.keycloak.utils.StringUtil;
 
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Function;
@@ -1137,5 +1140,9 @@ public final class KeycloakModelUtils {
      */
     public static boolean isUsernameCaseSensitive(RealmModel realm) {
         return realm.getAttribute(REALM_ATTR_USERNAME_CASE_SENSITIVE, REALM_ATTR_USERNAME_CASE_SENSITIVE_DEFAULT);
+    }
+
+    public static String base64AndUrlEncoding(String str) throws UnsupportedEncodingException {
+        return URLEncoder.encode(StringUtil.getBase64(str));
     }
 }

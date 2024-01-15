@@ -1594,10 +1594,7 @@ public class RealmAdapter implements LegacyRealmModel, JpaModel<RealmEntity> {
         List<IdentityProviderEntity> existingIdps = findIdPsByFederation(federationId);
         existingIdps.stream().forEach(idp -> {
             try {
-                String newAlias = StringUtil.getBase64(idp.getConfig().get(SAMLIdentityProviderConfig.ENTITY_ID));
-//                findIdentityProviderMappersByRealmAndAlias(idp.getAlias()).forEach(mapper -> {
-//                    mapper.setIdentityProviderAlias(newAlias);
-//                });
+                String newAlias = KeycloakModelUtils.base64AndUrlEncoding(idp.getConfig().get(SAMLIdentityProviderConfig.ENTITY_ID));
                 idp.getConfig().put(SAMLIdentityProviderConfig.IDP_ENTITY_ID,idp.getConfig().get(SAMLIdentityProviderConfig.ENTITY_ID));
                 idp.getConfig().put(SAMLIdentityProviderConfig.ENTITY_ID,idp.getConfig().get("spEntityId"));
                 idp.getConfig().remove("spEntityId");

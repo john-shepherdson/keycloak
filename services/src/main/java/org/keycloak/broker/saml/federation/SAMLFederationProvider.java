@@ -245,7 +245,7 @@ public class SAMLFederationProvider extends AbstractIdPFederationProvider <SAMLF
 
 				try {
 					//Idp parsing
-					String alias = StringUtil.getBase64(entity.getEntityID());
+					String alias = KeycloakModelUtils.base64AndUrlEncoding(entity.getEntityID());
 					IdentityProviderModel identityProviderModel = null;
 
 					//check if this federation has already included this IdP
