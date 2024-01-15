@@ -74,7 +74,6 @@ public class OIDCAttributeMapperHelper {
 
     private static final Logger logger = Logger.getLogger(OIDCAttributeMapperHelper.class);
 
-    private static final List<String> primaryClaims = Stream.of(IDToken.NAME, IDToken.GIVEN_NAME, IDToken.FAMILY_NAME, IDToken.EMAIL, IDToken.PREFERRED_USERNAME).collect(Collectors.toList());
     /**
      * Interface for a token property setter in a class T that accept claims.
      * @param <T> The token class for the property
@@ -303,15 +302,15 @@ public class OIDCAttributeMapperHelper {
         }
 
         // map value to the other claims map
-        mapClaim(split, attributeValue, jsonObject);
+        mapClaim(split, attributeValue, jsonObject, isMultivalued(mappingModel));
     }
 
-    private static void mapClaim(List<String> split, Object attributeValue, Map<String, Object> jsonObject) {
+    private static void mapClaim(List<String> split, Object attributeValue, Map<String, Object> jsonObject, boolean isMultivalued) {
         final int length = split.size();
         int i = 0;
         for (String component : split) {
             i++;
-            if (i == length && length == 1 && primaryClaims.contains(split.get(0))) {
+            if (i == length && !isMultivalued) {
                 jsonObject.put(component, attributeValue);
             } else if (i == length) {
                 Object values = jsonObject.get(component);
