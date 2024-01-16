@@ -184,14 +184,14 @@ public class SAMLFederationProvider extends AbstractIdPFederationProvider <SAMLF
 				validUntil = entitiesDescriptorType.getValidUntil().toGregorianCalendar().getTime();
 				model.setValidUntilTimestamp(validUntil.getTime());
 			}
-	        entities = (List<EntityDescriptorType>) (Object) entitiesDescriptorType.getEntityDescriptor();
+	        entities = getEntityDescriptors(entitiesDescriptorType);
 		} catch (ParsingException | IOException e) {
 			e.printStackTrace();
 		}
 
 		if(entities.isEmpty())
          {
-            return; //add a log entry for the failure reason and/or write it in the database, so you can alert later on the admins through the UI
+            return;
         }
 
 		//default language
@@ -864,6 +864,18 @@ public class SAMLFederationProvider extends AbstractIdPFederationProvider <SAMLF
 			return UriBuilder.fromUri(uriInfo.getBaseUri()).path("realms").path(realm.getName()).build().toString();
 		else
 			return configEntityId;
+	}
+
+	private List<EntityDescriptorType> getEntityDescriptors(EntitiesDescriptorType entitiesDescriptor) {
+		List<EntityDescriptorType> entityDescriptors = new ArrayList<>();
+		entitiesDescriptor.getEntityDescriptor().stream().forEach(entity -> {
+			if (entity instanceof EntityDescriptorType) {
+				entityDescriptors.add((EntityDescriptorType) entity);
+			} else if (entity instanceof EntitiesDescriptorType) {
+				entityDescriptors.addAll(getEntityDescriptors((EntitiesDescriptorType) entity));
+			}
+		});
+		return entityDescriptors;
 	}
 
 	private static void sleep(long ms) {
