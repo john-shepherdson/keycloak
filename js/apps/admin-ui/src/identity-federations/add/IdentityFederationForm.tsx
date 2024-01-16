@@ -220,114 +220,116 @@ export default function IdentityFederationForm({
         >
           <ScrollForm className="pf-u-px-lg" sections={sections} />
         </Tab>
-        <Tab
-          id="mappers"
-          data-testid="mappers-tab"
-          title={<TabTitleText>{t("common:mappers")}</TabTitleText>}
-          {...mappersTab}
-        >
-          <MapperConfirm />
-          <KeycloakDataTable
-            emptyState={
-              <ListEmptyState
-                message={t("identity-providers:noMappers")}
-                instructions={t("identity-providers:noMappersInstructions")}
-                primaryActionText={t("identity-providers:addMapper")}
-                onPrimaryAction={() =>
-                  navigate(
-                    toIdentityFederationAddMapper({
-                      realm,
-                      internalId: internalId!,
-                      providerId: providerId!,
-                      tab: "mappers",
-                    }),
-                  )
-                }
-              />
-            }
-            loader={loader}
-            key={key}
-            ariaLabelKey="identity-providers:mappersList"
-            searchPlaceholderKey="identity-providers:searchForMapper"
-            toolbarItem={
-              <ToolbarItem>
-                <Button
-                  id="add-mapper-button"
-                  component={(props) => (
-                    <Link
-                      {...props}
-                      to={toIdentityFederationAddMapper({
+        {!!internalId && (
+          <Tab
+            id="mappers"
+            data-testid="mappers-tab"
+            title={<TabTitleText>{t("common:mappers")}</TabTitleText>}
+            {...mappersTab}
+          >
+            <MapperConfirm />
+            <KeycloakDataTable
+              emptyState={
+                <ListEmptyState
+                  message={t("identity-providers:noMappers")}
+                  instructions={t("identity-providers:noMappersInstructions")}
+                  primaryActionText={t("identity-providers:addMapper")}
+                  onPrimaryAction={() =>
+                    navigate(
+                      toIdentityFederationAddMapper({
                         realm,
                         internalId: internalId!,
                         providerId: providerId!,
                         tab: "mappers",
-                      })}
-                    />
-                  )}
-                  data-testid="addMapper"
-                >
-                  {t("identity-federations:createMapper")}
-                </Button>
-              </ToolbarItem>
-            }
-            columns={[
-              {
-                name: "name",
-                displayKey: "common:name",
-                cellRenderer: (row) => (
-                  <MapperLink {...row} providerId={providerId} />
-                ),
-              },
-              {
-                name: "category",
-                displayKey: "common:category",
-              },
-              {
-                name: "type",
-                displayKey: "common:type",
-              },
-              {
-                name: "",
-                cellRenderer: (row) =>
-                  mapperLoading === row.mapperId ? (
-                    <Spinner isSVG size="lg" />
-                  ) : (
-                    ""
+                      }),
+                    )
+                  }
+                />
+              }
+              loader={loader}
+              key={key}
+              ariaLabelKey="identity-providers:mappersList"
+              searchPlaceholderKey="identity-providers:searchForMapper"
+              toolbarItem={
+                <ToolbarItem>
+                  <Button
+                    id="add-mapper-button"
+                    component={(props) => (
+                      <Link
+                        {...props}
+                        to={toIdentityFederationAddMapper({
+                          realm,
+                          internalId: internalId!,
+                          providerId: providerId!,
+                          tab: "mappers",
+                        })}
+                      />
+                    )}
+                    data-testid="addMapper"
+                  >
+                    {t("identity-federations:createMapper")}
+                  </Button>
+                </ToolbarItem>
+              }
+              columns={[
+                {
+                  name: "name",
+                  displayKey: "common:name",
+                  cellRenderer: (row) => (
+                    <MapperLink {...row} providerId={providerId} />
                   ),
-              },
-            ]}
-            actions={[
-              ...(!mapperLoading
-                ? [
-                    {
-                      title: t("identity-federations:addMapper"),
-                      onRowClick: (mapper) => {
-                        setSelectedMapper(mapper);
-                        setmapperAction("add");
-                        toggleConfirmMapperDialog();
-                      },
-                    } as Action<IdPWithMapperAttributes>,
-                    {
-                      title: t("identity-federations:updateMapper"),
-                      onRowClick: (mapper) => {
-                        setSelectedMapper(mapper);
-                        setmapperAction("update");
-                        toggleConfirmMapperDialog();
-                      },
-                    } as Action<IdPWithMapperAttributes>,
-                    {
-                      title: t("identity-federations:removeMapper"),
-                      onRowClick: (mapper) => {
-                        setSelectedMapper(mapper);
-                        setmapperAction("remove");
-                        toggleConfirmMapperDialog();
-                      },
-                    } as Action<IdPWithMapperAttributes>,
-                  ]
-                : []),
-            ]}
-          />
-        </Tab>
+                },
+                {
+                  name: "category",
+                  displayKey: "common:category",
+                },
+                {
+                  name: "type",
+                  displayKey: "common:type",
+                },
+                {
+                  name: "",
+                  cellRenderer: (row) =>
+                    mapperLoading === row.mapperId ? (
+                      <Spinner isSVG size="lg" />
+                    ) : (
+                      ""
+                    ),
+                },
+              ]}
+              actions={[
+                ...(!mapperLoading
+                  ? [
+                      {
+                        title: t("identity-federations:addMapper"),
+                        onRowClick: (mapper) => {
+                          setSelectedMapper(mapper);
+                          setmapperAction("add");
+                          toggleConfirmMapperDialog();
+                        },
+                      } as Action<IdPWithMapperAttributes>,
+                      {
+                        title: t("identity-federations:updateMapper"),
+                        onRowClick: (mapper) => {
+                          setSelectedMapper(mapper);
+                          setmapperAction("update");
+                          toggleConfirmMapperDialog();
+                        },
+                      } as Action<IdPWithMapperAttributes>,
+                      {
+                        title: t("identity-federations:removeMapper"),
+                        onRowClick: (mapper) => {
+                          setSelectedMapper(mapper);
+                          setmapperAction("remove");
+                          toggleConfirmMapperDialog();
+                        },
+                      } as Action<IdPWithMapperAttributes>,
+                    ]
+                  : []),
+              ]}
+            />
+          </Tab>
+        )}
       </RoutableTabs>
       <FormAccess
         role="manage-identity-providers"

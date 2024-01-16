@@ -16,7 +16,7 @@ const AddIdentityFederation = lazy(
 export const IdentityFederationCreateRoute: AppRouteObject = {
   path: "/:realm/identity-federations/:providerId/add/:tab",
   element: <AddIdentityFederation />,
-  breadcrumb: (t) => t("addIdentityFederation"),
+  breadcrumb: (t) => t("identity-federations:addIdentityFederation"),
   handle: {
     access: "manage-identity-providers",
   },
