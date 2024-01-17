@@ -5,7 +5,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 For Keycloak upstream changelog please see https://www.keycloak.org/docs/latest/release_notes/index.html.
-[Keycloak announcement for version 16.1.0](https://www.keycloak.org/2021/12/keycloak-1610-released)
+[Keycloak release note 22](https://www.keycloak.org/docs/latest/release_notes/index.html#keycloak-22-0-3)
 Full Keycloak upstream jira issue can be shown if filtered by Fix version.
 
 Our Keycloak version is working well with PostgreSQL database. For using other SQL databases, text field in database need to be evaluated.
@@ -80,3 +80,10 @@ Our Keycloak version is working well with PostgreSQL database. For using other S
 - Fix Token Exchange without scope parameter bug in scope 
 - OIDC Protocol Mappers add value to existing claims instead of overwriting it[Mapper for generating SAML attribute values or Claim values using other SAML attribute/Claim values as input](https://trello.com/c/8K46f2mo/1642-mapper-for-generating-saml-attribute-values-or-claim-values-using-other-saml-attribute-claim-values-as-input)
 - Support federation metadata with nested EntitiesDescription[Support federation metadata with nested EntitiesDescription](https://trello.com/c/wRbquYl4/2395-support-federation-metadata-with-nested-entitiesdescription)
+
+# Migration from eosc-kc version 18
+
+In eosc-kc Keycloak version(version 22.0.5-x.x), SAML Federated Identity Providers Alias has been changed.
+If you were in eosc version 18 (version 18.0.1-2.x) and you use SAML federation, after upgrating to this version you need to do the following steps :
+1. run model\jpa\src\main\resources\sql/upgradeKeycloak22.sql
+2. Restart Keycloak(for cache reloading)
