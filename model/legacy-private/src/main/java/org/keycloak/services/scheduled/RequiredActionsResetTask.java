@@ -32,7 +32,8 @@ public class RequiredActionsResetTask implements ScheduledTask {
 
 
     private boolean expiredOrFirsttime(UserModel user, RequiredActionProviderModel requiredActionModel){
-        List<String> attrList = user.getAttributes().get(requiredActionModel.getProviderId());
+        //user attribute in database is saved as lower case
+        List<String> attrList = user.getAttributes().get(requiredActionModel.getProviderId().toLowerCase());
         if(attrList==null || attrList.isEmpty()) //means that this user has not performed this required action in the past
             return true;
         long numOfExpired = attrList.stream().filter(attrVal -> {
