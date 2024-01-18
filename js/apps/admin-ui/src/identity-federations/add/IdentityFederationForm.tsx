@@ -40,6 +40,7 @@ import {
 import { ListEmptyState } from "../../components/list-empty-state/ListEmptyState";
 import { useConfirmDialog } from "../../components/confirm-dialog/ConfirmDialog";
 import { useAlerts } from "../../components/alert/Alerts";
+import AllowDenyList from "./AllowDenyList";
 
 type IdentityFederationFormProps = {
   onSubmit: any;
@@ -205,6 +206,30 @@ export default function IdentityFederationForm({
           onSubmit={handleSubmit(onSubmit)}
         >
           <IdentityProviderFederationConfig />
+        </FormAccess>
+      ),
+    },
+    {
+      title: t("allowList"),
+      panel: (
+        <FormAccess
+          role="manage-identity-providers"
+          isHorizontal
+          onSubmit={handleSubmit(onSubmit)}
+        >
+          <AllowDenyList type="Allow" />
+        </FormAccess>
+      ),
+    },
+    {
+      title: t("denyList"),
+      panel: (
+        <FormAccess
+          role="manage-identity-providers"
+          isHorizontal
+          onSubmit={handleSubmit(onSubmit)}
+        >
+          <AllowDenyList type="Deny" />
         </FormAccess>
       ),
     },

@@ -34,5 +34,13 @@
     "add": "Add",
     "addMapperSuccess":"Mapper added to all Identity Providers of this Federation.",
     "updateMapperSuccess":"Mapper updated on all Identity Providers of this Federation.",
-    "removeMapperSuccess":"Mapper removed from all Identity Providers of this Federation. "
+    "removeMapperSuccess":"Mapper removed from all Identity Providers of this Federation.",
+    "allowList": "Allow List",
+    "denyList": "Deny List",
+    "perEntityIds": "Per entityIds",
+    "perRegistrationAuthority": "Per Registration Authority",
+    "perEntityCategory": "Per Entity Category",
+    "attributeName": "Attribute Name",
+    "attributeValue": "Attribute Value",
+    "removeAttributeError":"Attribute value can not be empty "
 }

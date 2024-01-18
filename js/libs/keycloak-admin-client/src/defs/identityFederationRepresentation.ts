@@ -15,4 +15,6 @@ export default interface IdentityFederationRepresentation {
   providerId?: string;
   storeToken?: boolean;
   trustEmail?: boolean;
+  categoryDenyList?: object;
+  categoryAllowList?: object;
 }
