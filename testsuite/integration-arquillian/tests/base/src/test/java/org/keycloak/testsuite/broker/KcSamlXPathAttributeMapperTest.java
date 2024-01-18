@@ -8,6 +8,7 @@ import org.keycloak.broker.saml.mappers.UserAttributeMapper;
 import org.keycloak.broker.saml.mappers.XPathAttributeMapper;
 import org.keycloak.dom.saml.v2.protocol.AuthnRequestType;
 import org.keycloak.models.IdentityProviderMapperModel;
+import org.keycloak.protocol.ProtocolMapperUtils;
 import org.keycloak.protocol.saml.mappers.AttributeStatementHelper;
 import org.keycloak.protocol.saml.mappers.HardcodedAttributeMapper;
 import org.keycloak.representations.idm.ClientRepresentation;
@@ -47,7 +48,7 @@ public class KcSamlXPathAttributeMapperTest extends AbstractInitializedBaseBroke
         protocolMapper.setProtocol("saml");
         protocolMapper.setName("Hardcoded XML");
         protocolMapper.setProtocolMapper(HardcodedAttributeMapper.PROVIDER_ID);
-        protocolMapper.getConfig().put(HardcodedAttributeMapper.ATTRIBUTE_VALUE,
+        protocolMapper.getConfig().put(ProtocolMapperUtils.ATTRIBUTE_VALUE,
                 "<firstName>Theo</firstName><lastName>Tester</lastName><email>test@example.org</email><xml-output>Some random text</xml-output>"
         );
         protocolMapper.getConfig().put(AttributeStatementHelper.FRIENDLY_NAME, "xml-friendlyName");

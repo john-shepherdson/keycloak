@@ -43,6 +43,7 @@ import org.keycloak.models.IdentityProviderMapperSyncMode;
 import org.keycloak.models.IdentityProviderModel;
 import org.keycloak.models.KeycloakSession;
 import org.keycloak.models.RealmModel;
+import org.keycloak.protocol.ProtocolMapperUtils;
 import org.keycloak.protocol.oidc.OIDCLoginProtocol;
 import org.keycloak.protocol.oidc.OIDCLoginProtocolService;
 import org.keycloak.protocol.oidc.mappers.HardcodedClaim;
@@ -773,7 +774,7 @@ public class BrokerLinkAndTokenExchangeTest extends AbstractServletsAdapterTest 
         claimMapper.setProtocolMapper(HardcodedClaim.PROVIDER_ID);
         Map<String, String> config = new HashMap<>();
         config.put(OIDCAttributeMapperHelper.TOKEN_CLAIM_NAME, "claim-from-idp");
-        config.put(HardcodedClaim.CLAIM_VALUE, "true");
+        config.put(ProtocolMapperUtils.CLAIM_VALUE, "true");
         config.put(OIDCAttributeMapperHelper.INCLUDE_IN_ACCESS_TOKEN, "true");
         config.put(OIDCAttributeMapperHelper.INCLUDE_IN_USERINFO, "true");
         claimMapper.setConfig(config);

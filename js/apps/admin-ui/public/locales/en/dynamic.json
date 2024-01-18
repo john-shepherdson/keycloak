@@ -11,6 +11,13 @@
       "label": "User Attribute",
       "tooltip": "Name of stored user attribute which is the name of an attribute within the UserModel.attribute map."
     },
+    "conditional-attr": {
+      "tooltip": "Name of stored user attribute which value must exist"
+    },
+    "conditional-values": {
+      "label": "User Attribute Values",
+      "tooltip": "User attribute values. If at least one value exists, hardcore value will be put in claim."
+    },
     "clientRoleMapping": {
       "clientId": {
         "label": "Client ID",
@@ -188,5 +195,30 @@
   "client-uris-must-match": {
     "label": "Client URIs Must Match",
     "tooltip": "If on, all Client URIs (Redirect URIs and others) are allowed just if they match some trusted host or domain."
+  },
+  "idp-alias": {
+    "label": "Identity Provider Alias",
+    "tooltip": "Identity Provider Alias"
+  },
+  "conditional" : {
+    "claim-value" : {
+      "tooltip": "Value(s) of the claim you want to hard code if condition matches."
+    }
+  },
+  "claim" : {
+    "value" : {
+      "label": "Claim value",
+      "tooltip": "Value of the claim you want to hard code. 'true' and 'false can be used for boolean values."
+    }
+  },
+  "attribute" : {
+    "value" : {
+      "label": "Attribute value",
+      "tooltip": "Value of the attribute you want to hard code."
+    },
+    "conditional-values" : {
+      "label": "Attribute values",
+      "tooltip": "Value(s) of the attribute you want to hard code if condition matches."
+    }
   }
 }

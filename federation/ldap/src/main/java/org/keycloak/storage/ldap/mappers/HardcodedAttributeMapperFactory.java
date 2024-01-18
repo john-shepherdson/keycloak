@@ -24,6 +24,7 @@ import org.keycloak.component.ComponentModel;
 import org.keycloak.component.ComponentValidationException;
 import org.keycloak.models.KeycloakSession;
 import org.keycloak.models.RealmModel;
+import org.keycloak.protocol.ProtocolMapperUtils;
 import org.keycloak.provider.ConfigurationValidationHelper;
 import org.keycloak.provider.ProviderConfigProperty;
 import org.keycloak.storage.ldap.LDAPStorageProvider;
@@ -40,7 +41,7 @@ public class HardcodedAttributeMapperFactory extends AbstractLDAPStorageMapperFa
                 "Name of the model attribute, which will be added when importing user from ldap",
                 ProviderConfigProperty.STRING_TYPE, null);
 
-        ProviderConfigProperty attrValue = createConfigProperty(HardcodedAttributeMapper.ATTRIBUTE_VALUE, "Attribute Value",
+        ProviderConfigProperty attrValue = createConfigProperty(ProtocolMapperUtils.ATTRIBUTE_VALUE, "Attribute Value",
                 "Value of the model attribute, which will be added when importing user from ldap.",
                 ProviderConfigProperty.STRING_TYPE, null);
 
@@ -67,7 +68,7 @@ public class HardcodedAttributeMapperFactory extends AbstractLDAPStorageMapperFa
     public void validateConfiguration(KeycloakSession session, RealmModel realm, ComponentModel config) throws ComponentValidationException {
         ConfigurationValidationHelper.check(config)
                 .checkRequired(HardcodedAttributeMapper.USER_MODEL_ATTRIBUTE, "Attribute Name")
-                .checkRequired(HardcodedAttributeMapper.ATTRIBUTE_VALUE, "Attribute Value");
+                .checkRequired(ProtocolMapperUtils.ATTRIBUTE_VALUE, "Attribute Value");
         if(config.get(HardcodedAttributeMapper.USER_MODEL_ATTRIBUTE).equalsIgnoreCase("username") || config.get(HardcodedAttributeMapper.USER_MODEL_ATTRIBUTE).equalsIgnoreCase("email")){
             throw new ComponentValidationException("Attribute Name cannot be set to username or email");
         }

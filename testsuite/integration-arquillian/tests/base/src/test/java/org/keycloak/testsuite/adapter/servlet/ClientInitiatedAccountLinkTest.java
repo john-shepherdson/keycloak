@@ -33,6 +33,7 @@ import org.keycloak.common.util.Base64Url;
 import org.keycloak.models.Constants;
 import org.keycloak.models.IdentityProviderMapperModel;
 import org.keycloak.models.IdentityProviderMapperSyncMode;
+import org.keycloak.protocol.ProtocolMapperUtils;
 import org.keycloak.protocol.oidc.OIDCLoginProtocol;
 import org.keycloak.representations.AccessTokenResponse;
 import org.keycloak.representations.idm.ClientRepresentation;
@@ -593,7 +594,7 @@ public class ClientInitiatedAccountLinkTest extends AbstractServletsAdapterTest 
         mapper.setConfig(Map.of(
                 IdentityProviderMapperModel.SYNC_MODE, IdentityProviderMapperSyncMode.FORCE.toString(),
                 HardcodedAttributeMapper.ATTRIBUTE, USER_ATTRIBUTE,
-                HardcodedAttributeMapper.ATTRIBUTE_VALUE, USER_ATTRIBUTE_VALUE)
+                ProtocolMapperUtils.ATTRIBUTE_VALUE, USER_ATTRIBUTE_VALUE)
         );
 
         mapper.setIdentityProviderAlias(PARENT_IDP);
