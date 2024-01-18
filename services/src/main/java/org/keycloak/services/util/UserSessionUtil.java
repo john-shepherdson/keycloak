@@ -31,7 +31,7 @@ public class UserSessionUtil {
     public static UserSessionModel findValidSession(KeycloakSession session, RealmModel realm, AccessToken token, EventBuilder event, ClientModel client) {
         OAuth2Error error = new OAuth2Error().json(false).realm(realm);
         if (token.getSessionState() == null) {
-            return createTransientSessionForClient(session, realm, token, client);
+            return createTransientSessionForClient(session, realm, token, client, event);
         }
 
         UserSessionModel userSession = new UserSessionCrossDCManager(session).getUserSessionWithClient(realm, token.getSessionState(), false, client.getId());
@@ -66,12 +66,13 @@ public class UserSessionUtil {
         throw error.invalidToken("Session expired");
     }
 
-    private static UserSessionModel createTransientSessionForClient(KeycloakSession session, RealmModel realm, AccessToken token, ClientModel client) {
+    private static UserSessionModel createTransientSessionForClient(KeycloakSession session, RealmModel realm, AccessToken token, ClientModel client, EventBuilder event) {
         OAuth2Error error = new OAuth2Error().json(false).realm(realm);
         // create a transient session
         UserModel user = TokenManager.lookupUserFromStatelessToken(session, realm, token);
         if (user == null) {
             logger.warn("Transient User not found");
+            event.error(Errors.USER_NOT_FOUND);
             throw error.invalidToken("User not found");
         }
         ClientConnection clientConnection = session.getContext().getConnection();
