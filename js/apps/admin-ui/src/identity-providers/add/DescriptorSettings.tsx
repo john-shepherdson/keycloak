@@ -61,7 +61,7 @@ const Fields = ({ readOnly }: DescriptorSettingsProps) => {
 
   return (
     <div className="pf-c-form pf-m-horizontal">
-      {!readOnly && <AutoUpdateFields />}
+      {!readOnly && <AutoUpdateFields protocol={"saml"} />}
       <FormGroup
         label={t("serviceProviderEntityId")}
         fieldId="kc-saml-service-provider-entity-id"

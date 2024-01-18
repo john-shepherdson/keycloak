@@ -163,7 +163,9 @@ export const DiscoveryEndpointField = ({
       {!discovery && fileUpload}
 
       {discovery && !errors.discoveryError && children(true)}
-      {discovery && id === "saml" && <AutoUpdateFields hideMetadata />}
+      {discovery && (id === "saml" || id === "oidc") && (
+        <AutoUpdateFields hideMetadata protocol={id} />
+      )}
       {!discovery && children(false)}
     </>
   );

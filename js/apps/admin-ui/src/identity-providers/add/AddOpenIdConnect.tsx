@@ -22,6 +22,7 @@ import { OpenIdConnectSettings } from "./OpenIdConnectSettings";
 
 type DiscoveryIdentity = IdentityProviderRepresentation & {
   discoveryEndpoint?: string;
+  metadataUrl?: string;
 };
 
 export default function AddOpenIdConnect() {
@@ -43,6 +44,9 @@ export default function AddOpenIdConnect() {
   const { realm } = useRealm();
 
   const onSubmit = async (provider: DiscoveryIdentity) => {
+    if (provider.config && provider.discoveryEndpoint) {
+      provider.config.metadataUrl = provider.discoveryEndpoint;
+    }
     delete provider.discoveryEndpoint;
     try {
       await adminClient.identityProviders.create({

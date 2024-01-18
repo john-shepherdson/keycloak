@@ -17,6 +17,7 @@ import { KeycloakTextInput } from "../../components/keycloak-text-input/Keycloak
 import { FormGroupField } from "../component/FormGroupField";
 import { SwitchField } from "../component/SwitchField";
 import { TextField } from "../component/TextField";
+import { AutoUpdateFields } from "../component/AutoUpdateFields";
 
 import "./discovery-settings.css";
 
@@ -50,6 +51,7 @@ const Fields = ({ readOnly }: DiscoverySettingsProps) => {
 
   return (
     <div className="pf-c-form pf-m-horizontal">
+      {!readOnly && <AutoUpdateFields protocol={"oidc"} />}
       <FormGroup
         label={t("authorizationUrl")}
         fieldId="kc-authorization-url"

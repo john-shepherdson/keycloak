@@ -11,9 +11,13 @@ import { TimeSelector } from "../../components/time-selector/TimeSelector";
 
 type AutoUpdateFieldsProps = {
   hideMetadata?: boolean;
+  protocol?: string;
 };
 
-export const AutoUpdateFields = ({ hideMetadata }: AutoUpdateFieldsProps) => {
+export const AutoUpdateFields = ({
+  hideMetadata,
+  protocol,
+}: AutoUpdateFieldsProps) => {
   const { t } = useTranslation("identity-providers");
 
   const {
@@ -29,14 +33,22 @@ export const AutoUpdateFields = ({ hideMetadata }: AutoUpdateFieldsProps) => {
     <div className="pf-c-form pf-m-horizontal">
       {!hideMetadata && (
         <FormGroup
-          label={t("clients:metadataUrl")}
+          label={
+            protocol === "saml"
+              ? t("clients:metadataUrl")
+              : t("identity-providers:discoveryEndpoint")
+          }
           isRequired={autoUpdated === "true"}
           fieldId="kc-saml-identity-provider-metadata-url"
           helperTextInvalid={t("common:required")}
           validated={errors.config?.metadataUrl ? "error" : "default"}
           labelIcon={
             <HelpItem
-              helpText={t("clients-help:metadataUrl")}
+              helpText={
+                protocol === "saml"
+                  ? t("clients-help::metadataUrl")
+                  : t("identity-providers-help:discoveryEndpoint")
+              }
               fieldLabelId="clients-help:metadataUrl"
             />
           }
