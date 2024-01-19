@@ -97,6 +97,7 @@ import org.keycloak.services.scheduled.ClusterAwareScheduledTaskRunner;
 import org.keycloak.services.scheduled.RemoveFederation;
 import org.keycloak.services.scheduled.UpdateFederation;
 import org.keycloak.timer.TimerProvider;
+import org.keycloak.util.JsonSerialization;
 import org.keycloak.utils.StringUtil;
 import org.keycloak.validation.ClientValidationProvider;
 import org.keycloak.validation.ValidationUtil;
@@ -567,7 +568,7 @@ public class SAMLFederationProvider extends AbstractIdPFederationProvider <SAMLF
     }
 
     private void parseIdP(IdentityProviderModel identityProviderModel, Date validUntil, EntityDescriptorType entity,
-							 IDPSSODescriptorType idpDescriptor, String preferredLang) {
+							 IDPSSODescriptorType idpDescriptor, String preferredLang) throws IOException {
 		identityProviderModel.setEnabled(validUntil!= null &&  validUntil.before(new Date()) ? false : true);
        	identityProviderModel.getConfig().put(SAMLIdentityProviderConfig.IDP_ENTITY_ID, entity.getEntityID());
 
@@ -593,15 +594,23 @@ public class SAMLFederationProvider extends AbstractIdPFederationProvider <SAMLF
 
         // check for hide on login attibute - for update if condition is false set value to false
         identityProviderModel.getConfig().put("hideOnLoginPage", "false");
+		List<SAMLIdentityProviderConfig.EntityAttributes> entityAttributes = new ArrayList<>();
         if (entity.getExtensions() != null && entity.getExtensions().getEntityAttributes() != null) {
             for (AttributeType attribute : entity.getExtensions().getEntityAttributes().getAttribute()) {
+				SAMLIdentityProviderConfig.EntityAttributes entityAttr = new SAMLIdentityProviderConfig.EntityAttributes();
+				entityAttr.setName(attribute.getName());
+				entityAttr.setValues(attribute.getAttributeValue());
+				entityAttributes.add(entityAttr);
                 if (GeneralConstants.MACEDIR.equals(attribute.getName())
                     && attribute.getAttributeValue().contains(GeneralConstants.HIDE_FOR_DISCOVERY)) {
                     identityProviderModel.getConfig().put("hideOnLoginPage", "true");
                 }
             }
+			identityProviderModel.getConfig().put(SAMLIdentityProviderConfig.ENTITY_ATTRIBUTES, JsonSerialization.writeValueAsString(entityAttributes));
 
-        }
+        } else {
+			identityProviderModel.getConfig().remove(SAMLIdentityProviderConfig.ENTITY_ATTRIBUTES);
+		}
     }
 
 	private void parseIDPSSODescriptorType (IdentityProviderModel identityProviderModel, IDPSSODescriptorType idpDescriptor) {

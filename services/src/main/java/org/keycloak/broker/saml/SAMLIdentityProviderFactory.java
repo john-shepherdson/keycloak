@@ -18,6 +18,7 @@ package org.keycloak.broker.saml;
 
 import java.io.InputStream;
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -182,15 +183,22 @@ public class SAMLIdentityProviderFactory extends AbstractIdentityProviderFactory
 
                     // check for hide on login attribute
                     boolean hideOnLogin = false;
+                    List<SAMLIdentityProviderConfig.EntityAttributes> entityAttributes = new ArrayList<>();
                     if (entityType.getExtensions() != null && entityType.getExtensions().getEntityAttributes() != null) {
                         for (AttributeType attribute : entityType.getExtensions().getEntityAttributes().getAttribute()) {
+                            SAMLIdentityProviderConfig.EntityAttributes entityAttr = new SAMLIdentityProviderConfig.EntityAttributes();
+                            entityAttr.setName(attribute.getName());
+                            entityAttr.setValues(attribute.getAttributeValue());
+                            entityAttributes.add(entityAttr);
                             if (MACEDIR_ENTITY_CATEGORY.equals(attribute.getName())
                                     && attribute.getAttributeValue().contains(REFEDS_HIDE_FROM_DISCOVERY)) {
                                 hideOnLogin = true;
                                 break;
                             }
                         }
-
+                        samlIdentityProviderConfig.setEntityAttributes(entityAttributes);
+                    } else {
+                        samlIdentityProviderConfig.setEntityAttributes(null);
                     }
                     samlIdentityProviderConfig.setHideOnLogin(hideOnLogin);
                 }

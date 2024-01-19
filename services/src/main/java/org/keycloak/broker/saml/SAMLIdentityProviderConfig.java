@@ -74,6 +74,7 @@ public class SAMLIdentityProviderConfig extends IdentityProviderModel {
     public static final String ALLOW_CREATE = "allowCreate";
     public static final String ATTRIBUTE_CONSUMING_SERVICE_INDEX = "attributeConsumingServiceIndex";
     public static final String ATTRIBUTE_CONSUMING_SERVICE_NAME = "attributeConsumingServiceName";
+    public static final String ENTITY_ATTRIBUTES = "entityAttributes";
 
     public SAMLIdentityProviderConfig() {
     }
@@ -348,6 +349,28 @@ public class SAMLIdentityProviderConfig extends IdentityProviderModel {
         }
     }
 
+    public List<EntityAttributes> getEntityAttributes() throws IOException {
+        String principalsJson =getConfig().get(ENTITY_ATTRIBUTES);
+        if (principalsJson != null ) {
+            return JsonSerialization.readValue(principalsJson, new TypeReference<List<EntityAttributes>>() {
+            });
+        } else {
+            return new LinkedList<>();
+        }
+    }
+
+    public void setEntityAttributes(List<EntityAttributes> entityAttributes) {
+        try {
+            if (entityAttributes == null || entityAttributes.isEmpty())
+                getConfig().remove(ENTITY_ATTRIBUTES);
+
+            getConfig().put(ENTITY_ATTRIBUTES, JsonSerialization.writeValueAsString(entityAttributes));
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+    }
+
     public boolean isEnabledFromMetadata() {
         return Boolean.valueOf(getConfig().get(ENABLED_FROM_METADATA ));
     }
@@ -513,6 +536,31 @@ public class SAMLIdentityProviderConfig extends IdentityProviderModel {
 
         public void setNameIDPolicyFormat(String nameIDPolicyFormat) {
             this.nameIDPolicyFormat = nameIDPolicyFormat;
+        }
+    }
+
+    public static class EntityAttributes {
+        private String name;
+        private List<Object> values;
+
+        public EntityAttributes(){
+
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
+
+        public List<Object> getValues() {
+            return values;
+        }
+
+        public void setValues(List<Object> values) {
+            this.values = values;
         }
     }
 }
