@@ -200,6 +200,16 @@
     "label": "Identity Provider Alias",
     "tooltip": "Identity Provider Alias"
   },
+  "idp-attribute": {
+    "name": {
+      "label": "Identity Provider attribute name",
+      "tooltip": "Identity Provider attribute name"
+    },
+    "values": {
+      "label": "Identity Provider attribute values",
+      "tooltip": "Identity Provider attribute values. Identity Provider attributes must match all declared values. "
+    }
+},
   "conditional" : {
     "claim-value" : {
       "tooltip": "Value(s) of the claim you want to hard code if condition matches."
