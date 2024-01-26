@@ -218,147 +218,152 @@ public class SAMLFederationProvider extends AbstractIdPFederationProvider <SAMLF
 				realm.getDefaultClientScopesStream(false).filter(scope -> "saml".equals(scope.getProtocol())).flatMap(scope -> scope.getProtocolMappersStream().filter(mapper -> UserAttributeStatementMapper.PROVIDER_ID.equals(mapper.getProtocolMapper()))).distinct().collect(Collectors.toList());
 
 
-		for(EntityDescriptorType entity: entities) {
+		try {
+			for (EntityDescriptorType entity : entities) {
 
-            if (!parseEntity(entity)) {
-                continue;
-            }
-
-			IDPSSODescriptorType idpDescriptor = null;
-			SPSSODescriptorType spDescriptorType = null;
-
-			// Metadata documents can contain multiple Descriptors (See ADFS metadata
-			// documents) such as RoleDescriptor, SPSSODescriptor, IDPSSODescriptor.
-			// So we need to loop through to find the IDPSSODescriptor.
-			for (EntityDescriptorType.EDTChoiceType edtChoiceType : entity.getChoiceType()) {
-				List<EntityDescriptorType.EDTDescriptorChoiceType> descriptors = edtChoiceType.getDescriptors();
-
-				if (!CATEGORY_CLIENTS.equals(category) && !descriptors.isEmpty() && descriptors.get(0).getIdpDescriptor() != null) {
-					idpDescriptor = descriptors.get(0).getIdpDescriptor();
+				if (!parseEntity(entity)) {
+					continue;
 				}
 
-				if (!CATEGORY_IDPS.equals(category) && !descriptors.isEmpty() && descriptors.get(0).getSpDescriptor() != null) {
-					spDescriptorType = descriptors.get(0).getSpDescriptor();
+				IDPSSODescriptorType idpDescriptor = null;
+				SPSSODescriptorType spDescriptorType = null;
+
+				// Metadata documents can contain multiple Descriptors (See ADFS metadata
+				// documents) such as RoleDescriptor, SPSSODescriptor, IDPSSODescriptor.
+				// So we need to loop through to find the IDPSSODescriptor.
+				for (EntityDescriptorType.EDTChoiceType edtChoiceType : entity.getChoiceType()) {
+					List<EntityDescriptorType.EDTDescriptorChoiceType> descriptors = edtChoiceType.getDescriptors();
+
+					if (!CATEGORY_CLIENTS.equals(category) && !descriptors.isEmpty() && descriptors.get(0).getIdpDescriptor() != null) {
+						idpDescriptor = descriptors.get(0).getIdpDescriptor();
+					}
+
+					if (!CATEGORY_IDPS.equals(category) && !descriptors.isEmpty() && descriptors.get(0).getSpDescriptor() != null) {
+						spDescriptorType = descriptors.get(0).getSpDescriptor();
+					}
 				}
-			}
 
-			if (idpDescriptor != null) {
+				if (idpDescriptor != null) {
 
-				try {
-					//Idp parsing
-					String alias = KeycloakModelUtils.base64AndUrlEncoding(entity.getEntityID());
-					IdentityProviderModel identityProviderModel = null;
+					try {
+						//Idp parsing
+						String alias = KeycloakModelUtils.base64AndUrlEncoding(entity.getEntityID());
+						IdentityProviderModel identityProviderModel = null;
 
-					//check if this federation has already included this IdP
-					if (existingIdps.contains(alias)) {
-						identityProviderModel = new SAMLIdentityProviderConfig(
-								realm.getIdentityProviderByAlias(alias));
-						existingIdps.remove(alias);
-					} else {
-
-						// check if Idp exists in database
-						IdentityProviderModel previous = realm.getIdentityProviderByAlias(alias);
-						if (previous != null) {
-							identityProviderModel = new SAMLIdentityProviderConfig(previous);
+						//check if this federation has already included this IdP
+						if (existingIdps.contains(alias)) {
+							identityProviderModel = new SAMLIdentityProviderConfig(
+									realm.getIdentityProviderByAlias(alias));
+							existingIdps.remove(alias);
 						} else {
-							// initialize idp values
-							// set alias and default values
-							identityProviderModel = new SAMLIdentityProviderConfig();
-							identityProviderModel.setProviderId(model.getProviderId());
-							identityProviderModel.setAlias(alias);
-							// put default parameters
-							Map<String, String> config = new HashMap<>();
-							config.put(SAMLIdentityProviderConfig.ADD_EXTENSIONS_ELEMENT_WITH_KEY_INFO, "false");
-							config.put(SAMLIdentityProviderConfig.SIGNATURE_ALGORITHM, "RSA_SHA256");
-							config.put(SAMLIdentityProviderConfig.XML_SIG_KEY_INFO_KEY_NAME_TRANSFORMER, "KEY_ID");
 
-							config.put(IdentityProviderModel.SYNC_MODE, model.getConfig().get(IdentityProviderModel.SYNC_MODE));
-							config.put("loginHint", "false");
-							config.put(SAMLIdentityProviderConfig.WANT_ASSERTIONS_ENCRYPTED, wantAssertionsEncrypted);
-							config.put(SAMLIdentityProviderConfig.WANT_ASSERTIONS_SIGNED, String.valueOf(model.isWantAssertionsSigned()));
-							config.put(SAMLIdentityProviderConfig.WANT_LOGOUT_REQUESTS_SIGNED, String.valueOf(model.isWantLogoutRequestsSigned()));
-							config.put(SAMLIdentityProviderConfig.IDP_ENTITY_ID, model.getConfig().get(SAMLIdentityProviderConfig.ENTITY_ID));
+							// check if Idp exists in database
+							IdentityProviderModel previous = realm.getIdentityProviderByAlias(alias);
+							if (previous != null) {
+								identityProviderModel = new SAMLIdentityProviderConfig(previous);
+							} else {
+								// initialize idp values
+								// set alias and default values
+								identityProviderModel = new SAMLIdentityProviderConfig();
+								identityProviderModel.setProviderId(model.getProviderId());
+								identityProviderModel.setAlias(alias);
+								// put default parameters
+								Map<String, String> config = new HashMap<>();
+								config.put(SAMLIdentityProviderConfig.ADD_EXTENSIONS_ELEMENT_WITH_KEY_INFO, "false");
+								config.put(SAMLIdentityProviderConfig.SIGNATURE_ALGORITHM, "RSA_SHA256");
+								config.put(SAMLIdentityProviderConfig.XML_SIG_KEY_INFO_KEY_NAME_TRANSFORMER, "KEY_ID");
 
-							config.put(SAMLIdentityProviderConfig.POST_BINDING_RESPONSE, String.valueOf(model.isPostBindingResponse()));
-							config.put(SAMLIdentityProviderConfig.POST_BINDING_LOGOUT, String.valueOf(model.isPostBindingLogoutReceivingRequest()));
+								config.put(IdentityProviderModel.SYNC_MODE, model.getConfig().get(IdentityProviderModel.SYNC_MODE));
+								config.put("loginHint", "false");
+								config.put(SAMLIdentityProviderConfig.WANT_ASSERTIONS_ENCRYPTED, wantAssertionsEncrypted);
+								config.put(SAMLIdentityProviderConfig.WANT_ASSERTIONS_SIGNED, String.valueOf(model.isWantAssertionsSigned()));
+								config.put(SAMLIdentityProviderConfig.WANT_LOGOUT_REQUESTS_SIGNED, String.valueOf(model.isWantLogoutRequestsSigned()));
+								config.put(SAMLIdentityProviderConfig.IDP_ENTITY_ID, model.getConfig().get(SAMLIdentityProviderConfig.ENTITY_ID));
 
-							config.put("promotedLoginbutton", "false");
-							identityProviderModel.setConfig(config);
+								config.put(SAMLIdentityProviderConfig.POST_BINDING_RESPONSE, String.valueOf(model.isPostBindingResponse()));
+								config.put(SAMLIdentityProviderConfig.POST_BINDING_LOGOUT, String.valueOf(model.isPostBindingLogoutReceivingRequest()));
 
-							identityProviderModel.setFirstBrokerLoginFlowId(flowModel.getId());
+								config.put("promotedLoginbutton", "false");
+								identityProviderModel.setConfig(config);
+
+								identityProviderModel.setFirstBrokerLoginFlowId(flowModel.getId());
+							}
+							identityProviderModel.addFederation(model.getInternalId());
 						}
-						identityProviderModel.addFederation(model.getInternalId());
-					}
-					parseIdP(identityProviderModel, validUntil, entity, idpDescriptor, preferredLang);
+						parseIdP(identityProviderModel, validUntil, entity, idpDescriptor, preferredLang);
 
-					identityProviderModel.validate(realm);
-					if (identityProviderModel.getInternalId() == null) {
-						addedIdps.add(identityProviderModel);
-					} else {
-						updatedIdps.add(identityProviderModel);
-					}
-				} catch (Exception ex) {
-					ex.printStackTrace();
-					logger.warnf("Federation: %s -> Could not insert the identity provider with entityId: %s", model.getDisplayName(), entity.getEntityID());
-				}
-			}
-
-			if (spDescriptorType != null) {
-				//client parsing
-				try {
-					ClientModel clientModel = existingClientModels.stream().filter(client -> entity.getEntityID().equals(client.getClientId())).findFirst().orElse(null);
-					if (clientModel == null) {
-						ClientModel clientWithSameClientId = realm.getClientByClientId(entity.getEntityID());
-						if (clientWithSameClientId == null) {
-							ClientRepresentation clientRep = createClientDefaultValues(entity.getEntityID());
-							List<String> federations = new ArrayList<>();
-							federations.add(model.getInternalId());
-							clientRep.setFederations(federations);
-							parseClient(clientRep, spDescriptorType, entity.getOrganization(), validUntil, preferredLang);
-							ValidationUtil.validateClient(clientValidationProvider, session, clientRep, true, r -> {
-								throw new RuntimeException("Invalid client " + clientRep.getClientId() + ": " + r.getAllErrorsAsString());
-							});
-							ClientModel clientModelCreate = ClientManager.createClient(session, realm, clientRep);
-
+						identityProviderModel.validate(realm);
+						if (identityProviderModel.getInternalId() == null) {
+							addedIdps.add(identityProviderModel);
 						} else {
-							ClientRepresentation clientRep = ModelToRepresentation.toRepresentation(clientWithSameClientId, session);
-							clientRep.getFederations().add(model.getInternalId());
+							updatedIdps.add(identityProviderModel);
+						}
+					} catch (Exception ex) {
+						ex.printStackTrace();
+						logger.warnf("Federation: %s -> Could not insert the identity provider with entityId: %s", model.getDisplayName(), entity.getEntityID());
+					}
+				}
+
+				if (spDescriptorType != null) {
+					//client parsing
+					try {
+						ClientModel clientModel = existingClientModels.stream().filter(client -> entity.getEntityID().equals(client.getClientId())).findFirst().orElse(null);
+						if (clientModel == null) {
+							ClientModel clientWithSameClientId = realm.getClientByClientId(entity.getEntityID());
+							if (clientWithSameClientId == null) {
+								ClientRepresentation clientRep = createClientDefaultValues(entity.getEntityID());
+								List<String> federations = new ArrayList<>();
+								federations.add(model.getInternalId());
+								clientRep.setFederations(federations);
+								parseClient(clientRep, spDescriptorType, entity.getOrganization(), validUntil, preferredLang);
+								ValidationUtil.validateClient(clientValidationProvider, session, clientRep, true, r -> {
+									throw new RuntimeException("Invalid client " + clientRep.getClientId() + ": " + r.getAllErrorsAsString());
+								});
+								ClientModel clientModelCreate = ClientManager.createClient(session, realm, clientRep);
+
+							} else {
+								ClientRepresentation clientRep = ModelToRepresentation.toRepresentation(clientWithSameClientId, session);
+								clientRep.getFederations().add(model.getInternalId());
+								ValidationUtil.validateClient(clientValidationProvider, session, clientRep, false, r -> {
+									throw new RuntimeException("Invalid client " + clientRep.getClientId() + ": " + r.getAllErrorsAsString());
+								});
+								updateClient(clientRep, clientWithSameClientId, spDescriptorType, entity.getOrganization(), validUntil, preferredLang);
+							}
+						} else {
+							//update client model
+							existingClientModels.removeIf(client -> clientModel.getId().equals(client.getId()));
+							ClientRepresentation clientRep = ModelToRepresentation.toRepresentation(clientModel, session);
 							ValidationUtil.validateClient(clientValidationProvider, session, clientRep, false, r -> {
 								throw new RuntimeException("Invalid client " + clientRep.getClientId() + ": " + r.getAllErrorsAsString());
 							});
-							updateClient(clientRep, clientWithSameClientId, spDescriptorType, entity.getOrganization(), validUntil, preferredLang);
+							updateClient(clientRep, clientModel, spDescriptorType, entity.getOrganization(), validUntil, preferredLang);
 						}
-					} else {
-						//update client model
-						existingClientModels.removeIf(client -> clientModel.getId().equals(client.getId()));
-						ClientRepresentation clientRep = ModelToRepresentation.toRepresentation(clientModel, session);
-						ValidationUtil.validateClient(clientValidationProvider, session, clientRep, false, r -> {
-							throw new RuntimeException("Invalid client " + clientRep.getClientId() + ": " + r.getAllErrorsAsString());
-						});
-						updateClient(clientRep, clientModel, spDescriptorType, entity.getOrganization(), validUntil, preferredLang);
+
+					} catch (Exception ex) {
+						ex.printStackTrace();
+						logger.warnf("Federation: %s -> Could not insert the client provider with entityId: %s", model.getDisplayName(), entity.getEntityID());
 					}
-
-				} catch (Exception ex) {
-					ex.printStackTrace();
-                    logger.warnf("Federation: %s -> Could not insert the client provider with entityId: %s", model.getDisplayName(), entity.getEntityID());
 				}
+
 			}
 
+			existingClientModels.stream().forEach(client -> {
+				if (client.getFederations().size() == 1) {
+					realm.removeClient(client.getId());
+				} else {
+					//client exists in more federations
+					client.removeFederation(model.getInternalId());
+				}
+			});
+
+			model.setLastMetadataRefreshTimestamp(new Date().getTime());
+			realm.taskExecutionFederation(model, addedIdps, updatedIdps, existingIdps);
+
+			logger.info("Finished updating IdPs of federation (id): " + model.getInternalId());
+		} catch (Exception e) {
+			e.printStackTrace();
+			logger.warn("Problem during updating IdPs of federation (id): " + model.getInternalId());
 		}
-
-		existingClientModels.stream().forEach(client -> {
-			if ( client.getFederations().size() == 1) {
-				realm.removeClient(client.getId());
-			} else {
-				//client exists in more federations
-				client.removeFederation(model.getInternalId());
-			}
-		});
-
-		model.setLastMetadataRefreshTimestamp(new Date().getTime());
-	    realm.taskExecutionFederation(model, addedIdps, updatedIdps, existingIdps);
-
-		logger.info("Finished updating IdPs of federation (id): " + model.getInternalId());
 	}
 
 	private ClientRepresentation createClientDefaultValues(String clientId){
