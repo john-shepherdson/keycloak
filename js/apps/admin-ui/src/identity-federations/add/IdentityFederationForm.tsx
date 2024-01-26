@@ -363,7 +363,7 @@ export default function IdentityFederationForm({
       >
         <ActionGroup className={style.buttonGroup}>
           <Button isDisabled={!isDirty} variant="primary" type="submit">
-            {type === "update" ? t("common:save") : t("common:add")}
+            {type === "edit" ? t("common:save") : t("common:add")}
           </Button>
           <Button
             variant="link"

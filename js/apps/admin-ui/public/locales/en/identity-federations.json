@@ -1,7 +1,7 @@
 {
     "addIdentityFederation":"Add Identity Federation",
     "identityFederations":"Identity federations",
-    "updateFrequency":"Update frequency (minutes)",
+    "updateFrequency":"Update frequency (mins)",
     "validUntil":"Valid until",
     "lastUpdatedTime": "Last updated time",
     "actions": "Actions",
@@ -42,5 +42,12 @@
     "perEntityCategory": "Per Entity Category",
     "attributeName": "Attribute Name",
     "attributeValue": "Attribute Value",
-    "removeAttributeError":"Attribute value can not be empty "
+    "removeAttributeError":"Attribute value can not be empty",
+    "updateSuccess": "Identity federation updated successfully.",
+    "updateError": "Could not update identity federation {{error}}",
+    "createSuccess":"Identity federation updated successfully.",
+    "createError": "Could not create the identity federation {{error}}",
+    "deleteFederation": "Delete federation?",
+    "deleteConfirm": "Are you sure you want to permanently delete this federation?",
+    "updateFrequencyInMins": "Update Fedequency in Minutes"
 }

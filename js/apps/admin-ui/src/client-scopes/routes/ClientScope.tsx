@@ -3,12 +3,12 @@ import type { Path } from "react-router-dom";
 import { generateEncodedPath } from "../../utils/generateEncodedPath";
 import type { AppRouteObject } from "../../routes";
 
-export type ClientScopeTab = "settings" | "mappers" | "scope";
+export type ClientScopeTab = "settings" | "mappers" | "scope" | "policies";
 
 export type ClientScopeParams = {
   realm: string;
   id: string;
-  tab: ClientScopeTab;
+  tab: "settings" | "mappers" | "scope" | "policies";
 };
 
 const EditClientScope = lazy(() => import("../EditClientScope"));

@@ -146,8 +146,10 @@ export default function IdentityProvidersSection() {
     ));
 
   const [toggleDeleteDialog, DeleteConfirm] = useConfirmDialog({
-    titleKey: "deleteProvider",
-    messageKey: t("deleteConfirm", { provider: selectedProvider?.alias }),
+    titleKey: t("identity-providers:deleteProvider"),
+    messageKey: t("identity-providers:deleteConfirm", {
+      provider: selectedProvider?.alias,
+    }),
     continueButtonLabel: "delete",
     continueButtonVariant: ButtonVariant.danger,
     onConfirm: async () => {
@@ -156,9 +158,12 @@ export default function IdentityProvidersSection() {
           alias: selectedProvider!.alias!,
         });
         refresh();
-        addAlert(t("deletedSuccessIdentityProvider"), AlertVariant.success);
+        addAlert(
+          t("identity-providers:deletedSuccessIdentityProvider"),
+          AlertVariant.success,
+        );
       } catch (error) {
-        addError("deleteErrorIdentityProvider", error);
+        addError(t("dentity-providers:deleteErrorIdentityProvider"), error);
       }
     },
   });
@@ -176,7 +181,7 @@ export default function IdentityProvidersSection() {
       )}
       <ViewHeader
         titleKey="identityProviders"
-        subKey="listExplain"
+        subKey={t("identity-providers:listExplain")}
         helpUrl={helpUrls.identityProvidersUrl}
       />
       <PageSection
@@ -235,7 +240,7 @@ export default function IdentityProvidersSection() {
                         onToggle={() => setAddProviderOpen(!addProviderOpen)}
                         isPrimary
                       >
-                        {t("addProvider")}
+                        {t("identity-providers:addProvider")}
                       </DropdownToggle>
                     }
                     isOpen={addProviderOpen}
@@ -249,7 +254,7 @@ export default function IdentityProvidersSection() {
                     variant="link"
                     onClick={() => setManageDisplayDialog(true)}
                   >
-                    {t("manageDisplayOrder")}
+                    {t("identity-providers:manageDisplayOrder")}
                   </Button>
                 </ToolbarItem>
               </>
@@ -271,7 +276,7 @@ export default function IdentityProvidersSection() {
               },
               {
                 name: "providerId",
-                displayKey: "providerDetails",
+                displayKey: t("identity-providers:providerDetails"),
                 cellFormatters: [upperCaseFormatter()],
               },
             ]}

@@ -52,7 +52,7 @@ export default function EditIdentityFederation() {
       );
       addAlert(t("updateSuccess"), AlertVariant.success);
     } catch (error) {
-      addError("identity-providers:updateError", error);
+      addError(t("updateError"), error);
     }
   };
 

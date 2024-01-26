@@ -56,5 +56,27 @@
     "saml": "SAML",
     "openid-connect": "OpenID Connect"
   },
-  "headerName": "header name"
+  "headerName": "header name",
+  "userAttribute": "User Attribute",
+  "createClientScopePolicy": "Create Scope Policy",
+  "createProtocolMapper": "Create Protocol Mapper",
+  "clientScopePoliciesValues": "Client scope policies values",
+  "policyValue":"Policy Value",
+  "regex": "Regex",
+  "negative": "Negative",
+  "emptyPolicies": "No Scope Policies",
+  "emptyPoliciesInstructions": "If you want to add scope policies, please click the button below to configure a new scope policy.",
+  "createScopePolicy": "Create Scope Policy",
+  "scopePolicies": "Scope Policies",
+  "deleteScopePolicyConfirm": "Are you sure you want to permanently delete this scope policy?",
+  "deleteScopePolicy": "Delete Scope Policy?",
+  "deleteScopePolicySuccess": "Scope Policy successfully deleted.",
+  "deleteScopePolicyError": "Could not delete the scope policy {{error}}",
+  "scopePolicySaveSuccess": "Scope Policy saved successfully.",
+  "scopePolicySaveError": "Could not save scope policy {{error}}.",
+  "scopePolicyCreateSuccess": "Scope Policy successfully created.",
+  "scopePolicyCreateError": "Could not create scope policy {{error}}.",
+  "editScopePolicy": "Edit Scope Policy",
+  "createPolicy": "Create Policy",
+  "addPolicyValue":"Add Policy Value"
 }

@@ -1,6 +1,7 @@
 import type IdentityFederationRepresentation from "@keycloak/keycloak-admin-client/lib/defs/identityFederationRepresentation";
 import {
   FormGroup,
+  NumberInput,
   Select,
   SelectOption,
   SelectVariant,
@@ -11,7 +12,6 @@ import { KeycloakTextInput } from "../../components/keycloak-text-input/Keycloak
 import { HelpItem } from "ui-shared";
 import { useTranslation } from "react-i18next";
 import { Controller, useFormContext } from "react-hook-form";
-import { TimeSelector } from "../../components/time-selector/TimeSelector";
 
 const categories = ["All", "Identity Providers", "Clients"];
 
@@ -89,18 +89,27 @@ const GeneralSettings = ({ type }: GeneralSettingsProps) => {
         <Controller
           {...register("updateFrequencyInMins", {
             required: { value: true, message: t("common:required") },
-            min: 1,
           })}
-          render={({ field }) => (
-            <TimeSelector
-              value={field.value || 0}
-              onChange={field.onChange}
-              units={["minute", "hour", "day"]}
-              validated={
-                "updateFrequencyInMins" in errors ? "error" : "default"
-              }
-            />
-          )}
+          rules={{ min: 1 }}
+          render={({ field }) => {
+            const MIN_VALUE = 1;
+            const value = field.value ?? 30;
+            const setValue = (newValue: number) =>
+              field.onChange(Math.max(newValue, MIN_VALUE));
+            return (
+              <NumberInput
+                id="updateFrequencyInMins"
+                value={value}
+                min={MIN_VALUE}
+                onPlus={() => setValue(value + 1)}
+                onMinus={() => setValue(value - 1)}
+                onChange={(event) => {
+                  const newValue = Number(event.currentTarget.value);
+                  setValue(!isNaN(newValue) ? newValue : 30);
+                }}
+              />
+            );
+          }}
         />
       </FormGroup>
       <FormGroup

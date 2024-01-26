@@ -38,6 +38,7 @@ import { useFetch } from "../utils/useFetch";
 import { useParams } from "../utils/useParams";
 import { MapperList } from "./details/MapperList";
 import { ScopeForm } from "./details/ScopeForm";
+
 import {
   ClientScopeParams,
   ClientScopeTab,
@@ -45,6 +46,7 @@ import {
 } from "./routes/ClientScope";
 import { toMapper } from "./routes/Mapper";
 import { toClientScopes } from "./routes/ClientScopes";
+import { PoliciesList } from "./details/PoliciesList";
 
 export default function EditClientScope() {
   const { t } = useTranslation("client-scopes");
@@ -109,6 +111,7 @@ export default function EditClientScope() {
   const settingsTab = useTab("settings");
   const mappersTab = useTab("mappers");
   const scopeTab = useTab("scope");
+  const policiesTab = useTab("policies");
 
   const onSubmit = async (formData: ClientScopeDefaultOptionalType) => {
     const clientScope = convertFormValuesToObject({
@@ -283,6 +286,14 @@ export default function EditClientScope() {
               type="clientScopes"
               save={assignRoles}
             />
+          </Tab>
+          <Tab
+            id="policies"
+            data-testid="policies"
+            title={<TabTitleText>{t("common:scopePolicies")}</TabTitleText>}
+            {...policiesTab}
+          >
+            <PoliciesList />
           </Tab>
         </RoutableTabs>
       </PageSection>

@@ -21,6 +21,7 @@
   "deleteMapperSuccess": "Mapper successfully deleted.",
   "deletedSuccess": "Provider successfully deleted.",
   "deleteError": "Could not delete the provider {{error}}",
+  "deleteMapperError" : "Could not delete the mapper {{error}}",
   "disableProvider": "Disable provider?",
   "disableConfirm": "Are you sure you want to disable the provider '{{provider}}'",
   "disableSuccess": "Provider successfully disabled",
@@ -190,5 +191,6 @@
   "actions": "Actions",
   "order": "Order",
   "promotedLoginbutton": "Promoted login button",
-  "autoUpdate":"Auto Update"
-}
+  "autoUpdate":"Auto Update",
+  "deletedSuccessIdentityProvider": "Identity provider successfully deleted.",
+  "deleteErrorIdentityProvider": "Could not delete the identity provider {{error}}"}

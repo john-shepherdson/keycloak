@@ -255,9 +255,9 @@ export default function DetailSettings() {
   };
 
   const [toggleDeleteDialog, DeleteConfirm] = useConfirmDialog({
-    titleKey: "identity-providers:deleteProvider",
+    titleKey: t("identity-providers:deleteProvider"),
     messageKey: t("identity-providers:deleteConfirm", { provider: alias }),
-    continueButtonLabel: "common:delete",
+    continueButtonLabel: t("common:delete"),
     continueButtonVariant: ButtonVariant.danger,
     onConfirm: async () => {
       try {
@@ -265,17 +265,17 @@ export default function DetailSettings() {
         addAlert(t("deletedSuccess"), AlertVariant.success);
         navigate(toIdentityProviders({ realm }));
       } catch (error) {
-        addError("identity-providers:deleteErrorError", error);
+        addError(t("identity-providers:deleteError"), error);
       }
     },
   });
 
   const [toggleDeleteMapperDialog, DeleteMapperConfirm] = useConfirmDialog({
-    titleKey: "identity-providers:deleteProviderMapper",
+    titleKey: t("identity-providers:deleteProviderMapper"),
     messageKey: t("identity-providers:deleteMapperConfirm", {
       mapper: selectedMapper?.name,
     }),
-    continueButtonLabel: "common:delete",
+    continueButtonLabel: t("common:delete"),
     continueButtonVariant: ButtonVariant.danger,
     onConfirm: async () => {
       try {
@@ -289,7 +289,7 @@ export default function DetailSettings() {
           toIdentityProvider({ providerId, alias, tab: "mappers", realm }),
         );
       } catch (error) {
-        addError("identity-providers:deleteErrorError", error);
+        addError(t("identity-providers:deleteMapperError"), error);
       }
     },
   });

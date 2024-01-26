@@ -99,11 +99,11 @@ export default function IdentityFederationsSection() {
   ];
 
   const [toggleDeleteDialog, DeleteConfirm] = useConfirmDialog({
-    titleKey: "deleteProvider",
+    titleKey: t("deleteFederation"),
     messageKey: t("deleteConfirm", {
       identityFederation: selectedFederation?.alias,
     }),
-    continueButtonLabel: "delete",
+    continueButtonLabel: t("common:delete"),
     continueButtonVariant: ButtonVariant.danger,
     onConfirm: async () => {
       try {
@@ -124,7 +124,10 @@ export default function IdentityFederationsSection() {
         );
       } catch (error) {
         setLoading(false);
-        addError("identity-federations:deletedErrorIdentityFederation", error);
+        addError(
+          t("identity-federations:deletedErrorIdentityFederation"),
+          error,
+        );
       }
     },
   });
@@ -145,8 +148,8 @@ export default function IdentityFederationsSection() {
     return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
   };
 
-  const formatTime = (seconds: any) => {
-    return String(Math.ceil(seconds / 60));
+  const formatTime = (minutes: any) => {
+    return String(minutes);
   };
 
   return (
@@ -190,30 +193,30 @@ export default function IdentityFederationsSection() {
             columns={[
               {
                 name: "alias",
-                displayKey: "name",
+                displayKey: t("name"),
                 cellRenderer: DetailLink,
               },
               {
                 name: "providerId",
-                displayKey: "provider",
+                displayKey: t("provider"),
               },
               {
                 name: "category",
-                displayKey: "category",
+                displayKey: t("category"),
               },
               {
                 name: "updateFrequencyInMins",
-                displayKey: "updateFrequency",
+                displayKey: t("updateFrequency"),
                 cellFormatters: [(value) => (value ? formatTime(value) : "")],
               },
               {
                 name: "validUntilTimestamp",
-                displayKey: "validUntil",
+                displayKey: t("validUntil"),
                 cellFormatters: [(value) => (value ? formatDate(value) : "")],
               },
               {
                 name: "lastMetadataRefreshTimestamp",
-                displayKey: "lastUpdatedTime",
+                displayKey: t("lastUpdatedTime"),
                 cellFormatters: [(value) => (value ? formatDate(value) : "")],
               },
             ]}

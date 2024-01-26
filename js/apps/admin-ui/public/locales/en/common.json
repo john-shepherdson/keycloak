@@ -90,6 +90,7 @@
   "events": "Events",
   "mappers": "Mappers",
   "permissions": "Permissions",
+  "scopePolicies": "Scope Policies",
   "permissionsList": "Permission list",
   "permissionsListIntro": "Edit the permission list by clicking the scope-name. It then redirects to the permission details page of the client named <1>{{realm}}</1>",
   "usersPermissionsHint": "Fine grained permissions for managing all users in realm.  You can define different policies for who is allowed to manage users in the realm.",

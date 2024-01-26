@@ -134,7 +134,7 @@ export default function AddMapper() {
           toIdentityProvider({ providerId, alias, tab: "mappers", realm }),
         );
       } catch (error) {
-        addError("identity-providers:deleteErrorError", error);
+        addError(t("identity-providers:deleteMapperError"), error);
       }
     },
   });
