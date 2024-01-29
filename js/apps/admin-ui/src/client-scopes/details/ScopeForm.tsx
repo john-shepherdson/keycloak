@@ -135,7 +135,7 @@ export const ScopeForm = ({ clientScope, save }: ScopeFormProps) => {
             name={convertAttributeNameToForm<ClientScopeDefaultOptionalType>(
               "attributes.is.dynamic.scope",
             )}
-            label={t("dynamicScope")}
+            label={t("client-scopes:dynamicScope")}
             labelIcon={t("client-scopes-help:dynamicScope")}
             onChange={(value) => {
               setDynamicRegex(value ? form.getValues("name") || "" : "", value);
@@ -143,14 +143,30 @@ export const ScopeForm = ({ clientScope, save }: ScopeFormProps) => {
             stringify
           />
           {dynamicScope === "true" && (
-            <TextControl
-              name={convertAttributeNameToForm<ClientScopeDefaultOptionalType>(
-                "attributes.dynamic.scope.regexp",
-              )}
-              label={t("dynamicScopeFormat")}
-              labelIcon={t("client-scopes-help:dynamicScopeFormat")}
-              isDisabled
-            />
+            <>
+              <TextControl
+                name={convertAttributeNameToForm<ClientScopeDefaultOptionalType>(
+                  "attributes.dynamic.scope.regexp",
+                )}
+                label={t("dynamicScopeFormat")}
+                labelIcon={t("client-scopes-help:dynamicScopeFormat")}
+                isDisabled
+              />
+              <TextControl
+                name={convertAttributeNameToForm<ClientScopeDefaultOptionalType>(
+                  "attributes.filtered_claim",
+                )}
+                label={t("dynamicScopeFilteringClaim")}
+                labelIcon={t("client-scopes-help:dynamicScopeFilteringClaim")}
+              />
+              <TextControl
+                name={convertAttributeNameToForm<ClientScopeDefaultOptionalType>(
+                  "attributes.dynamic.scope.user.attribute",
+                )}
+                label={t("userAttributeField")}
+                labelIcon={t("client-scopes-help:userAttributeField")}
+              />
+            </>
           )}
         </FormProvider>
       )}

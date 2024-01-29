@@ -21,5 +21,7 @@
   "rolesScope": "If there is no role scope mapping defined, each user is permitted to use this client scope. If there are role scope mappings defined, the user must be a member of at least one of the roles.",
   "userAttribute": "User attribute for evaluating Client scope policy",
   "clientScopePoliciesValues":"Client scope policies values. You can use regular expression or negative value.",
-  "policyValuePlaceholder": "Type a value"
+  "policyValuePlaceholder": "Type a value",
+  "dynamicScopeFilteringClaim":"User claim that will be filtered. If value is empty, user claim will be filtered based on client scope name.",
+  "userAttributeField": "If filtered claim does not exist, dynamic scope will be removed from the scope list if the dynamic scope value does not consist in this User attribute."
 }

@@ -78,5 +78,8 @@
   "scopePolicyCreateError": "Could not create scope policy {{error}}.",
   "editScopePolicy": "Edit Scope Policy",
   "createPolicy": "Create Policy",
-  "addPolicyValue":"Add Policy Value"
+  "addPolicyValue":"Add Policy Value",
+  "dynamicScopeFilteringClaim":"Dynamic scope filtering claim",
+  "userAttributeField": "User Attribute",
+  "description":"Description"
 }
