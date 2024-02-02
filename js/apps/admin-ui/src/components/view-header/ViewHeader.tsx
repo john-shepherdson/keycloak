@@ -40,7 +40,11 @@ export type ViewHeaderProps = {
   lowerDropdownMenuTitle?: any;
   lowerButton?: any;
   isEnabled?: boolean;
+  isEnabledSecondary?: boolean;
+  secondaryToggleLabel?: string;
+  isDisabledToggleSecondary?: boolean;
   onToggle?: (value: boolean) => void;
+  onToggleSecondary?: (value: boolean) => void;
   divider?: boolean;
   helpTextKey?: string;
   isReadOnly?: boolean;
@@ -65,13 +69,18 @@ export const ViewHeader = ({
   lowerDropdownItems,
   lowerButton,
   isEnabled = true,
+  isEnabledSecondary = true,
   onToggle,
+  onToggleSecondary,
+  secondaryToggleLabel,
+  isDisabledToggleSecondary = false,
   divider = true,
   helpTextKey,
   isReadOnly = false,
 }: ViewHeaderProps) => {
   const { t, i18n } = useTranslation();
   const { enabled } = useHelp();
+
   const [isDropdownOpen, setDropdownOpen] = useState(false);
   const [isLowerDropdownOpen, setIsLowerDropdownOpen] = useState(false);
 
@@ -138,6 +147,29 @@ export const ViewHeader = ({
                       <HelpItem
                         helpText={t(helpTextKey)}
                         fieldLabelId={`${toKey(titleKey)}-switch`}
+                      />
+                    )}
+                  </ToolbarItem>
+                )}
+                {onToggleSecondary && (
+                  <ToolbarItem>
+                    <Switch
+                      id={`${toKey(titleKey)}-switch-secondary`}
+                      data-testid={`${titleKey}-switch-secondary`}
+                      label={secondaryToggleLabel}
+                      labelOff={t("common:disabled")}
+                      className="pf-u-mr-lg"
+                      isDisabled={isDisabledToggleSecondary || isReadOnly}
+                      isChecked={isEnabledSecondary}
+                      aria-label={t("common:enabled")}
+                      onChange={(value) => {
+                        onToggleSecondary(value);
+                      }}
+                    />
+                    {helpTextKey && (
+                      <HelpItem
+                        helpText={t(helpTextKey)}
+                        fieldLabelId={`${toKey(titleKey)}-switch-secondary`}
                       />
                     )}
                   </ToolbarItem>

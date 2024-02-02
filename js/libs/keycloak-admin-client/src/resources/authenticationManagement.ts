@@ -74,6 +74,19 @@ export class AuthenticationManagement extends Resource {
     urlParamKeys: ["alias"],
   });
 
+  // Reset Terms and Conditions
+  public resetTermsAndConditions = this.makeRequest<
+    {
+      RequiredActionProviderRepresentation: RequiredActionProviderRepresentation;
+      alias: string;
+    },
+    void
+  >({
+    method: "POST",
+    path: "/required-actions/{alias}/reset",
+    urlParamKeys: ["alias"],
+  });
+
   // Delete required action
   public deleteRequiredAction = this.makeRequest<{ alias: string }, void>({
     method: "DELETE",

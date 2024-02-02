@@ -5,6 +5,7 @@ import {
 } from "./routes/Authentication";
 import { CreateFlowRoute } from "./routes/CreateFlow";
 import { FlowRoute, FlowWithBuiltInRoute } from "./routes/Flow";
+import { TermsAndConditionsRoute } from "./routes/TermsAndConditions";
 
 const routes: AppRouteObject[] = [
   AuthenticationRoute,
@@ -12,6 +13,7 @@ const routes: AppRouteObject[] = [
   CreateFlowRoute,
   FlowRoute,
   FlowWithBuiltInRoute,
+  TermsAndConditionsRoute,
 ];
 
 export default routes;

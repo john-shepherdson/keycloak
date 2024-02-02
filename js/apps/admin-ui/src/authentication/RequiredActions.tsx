@@ -10,6 +10,9 @@ import { KeycloakSpinner } from "../components/keycloak-spinner/KeycloakSpinner"
 import { toKey } from "../util";
 import { useFetch } from "../utils/useFetch";
 import { DraggableTable } from "./components/DraggableTable";
+import { Link } from "react-router-dom";
+import { toTermsAndConditions } from "./routes/TermsAndConditions";
+import { useRealm } from "../context/realm-context/RealmContext";
 
 type DataType = RequiredActionProviderRepresentation &
   RequiredActionProviderSimpleRepresentation;
@@ -24,7 +27,7 @@ type Row = {
 export const RequiredActions = () => {
   const { t } = useTranslation("authentication");
   const { addAlert, addError } = useAlerts();
-
+  const { realm } = useRealm();
   const [actions, setActions] = useState<Row[]>();
   const [key, setKey] = useState(0);
   const refresh = () => setKey(key + 1);
@@ -132,6 +135,19 @@ export const RequiredActions = () => {
         {
           name: "name",
           displayKey: "authentication:requiredActions",
+          cellRenderer: (row) => {
+            if (row.data.alias === "TERMS_AND_CONDITIONS") {
+              return (
+                <Link
+                  to={toTermsAndConditions({
+                    realm,
+                  })}
+                >
+                  {row.name}
+                </Link>
+              );
+            } else return row.name;
+          },
         },
         {
           name: "enabled",

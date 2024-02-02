@@ -162,5 +162,19 @@
   "setAsDefaultAction": "Set as default action",
   "disabledOff": "Disabled off",
   "updatedRequiredActionSuccess": "Updated required action successfully",
-  "updatedRequiredActionError": "Could not update required action: {{error}}"
+  "updatedRequiredActionError": "Could not update required action: {{error}}",
+  "description":"Description",
+  "termsAndConditions": "Terms And Conditions",
+  "termsAndConditionsDescription": "Update Terms and conditions",
+  "resetInterval": "Reset Interval",
+  "resetConfirmTitle":"Reset required action for Terms and Conditions",
+  "resetConfirmMessage":"This will reset Terms and Conditions required action for all existing users. Are you sure?",
+  "resetConfirmButton": "Reset Required Action",
+  "requiredActionResetSuccess":"Required action reset successfully",
+  "requiredActionResetError": "Could not reset required action: {{error}}",
+  "updateTermsConfirmTitle":"Upddate terms and conditions",
+  "updateTermsConfirmMessage":"This will update the Terms and Conditions. Are you sure?",
+  "updateTermsConfirmButton": "Update terms and conditions",
+  "updateTermsResetSuccess":"Terms and conditions updated successfully",
+  "updateTermsResetError": "Could not update terms and conditions: {{error}}"
 }
