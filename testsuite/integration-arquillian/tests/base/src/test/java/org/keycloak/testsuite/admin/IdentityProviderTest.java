@@ -962,7 +962,8 @@ public class IdentityProviderTest extends AbstractAdminTest {
           "addExtensionsElementWithKeyInfo",
           "loginHint",
           "hideOnLoginPage",
-          "idpEntityId"
+          "idpEntityId",
+           "entityAttributes"
         ));
         assertThat(config, hasEntry("validateSignature", "true"));
         assertThat(config, hasEntry("singleLogoutServiceUrl", "http://localhost:8080/auth/realms/master/protocol/saml"));
@@ -995,7 +996,8 @@ public class IdentityProviderTest extends AbstractAdminTest {
                 "idpEntityId",
                 "autoUpdate",
                 "metadataUrl",
-                "refreshPeriod").collect(Collectors.toSet());
+                "refreshPeriod",
+                "entityAttributes").collect(Collectors.toSet());
         //autoupdated has been executed -  add lastRefreshTime
         if (hasExecuted)
             fields.add("lastRefreshTime");
