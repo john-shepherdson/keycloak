@@ -71,6 +71,7 @@ public class ProviderConfigProperty {
     protected List<String> options;
     protected boolean secret;
     private boolean readOnly;
+    protected Boolean stringify = null;
 
     public ProviderConfigProperty() {
     }
@@ -196,5 +197,13 @@ public class ProviderConfigProperty {
 
     public boolean isReadOnly() {
         return readOnly;
+    }
+
+    public Boolean isStringify() {
+        return stringify;
+    }
+
+    public void setStringify(Boolean stringify) {
+        this.stringify = stringify;
     }
 }

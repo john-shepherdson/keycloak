@@ -1001,6 +1001,7 @@ public class ModelToRepresentation {
         propRep.setOptions(prop.getOptions());
         propRep.setHelpText(prop.getHelpText());
         propRep.setSecret(prop.isSecret());
+        propRep.setStringify(prop.isStringify());
         return propRep;
     }
 

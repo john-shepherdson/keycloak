@@ -80,5 +80,6 @@
   "createPolicy": "Create Policy",
   "addPolicyValue":"Add Policy Value",
   "dynamicScopeFilteringClaim":"Dynamic scope filtering claim",
-  "userAttributeField": "User Attribute"
+  "userAttributeField": "User Attribute",
+  "addUserAttribute": "Add user attribute"
 }

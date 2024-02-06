@@ -18,15 +18,19 @@ public class HardcodedClaimBasedOnIdPMapper extends AbstractOIDCProtocolMapper i
         ProviderConfigProperty property = new ProviderConfigProperty();
         property.setName(ProtocolMapperUtils.CLAIM_VALUE);
         property.setLabel(ProtocolMapperUtils.CLAIM_VALUE_LABEL);
-        property.setType(ProviderConfigProperty.STRING_TYPE);
         property.setHelpText(ProtocolMapperUtils.CONDITIONAL_CLAIM_VALUE_HELP_TEXT);
+        property.setType(ProviderConfigProperty.MULTIVALUED_STRING_TYPE);
+        property.setStringify(Boolean.TRUE);
+        property.setDefaultValue("");
         configProperties.add(property);
 
         property = new ProviderConfigProperty();
         property.setName(ProtocolMapperUtils.IDP_ALIAS);
         property.setLabel(ProtocolMapperUtils.IDP_ALIAS_LABEL);
         property.setHelpText(ProtocolMapperUtils.IDP_ALIAS_HELP_TEXT);
-        property.setType(ProviderConfigProperty.STRING_TYPE);
+        property.setType(ProviderConfigProperty.MULTIVALUED_STRING_TYPE);
+        property.setStringify(Boolean.TRUE);
+        property.setDefaultValue("");
         configProperties.add(property);
 
         property = new ProviderConfigProperty();

@@ -16,7 +16,9 @@ public class HardcodedAttributeBasedOnAttributeMapper extends AbstractSAMLProtoc
         property.setName(ProtocolMapperUtils.ATTRIBUTE_VALUE);
         property.setLabel(ProtocolMapperUtils.ATTRIBUTE_CONDITIONAL_VALUES_LABEL);
         property.setHelpText(ProtocolMapperUtils.ATTRIBUTE_CONDITIONAL_VALUES_HELP_TEXT);
-        property.setType(ProviderConfigProperty.STRING_TYPE);
+        property.setType(ProviderConfigProperty.MULTIVALUED_STRING_TYPE);
+        property.setStringify(Boolean.TRUE);
+        property.setDefaultValue("");
         configProperties.add(property);
 
         property = new ProviderConfigProperty();
@@ -30,7 +32,9 @@ public class HardcodedAttributeBasedOnAttributeMapper extends AbstractSAMLProtoc
         property.setName(ProtocolMapperUtils.USER_ATTRIBUTE_VALUES);
         property.setLabel(ProtocolMapperUtils.USER_MODEL_CONDITIONAL_VALUES_LABEL);
         property.setHelpText(ProtocolMapperUtils.USER_MODEL_CONDITIONAL_VALUES_HELP_TEXT);
-        property.setType(ProviderConfigProperty.STRING_TYPE);
+        property.setType(ProviderConfigProperty.MULTIVALUED_STRING_TYPE);
+        property.setStringify(Boolean.TRUE);
+        property.setDefaultValue("");
         configProperties.add(property);
 
         property = new ProviderConfigProperty();

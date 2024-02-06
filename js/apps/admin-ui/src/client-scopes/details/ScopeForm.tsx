@@ -30,6 +30,7 @@ import { useLoginProviders } from "../../context/server-info/ServerInfoProvider"
 import { convertAttributeNameToForm, convertToFormValues } from "../../util";
 import useIsFeatureEnabled, { Feature } from "../../utils/useIsFeatureEnabled";
 import { toClientScopes } from "../routes/ClientScopes";
+import { MultiLineInput } from "../../components/multi-line-input/MultiLineInput";
 
 type ScopeFormProps = {
   clientScope?: ClientScopeRepresentation;
@@ -159,13 +160,25 @@ export const ScopeForm = ({ clientScope, save }: ScopeFormProps) => {
                 label={t("dynamicScopeFilteringClaim")}
                 labelIcon={t("client-scopes-help:dynamicScopeFilteringClaim")}
               />
-              <TextControl
-                name={convertAttributeNameToForm<ClientScopeDefaultOptionalType>(
-                  "attributes.dynamic.scope.user.attribute",
-                )}
+              <FormGroup
                 label={t("userAttributeField")}
-                labelIcon={t("client-scopes-help:userAttributeField")}
-              />
+                fieldId="kc-userAttributeField"
+                labelIcon={
+                  <HelpItem
+                    helpText={t("client-scopes-help:userAttributeField")}
+                    fieldLabelId="userAttributeField"
+                  />
+                }
+              >
+                <MultiLineInput
+                  name={convertAttributeNameToForm<ClientScopeDefaultOptionalType>(
+                    "attributes.dynamic.scope.user.attribute",
+                  )}
+                  aria-label={t("webAuthnPolicyAcceptableAaguids")}
+                  addButtonLabel={t("addUserAttribute")}
+                  stringify={true}
+                />
+              </FormGroup>
             </>
           )}
         </FormProvider>

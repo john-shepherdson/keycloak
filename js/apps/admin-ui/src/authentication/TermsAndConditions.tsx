@@ -61,6 +61,11 @@ export default function TermsAndConditions() {
     name: "defaultAction",
   }) as boolean;
 
+  const resetEvery = useWatch({
+    control,
+    name: "config.reset_every",
+  }) as number;
+
   useFetch(
     async () => {
       const requiredActions =
@@ -123,7 +128,12 @@ export default function TermsAndConditions() {
           { alias: termsAndConditions.alias! },
           termsAndConditions,
         );
-        setValue("enabled", !enabled);
+        // Update the corresponding state value
+        if (field === "enabled") {
+          setValue("enabled", !enabled);
+        } else if (field === "defaultAction") {
+          setValue("defaultAction", !defaultAction);
+        }
         addAlert(t("updateTermsResetSuccess"), AlertVariant.success);
       }
     } catch (error) {
@@ -176,6 +186,9 @@ export default function TermsAndConditions() {
           <Controller
             name="config.reset_every"
             control={control}
+            rules={{
+              min: 1,
+            }}
             render={({ field }) => {
               const v = Number(field.value);
               return (
@@ -185,6 +198,7 @@ export default function TermsAndConditions() {
                   min={1}
                   max={2147483}
                   value={v}
+                  validated={errors.config?.reset_every ? "error" : "default"}
                   allowEmptyInput={true}
                   readOnly
                   onPlus={() => field.onChange(v + 1)}
@@ -202,6 +216,15 @@ export default function TermsAndConditions() {
           <Controller
             name="config.reset_every_multiplier"
             control={control}
+            rules={{
+              validate: (reset_every_multiplier) => {
+                if (resetEvery && !reset_every_multiplier) {
+                  return "error";
+                } else {
+                  return true;
+                }
+              },
+            }}
             render={({ field }) => {
               return (
                 <Select
@@ -213,6 +236,9 @@ export default function TermsAndConditions() {
                     setResetMultiplierOpen(false);
                   }}
                   variant={SelectVariant.single}
+                  validated={
+                    errors.config?.reset_every_multiplier ? "error" : "default"
+                  }
                   isOpen={resetMultiplierOpen}
                   width={150}
                   selections={

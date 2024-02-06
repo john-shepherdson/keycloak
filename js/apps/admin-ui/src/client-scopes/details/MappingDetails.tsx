@@ -80,7 +80,6 @@ export default function MappingDetails() {
         if (!data) {
           throw new Error(t("common:notFound"));
         }
-
         const mapperTypes = serverInfo.protocolMapperTypes![data!.protocol!];
         const mapping = mapperTypes.find(
           (type) => type.id === data!.protocolMapper,

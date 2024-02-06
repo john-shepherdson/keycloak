@@ -23,8 +23,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class HardcodedClaimBasedOnIdPAttributesMapper extends AbstractSAMLProtocolMapper implements SAMLAttributeStatementMapper {
-    private static final Logger logger = Logger.getLogger(HardcodedClaimBasedOnIdPAttributesMapper.class);
+public class HardcodedAttributeBasedOnIdPAttributesMapper extends AbstractSAMLProtocolMapper implements SAMLAttributeStatementMapper {
+    private static final Logger logger = Logger.getLogger(HardcodedAttributeBasedOnIdPAttributesMapper.class);
     private static final List<ProviderConfigProperty> configProperties = new ArrayList<ProviderConfigProperty>();
 
     static {
@@ -32,7 +32,9 @@ public class HardcodedClaimBasedOnIdPAttributesMapper extends AbstractSAMLProtoc
         property.setName(ProtocolMapperUtils.ATTRIBUTE_VALUE);
         property.setLabel(ProtocolMapperUtils.ATTRIBUTE_CONDITIONAL_VALUES_LABEL);
         property.setHelpText(ProtocolMapperUtils.ATTRIBUTE_CONDITIONAL_VALUES_HELP_TEXT);
-        property.setType(ProviderConfigProperty.STRING_TYPE);
+        property.setType(ProviderConfigProperty.MULTIVALUED_STRING_TYPE);
+        property.setStringify(Boolean.TRUE);
+        property.setDefaultValue("");
         configProperties.add(property);
 
         property = new ProviderConfigProperty();
@@ -46,7 +48,9 @@ public class HardcodedClaimBasedOnIdPAttributesMapper extends AbstractSAMLProtoc
         property.setName(ProtocolMapperUtils.IDP_ATTRIBUTE_VALUES);
         property.setLabel(ProtocolMapperUtils.IDP_ATTRIBUTE_VALUES_LABEL);
         property.setHelpText(ProtocolMapperUtils.IDP_ATTRIBUTE_VALUES_HELP_TEXT);
-        property.setType(ProviderConfigProperty.STRING_TYPE);
+        property.setType(ProviderConfigProperty.MULTIVALUED_STRING_TYPE);
+        property.setStringify(Boolean.TRUE);
+        property.setDefaultValue("");
         configProperties.add(property);
 
         AttributeStatementHelper.setConfigProperties(configProperties);
@@ -97,7 +101,7 @@ public class HardcodedClaimBasedOnIdPAttributesMapper extends AbstractSAMLProtoc
                     AttributeStatementHelper.addAttributes(attributeStatement, mappingModel, attributeValues);
                 }
             } catch (IOException e) {
-                logger.warn("problem executing HardcodedClaimBasedOnIdPAttributesMapper");
+                logger.warn("problem executing HardcodedAttributeBasedOnIdPAttributesMapper");
                 e.printStackTrace();
             }
         }

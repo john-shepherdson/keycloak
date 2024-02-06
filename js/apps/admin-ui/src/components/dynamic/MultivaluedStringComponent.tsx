@@ -16,7 +16,6 @@ export const MultiValuedStringComponent = ({
 }: ComponentProps) => {
   const { t } = useTranslation("dynamic");
   const fieldName = convertToName(name!);
-
   return (
     <FormGroup
       label={t(label!)}
