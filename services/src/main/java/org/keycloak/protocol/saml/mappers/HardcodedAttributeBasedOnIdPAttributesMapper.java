@@ -29,13 +29,6 @@ public class HardcodedAttributeBasedOnIdPAttributesMapper extends AbstractSAMLPr
 
     static {
         ProviderConfigProperty property = new ProviderConfigProperty();
-        property.setName(ProtocolMapperUtils.ATTRIBUTE_VALUE);
-        property.setLabel(ProtocolMapperUtils.ATTRIBUTE_CONDITIONAL_VALUES_LABEL);
-        property.setHelpText(ProtocolMapperUtils.ATTRIBUTE_CONDITIONAL_VALUES_HELP_TEXT);
-        property.setType(ProviderConfigProperty.MULTIVALUED_STRING_TYPE);
-        property.setStringify(Boolean.TRUE);
-        property.setDefaultValue("");
-        configProperties.add(property);
 
         property = new ProviderConfigProperty();
         property.setName(ProtocolMapperUtils.IDP_ATTRIBUTE_NAME);
@@ -48,6 +41,14 @@ public class HardcodedAttributeBasedOnIdPAttributesMapper extends AbstractSAMLPr
         property.setName(ProtocolMapperUtils.IDP_ATTRIBUTE_VALUES);
         property.setLabel(ProtocolMapperUtils.IDP_ATTRIBUTE_VALUES_LABEL);
         property.setHelpText(ProtocolMapperUtils.IDP_ATTRIBUTE_VALUES_HELP_TEXT);
+        property.setType(ProviderConfigProperty.MULTIVALUED_STRING_TYPE);
+        property.setStringify(Boolean.TRUE);
+        property.setDefaultValue("");
+        configProperties.add(property);
+
+        property.setName(ProtocolMapperUtils.ATTRIBUTE_VALUE);
+        property.setLabel(ProtocolMapperUtils.ATTRIBUTE_CONDITIONAL_VALUES_LABEL);
+        property.setHelpText(ProtocolMapperUtils.ATTRIBUTE_CONDITIONAL_VALUES_HELP_TEXT);
         property.setType(ProviderConfigProperty.MULTIVALUED_STRING_TYPE);
         property.setStringify(Boolean.TRUE);
         property.setDefaultValue("");

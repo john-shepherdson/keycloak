@@ -16,13 +16,6 @@ public class HardcodedClaimBasedOnAttributeMapper extends AbstractOIDCProtocolMa
 
     static {
         ProviderConfigProperty property = new ProviderConfigProperty();
-        property.setName(ProtocolMapperUtils.CLAIM_VALUE);
-        property.setLabel(ProtocolMapperUtils.CLAIM_VALUE_LABEL);
-        property.setHelpText(ProtocolMapperUtils.CONDITIONAL_CLAIM_VALUE_HELP_TEXT);
-        property.setType(ProviderConfigProperty.MULTIVALUED_STRING_TYPE);
-        property.setStringify(Boolean.TRUE);
-        property.setDefaultValue("");
-        configProperties.add(property);
 
         property = new ProviderConfigProperty();
         property.setName(ProtocolMapperUtils.USER_ATTRIBUTE);
@@ -35,6 +28,14 @@ public class HardcodedClaimBasedOnAttributeMapper extends AbstractOIDCProtocolMa
         property.setName(ProtocolMapperUtils.USER_ATTRIBUTE_VALUES);
         property.setLabel(ProtocolMapperUtils.USER_MODEL_CONDITIONAL_VALUES_LABEL);
         property.setHelpText(ProtocolMapperUtils.USER_MODEL_CONDITIONAL_VALUES_HELP_TEXT);
+        property.setType(ProviderConfigProperty.MULTIVALUED_STRING_TYPE);
+        property.setStringify(Boolean.TRUE);
+        property.setDefaultValue("");
+        configProperties.add(property);
+
+        property.setName(ProtocolMapperUtils.CLAIM_VALUE);
+        property.setLabel(ProtocolMapperUtils.CLAIM_VALUE_LABEL);
+        property.setHelpText(ProtocolMapperUtils.CONDITIONAL_CLAIM_VALUE_HELP_TEXT);
         property.setType(ProviderConfigProperty.MULTIVALUED_STRING_TYPE);
         property.setStringify(Boolean.TRUE);
         property.setDefaultValue("");
