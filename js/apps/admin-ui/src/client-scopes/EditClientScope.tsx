@@ -74,10 +74,6 @@ export default function EditClientScope() {
       };
     },
     (clientScope) => {
-      if (clientScope.attributes?.["dynamic.scope.user.attribute"]) {
-        clientScope.attributes["dynamic.scope.user.attribute"] =
-          clientScope.attributes["dynamic.scope.user.attribute"].split("##");
-      }
       setClientScope(clientScope);
     },
     [key, id],
@@ -122,10 +118,6 @@ export default function EditClientScope() {
       ...formData,
       name: formData.name?.trim().replace(/ /g, "_"),
     });
-    if (clientScope.attributes?.["dynamic.scope.user.attribute"]) {
-      clientScope.attributes["dynamic.scope.user.attribute"] =
-        clientScope.attributes["dynamic.scope.user.attribute"].join("##");
-    }
     try {
       await adminClient.clientScopes.update({ id }, clientScope);
       await changeScope({ ...clientScope, id }, clientScope.type);
