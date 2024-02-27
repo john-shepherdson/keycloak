@@ -10,7 +10,7 @@ Full Keycloak upstream jira issue can be shown if filtered by Fix version.
 
 Our Keycloak version is working well with PostgreSQL database. For using other SQL databases, text field in database need to be evaluated.
 
-## [Unreleased]
+## [22.0.5-1.1] - 2024-02-27
 
 ### Added
 - Eosc-kc version model with MigrationModel changes [RCIAM-945](https://jira.argo.grnet.gr/browse/RCIAM-945)
@@ -88,5 +88,5 @@ Our Keycloak version is working well with PostgreSQL database. For using other S
 
 In eosc-kc Keycloak version(version 22.0.5-x.x), SAML Federated Identity Providers Alias has been changed.
 If you were in eosc version 18 (version 18.0.1-2.x) and you use SAML federation, after upgrating to this version you need to do the following steps :
-1. run model\jpa\src\main\resources\sql/upgradeKeycloak22.sql
+1. run model/jpa/src/main/resources/sql/upgradeKeycloak22.sql
 2. Restart Keycloak(for cache reloading)
