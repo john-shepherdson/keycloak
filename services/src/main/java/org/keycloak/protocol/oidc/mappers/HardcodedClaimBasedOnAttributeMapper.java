@@ -15,7 +15,7 @@ public class HardcodedClaimBasedOnAttributeMapper extends AbstractOIDCProtocolMa
     private static final List<ProviderConfigProperty> configProperties = new ArrayList<ProviderConfigProperty>();
 
     static {
-        ProviderConfigProperty property = new ProviderConfigProperty();
+        ProviderConfigProperty property;
 
         property = new ProviderConfigProperty();
         property.setName(ProtocolMapperUtils.USER_ATTRIBUTE);
@@ -33,6 +33,7 @@ public class HardcodedClaimBasedOnAttributeMapper extends AbstractOIDCProtocolMa
         property.setDefaultValue("");
         configProperties.add(property);
 
+        property = new ProviderConfigProperty();
         property.setName(ProtocolMapperUtils.CLAIM_VALUE);
         property.setLabel(ProtocolMapperUtils.CLAIM_VALUE_LABEL);
         property.setHelpText(ProtocolMapperUtils.CONDITIONAL_CLAIM_VALUE_HELP_TEXT);
@@ -45,7 +46,7 @@ public class HardcodedClaimBasedOnAttributeMapper extends AbstractOIDCProtocolMa
 
     }
 
-    public static final String PROVIDER_ID = "oidc-hardcoded-attribute-based-attribute-mapper";
+    public static final String PROVIDER_ID = "oidc-hardcoded-claim-based-attribute-mapper";
 
     public List<ProviderConfigProperty> getConfigProperties() {
         return configProperties;

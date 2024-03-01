@@ -12,7 +12,7 @@ public class HardcodedAttributeBasedOnAttributeMapper extends AbstractSAMLProtoc
     private static final List<ProviderConfigProperty> configProperties = new ArrayList<ProviderConfigProperty>();
 
     static {
-        ProviderConfigProperty property = new ProviderConfigProperty();
+        ProviderConfigProperty property;
 
         property = new ProviderConfigProperty();
         property.setName(ProtocolMapperUtils.USER_ATTRIBUTE);
@@ -31,12 +31,6 @@ public class HardcodedAttributeBasedOnAttributeMapper extends AbstractSAMLProtoc
         configProperties.add(property);
 
         property = new ProviderConfigProperty();
-        property.setName(ProtocolMapperUtils.MULTIVALUED);
-        property.setLabel(ProtocolMapperUtils.MULTIVALUED_LABEL);
-        property.setHelpText(ProtocolMapperUtils.MULTIVALUED_HELP_TEXT);
-        property.setType(ProviderConfigProperty.BOOLEAN_TYPE);
-        configProperties.add(property);
-
         property.setName(ProtocolMapperUtils.ATTRIBUTE_VALUE);
         property.setLabel(ProtocolMapperUtils.ATTRIBUTE_CONDITIONAL_VALUES_LABEL);
         property.setHelpText(ProtocolMapperUtils.ATTRIBUTE_CONDITIONAL_VALUES_HELP_TEXT);
@@ -49,7 +43,7 @@ public class HardcodedAttributeBasedOnAttributeMapper extends AbstractSAMLProtoc
 
     }
 
-    public static final String PROVIDER_ID = "saml-hardcoded-claim-based-attribute-mapper";
+    public static final String PROVIDER_ID = "saml-hardcoded-attribute-based-attribute-mapper";
 
     public List<ProviderConfigProperty> getConfigProperties() {
         return configProperties;

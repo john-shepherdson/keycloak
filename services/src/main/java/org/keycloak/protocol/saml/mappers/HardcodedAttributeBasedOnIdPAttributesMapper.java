@@ -28,7 +28,7 @@ public class HardcodedAttributeBasedOnIdPAttributesMapper extends AbstractSAMLPr
     private static final List<ProviderConfigProperty> configProperties = new ArrayList<ProviderConfigProperty>();
 
     static {
-        ProviderConfigProperty property = new ProviderConfigProperty();
+        ProviderConfigProperty property;
 
         property = new ProviderConfigProperty();
         property.setName(ProtocolMapperUtils.IDP_ATTRIBUTE_NAME);
@@ -46,6 +46,7 @@ public class HardcodedAttributeBasedOnIdPAttributesMapper extends AbstractSAMLPr
         property.setDefaultValue("");
         configProperties.add(property);
 
+        property = new ProviderConfigProperty();
         property.setName(ProtocolMapperUtils.ATTRIBUTE_VALUE);
         property.setLabel(ProtocolMapperUtils.ATTRIBUTE_CONDITIONAL_VALUES_LABEL);
         property.setHelpText(ProtocolMapperUtils.ATTRIBUTE_CONDITIONAL_VALUES_HELP_TEXT);
