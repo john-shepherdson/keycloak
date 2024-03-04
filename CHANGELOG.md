@@ -12,9 +12,9 @@ Our Keycloak version is working well with PostgreSQL database. For using other S
 
 ## [Unreleased]
 
-[//]: # (### Added)
+### Added
 
-[//]: # (- Allow forwarding OIDC scopes to upstream OIDC Identity Provider in Keycloak [Allow forwarding OIDC scopes to upstream OIDC Identity Provider in Keycloak]&#40;https://trello.com/c/9I5SeGN6/2470-allow-forwarding-oidc-scopes-to-upstream-oidc-identity-provider-in-keycloak&#41;)
+- Allow forwarding OIDC scopes to upstream OIDC Identity Provider in Keycloak [Allow forwarding OIDC scopes to upstream OIDC Identity Provider in Keycloak](https://trello.com/c/9I5SeGN6/2470-allow-forwarding-oidc-scopes-to-upstream-oidc-identity-provider-in-keycloak)
 
 ### Fixed
 - Fix configuration problems in generated Claim or attribute Mappers[Mapper for generating SAML attribute values or Claim values using other SAML attribute/Claim values as input](https://trello.com/c/8K46f2mo/1642-mapper-for-generating-saml-attribute-values-or-claim-values-using-other-saml-attribute-claim-values-as-input)

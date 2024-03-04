@@ -34,6 +34,7 @@ public class OAuth2IdentityProviderConfig extends IdentityProviderModel {
 
     public static final String PKCE_ENABLED = "pkceEnabled";
     public static final String PKCE_METHOD = "pkceMethod";
+    public static final String PASS_SCOPE = "passScope";
 
     public OAuth2IdentityProviderConfig(IdentityProviderModel model) {
         super(model);
@@ -154,7 +155,16 @@ public class OAuth2IdentityProviderConfig extends IdentityProviderModel {
     public void setClientAssertionSigningAlg(String signingAlg) {
         getConfig().put("clientAssertionSigningAlg", signingAlg);
     }
-    
+
+    public boolean isPassScope() {
+        return Boolean.valueOf(getConfig().get(PASS_SCOPE));
+    }
+
+    public void setPassScope(boolean passScope) {
+        getConfig().put(PASS_SCOPE, String.valueOf(passScope));
+    }
+
+
     @Override
     public void validate(RealmModel realm) {
         SslRequired sslRequired = realm.getSslRequired();
