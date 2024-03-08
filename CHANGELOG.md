@@ -18,10 +18,12 @@ Our Keycloak version is working well with PostgreSQL database. For using other S
 
 ### Fixed
 - Fix configuration problems in generated Claim or attribute Mappers[Mapper for generating SAML attribute values or Claim values using other SAML attribute/Claim values as input](https://trello.com/c/8K46f2mo/1642-mapper-for-generating-saml-attribute-values-or-claim-values-using-other-saml-attribute-claim-values-as-input)
-- Use the target client when processing scopes for internal exchanges [Keycloak-19183](https://github.com/keycloak/keycloak/issues/19183)
+- Enchance SAML IdP Logout [Keycloak-19183](https://github.com/keycloak/keycloak/issues/19183)
 
+### Changed
 
 ## [22.0.5-1.1] - 2024-02-27
+- Use the target client when processing scopes for internal exchanges [Keycloak-19183](https://github.com/keycloak/keycloak/issues/23528)
 
 ### Added
 - Eosc-kc version model with MigrationModel changes [RCIAM-945](https://jira.argo.grnet.gr/browse/RCIAM-945)
