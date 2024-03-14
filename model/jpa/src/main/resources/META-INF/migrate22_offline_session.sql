@@ -1,0 +1,2 @@
+--change client.offline.session.max.timeout to client.offline.session.max.lifespan
+update client_attributes set "name" ='client.offline.session.max.lifespan' where "name" ='client.offline.session.max.timeout';
