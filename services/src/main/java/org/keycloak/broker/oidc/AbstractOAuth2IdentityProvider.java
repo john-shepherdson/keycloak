@@ -328,9 +328,9 @@ public abstract class AbstractOAuth2IdentityProvider<C extends OAuth2IdentityPro
                 .queryParam(OAUTH2_PARAMETER_REDIRECT_URI, request.getRedirectUri());
 
         String clientScopeParam = request.getAuthenticationSession().getClientNote(OIDCLoginProtocol.SCOPE_PARAM);
-        if (getConfig().isPassScope() && clientScopeParam != null && !clientScopeParam.isEmpty() ) {
-            Set<String> defaultScpeSet = Arrays.stream(getConfig().getDefaultScope().split(" ")).map(s -> s.split(":")[0]).collect(Collectors.toSet());
-            String scopeValue = Profile.isFeatureEnabled(Profile.Feature.DYNAMIC_SCOPES) ? Arrays.stream(clientScopeParam.split(" ")).filter(sc -> defaultScpeSet.contains(sc.split(":")[0])).collect(Collectors.joining(" ")) : Arrays.stream(clientScopeParam.split(" ")).filter(sc -> defaultScpeSet.contains(sc)).collect(Collectors.joining(" "));
+        if (getConfig().isPassScope() && clientScopeParam != null && !clientScopeParam.isEmpty()) {
+            Set<String> optionalScopeSet = Arrays.stream(getConfig().getOptionalScope().split(" ")).map(s -> s.split(":")[0]).collect(Collectors.toSet());
+            String scopeValue = Profile.isFeatureEnabled(Profile.Feature.DYNAMIC_SCOPES) ? Arrays.stream(clientScopeParam.split(" ")).filter(sc -> optionalScopeSet.contains(sc.split(":")[0])).collect(Collectors.joining(" ")) : Arrays.stream(clientScopeParam.split(" ")).filter(sc -> optionalScopeSet.contains(sc)).collect(Collectors.joining(" "));
             uriBuilder.queryParam(OAUTH2_PARAMETER_SCOPE, scopeValue);
         } else {
             uriBuilder.queryParam(OAUTH2_PARAMETER_SCOPE, getConfig().getDefaultScope());

@@ -2,7 +2,7 @@
 
     <changeSet author="eosc-kc" id="migration-client-offline-session">
         <sql>
-            update client_attributes set "name" ='client.offline.session.max.lifespan' where "name" ='client.offline.session.max.timeout';
+            update client_attributes set name ='client.offline.session.max.lifespan' where name ='client.offline.session.max.timeout';
         </sql>
     </changeSet>
 </databaseChangeLog>

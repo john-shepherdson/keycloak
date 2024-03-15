@@ -8,7 +8,7 @@ import {
   SelectVariant,
 } from "@patternfly/react-core";
 import { useState } from "react";
-import { Controller, useFormContext } from "react-hook-form";
+import { Controller, useFormContext, useWatch } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 
 import { HelpItem } from "ui-shared";
@@ -31,6 +31,11 @@ export const ExtendedNonDiscoverySettings = () => {
   const [isExpanded, setIsExpanded] = useState(false);
   const [promptOpen, setPromptOpen] = useState(false);
 
+  const passScope = useWatch({
+      control,
+      name: "config.passScope",
+    });
+
   return (
     <ExpandableSection
       toggleText={t("advanced")}
@@ -49,6 +54,7 @@ export const ExtendedNonDiscoverySettings = () => {
         <SwitchField field="config.disableNonce" label="disableNonce" />
         <TextField field="config.defaultScope" label="scopes" />
         <SwitchField label="passScope" field="config.passScope" />
+        {passScope === "true" && (<TextField field="config.optionalScope" label="optionalScopes"/>)}
         <FormGroupField label="prompt">
           <Controller
             name="config.prompt"

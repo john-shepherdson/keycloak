@@ -108,6 +108,7 @@
   "issuer": "Issuer",
   "passScope": "Pass scope request parameter",
   "scopes": "Default scopes",
+  "optionalScopes": "Optional scopes",
   "prompt": "Prompt",
   "prompts": {
     "unspecified": "Unspecified",

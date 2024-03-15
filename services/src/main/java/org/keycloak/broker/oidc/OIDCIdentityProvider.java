@@ -111,6 +111,9 @@ public class OIDCIdentityProvider extends AbstractOAuth2IdentityProvider<OIDCIde
         if (!defaultScope.contains(SCOPE_OPENID)) {
             config.setDefaultScope((SCOPE_OPENID + " " + defaultScope).trim());
         }
+
+        if (config.isPassScope() && (config.getOptionalScope() == null || config.getOptionalScope().isEmpty()))
+            config.setOptionalScope(SCOPE_OPENID);
     }
 
     @Override
