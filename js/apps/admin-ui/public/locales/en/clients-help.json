@@ -103,6 +103,7 @@
   "advancedSettingsSaml": "This section is used to configure advanced settings of this client",
   "assertionLifespan": "Lifespan set in the SAML assertion conditions. After that time the assertion will be invalid. The \"SessionNotOnOrAfter\" attribute is not modified and continue using the \"SSO Session Max\" time defined at realm level.",
   "accessTokenLifespan": "Max time before an access token is expired. This value is recommended to be short relative to the SSO timeout.",
+  "idTokenLifespan": "Max time before an id token is expired.",
   "clientSessionIdle": "Time a client session is allowed to be idle before it expires. Tokens are invalidated when a client session is expired. The option does not affect the global user SSO session. If not set, it uses the standard SSO Session Idle value.",
   "clientSessionMax": "Max time before a client session is expired. Tokens are invalidated when a client session is expired. The option does not affect the global user SSO session. If not set, it uses the realm Client Session Max or SSO Session Max value.",
   "clientOfflineSessionIdle": "Time a client offline session is allowed to be idle before it expires. Offline tokens are invalidated when a client offline session is expired. The option does not affect the global user SSO session. If not set, it uses the realm Offline Session Idle value.",

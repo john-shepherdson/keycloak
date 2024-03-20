@@ -136,7 +136,12 @@ export const AdvancedSettings = ({
             defaultValue={realm?.accessTokenLifespan}
             units={["minute", "day", "hour"]}
           />
-
+          <TokenLifespan
+            id="idTokenLifespan"
+            name={convertAttributeNameToForm("attributes.id.token.lifespan")}
+            defaultValue={realm?.idTokenLifespan}
+            units={["minute", "day", "hour"]}
+          />
           <TokenLifespan
             id="clientSessionIdle"
             name={convertAttributeNameToForm(

@@ -208,6 +208,7 @@
   "revokeRefreshToken": "Revoke Refresh Token",
   "refreshTokenMaxReuse": "Refresh Token Max Reuse",
   "accessTokenLifespan": "Access Token Lifespan",
+  "idTokenLifespan": "ID Token Lifespan",
   "accessTokenLifespanImplicitFlow": "Access Token Lifespan For Implicit Flow",
   "clientLoginTimeout": "Client Login Timeout",
   "userInitiatedActionLifespan": "User-Initiated Action Lifespan",

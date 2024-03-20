@@ -507,6 +507,7 @@
   "assertionLifespan": "Assertion Lifespan",
   "revokeRefreshToken": "Revoke Refresh Token",
   "accessTokenLifespan": "Access Token Lifespan",
+  "idTokenLifespan": "ID Token Lifespan",
   "clientSessionIdle": "Client Session Idle",
   "clientSessionMax": "Client Session Max",
   "clientOfflineSessionIdle": "Client Offline Session Idle",

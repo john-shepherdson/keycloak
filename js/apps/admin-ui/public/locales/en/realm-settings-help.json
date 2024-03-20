@@ -63,6 +63,7 @@
   "revokeRefreshToken": "If enabled a refresh token can only be used up to 'Refresh Token Max Reuse' and is revoked when a different token is used. Otherwise refresh tokens are not revoked when used and can be used multiple times.",
   "refreshTokenMaxReuse": "Maximum number of times a refresh token can be reused. When a different token is used, revocation is immediate.",
   "accessTokenLifespan": "Max time before an access token is expired. This value is recommended to be short relative to the SSO timeout",
+  "idTokenLifespan": "Max time before an ID Token is expired. Default value equal to Access Token Lifespan.",
   "accessTokenLifespanImplicitFlow": "Max time before an access token issued during OpenID Connect Implicit Flow is expired. This value is recommended to be shorter than the SSO timeout. There is no possibility to refresh token during implicit flow, that's why there is a separate timeout different to 'Access Token Lifespan'",
   "clientLoginTimeout": "Max time a client has to finish the access token protocol. This should normally be 1 minute.",
   "userInitiatedActionLifespan": "Maximum time before an action permit sent by a user (such as a forgot password e-mail) is expired. This value is recommended to be short because it's expected that the user would react to self-created action quickly.",

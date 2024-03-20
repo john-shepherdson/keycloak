@@ -27,6 +27,7 @@ Our Keycloak version is working well with PostgreSQL database. For using other S
 - Use the target client when processing scopes for internal exchanges [Keycloak-19183](https://github.com/keycloak/keycloak/issues/23528)
 
 ### Added
+- ID token lifetime option
 - Eosc-kc version model with MigrationModel changes [RCIAM-945](https://jira.argo.grnet.gr/browse/RCIAM-945)
 - Support for SAML Federation
 - Identity Providers pager in Linked Accounts of Account Console. [EOSC-KC-50](https://github.com/eosc-kc/keycloak/issues/50)
