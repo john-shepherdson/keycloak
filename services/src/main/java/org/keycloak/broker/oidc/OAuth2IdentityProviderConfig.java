@@ -166,11 +166,11 @@ public class OAuth2IdentityProviderConfig extends IdentityProviderModel {
     }
 
     public String getOptionalScope() {
-        return getConfig().get(PASS_SCOPE);
+        return getConfig().get(OPTIONAL_SCOPE);
     }
 
     public void setOptionalScope(String optionalcope) {
-        getConfig().put(PASS_SCOPE, optionalcope);
+        getConfig().put(OPTIONAL_SCOPE, optionalcope);
     }
 
 
