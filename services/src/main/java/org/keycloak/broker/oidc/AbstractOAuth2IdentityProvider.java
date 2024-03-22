@@ -327,10 +327,17 @@ public abstract class AbstractOAuth2IdentityProvider<C extends OAuth2IdentityPro
                 .queryParam(OAUTH2_PARAMETER_CLIENT_ID, getConfig().getClientId())
                 .queryParam(OAUTH2_PARAMETER_REDIRECT_URI, request.getRedirectUri());
 
+        //add to client scope parameter the default scope of client
         String clientScopeParam = request.getAuthenticationSession().getClientNote(OIDCLoginProtocol.SCOPE_PARAM);
-        if (getConfig().isPassScope() && clientScopeParam != null && !clientScopeParam.isEmpty()) {
+        String defaultClientScopeParam = request.getAuthenticationSession().getClient().getClientScopes(true).keySet().stream().collect(Collectors.joining(" "));
+        if (clientScopeParam != null && !clientScopeParam.isEmpty() && defaultClientScopeParam.isEmpty()) {
+            defaultClientScopeParam = clientScopeParam;
+        } else {
+            defaultClientScopeParam += " "+clientScopeParam;
+        }
+        if (getConfig().isPassScope() &&  !defaultClientScopeParam.isEmpty()) {
             Set<String> optionalScopeSet = Arrays.stream(getConfig().getOptionalScope().split(" ")).map(s -> s.split(":")[0]).collect(Collectors.toSet());
-            String scopeValue = Profile.isFeatureEnabled(Profile.Feature.DYNAMIC_SCOPES) ? Arrays.stream(clientScopeParam.split(" ")).filter(sc -> optionalScopeSet.contains(sc.split(":")[0])).collect(Collectors.joining(" ")) : Arrays.stream(clientScopeParam.split(" ")).filter(sc -> optionalScopeSet.contains(sc)).collect(Collectors.joining(" "));
+            String scopeValue = Profile.isFeatureEnabled(Profile.Feature.DYNAMIC_SCOPES) ? Arrays.stream(defaultClientScopeParam.split(" ")).filter(sc -> optionalScopeSet.contains(sc.split(":")[0])).collect(Collectors.joining(" ")) : Arrays.stream(defaultClientScopeParam.split(" ")).filter(sc -> optionalScopeSet.contains(sc)).collect(Collectors.joining(" "));
             uriBuilder.queryParam(OAUTH2_PARAMETER_SCOPE, scopeValue);
         } else {
             uriBuilder.queryParam(OAUTH2_PARAMETER_SCOPE, getConfig().getDefaultScope());
