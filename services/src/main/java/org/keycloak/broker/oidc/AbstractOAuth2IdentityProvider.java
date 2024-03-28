@@ -80,6 +80,7 @@ import java.io.IOException;
 import java.net.URI;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -327,19 +328,25 @@ public abstract class AbstractOAuth2IdentityProvider<C extends OAuth2IdentityPro
                 .queryParam(OAUTH2_PARAMETER_CLIENT_ID, getConfig().getClientId())
                 .queryParam(OAUTH2_PARAMETER_REDIRECT_URI, request.getRedirectUri());
 
-        //add to client scope parameter the default scope of client
-        String clientScopeParam = request.getAuthenticationSession().getClientNote(OIDCLoginProtocol.SCOPE_PARAM);
-        String defaultClientScopeParam = request.getAuthenticationSession().getClient().getClientScopes(true).keySet().stream().collect(Collectors.joining(" "));
-        if (clientScopeParam != null && !clientScopeParam.isEmpty() && defaultClientScopeParam.isEmpty()) {
-            defaultClientScopeParam = clientScopeParam;
+        if (Objects.equals(OIDCLoginProtocol.LOGIN_PROTOCOL, request.getAuthenticationSession().getClient().getProtocol())) {
+            //oidc client -> check OIDC IdP configuration,scope parameter and default client scopes
+            // //add to client scope parameter the default scope of client
+            String clientScopeParam = request.getAuthenticationSession().getClientNote(OIDCLoginProtocol.SCOPE_PARAM);
+            String defaultClientScopeParam = request.getAuthenticationSession().getClient().getClientScopes(true).keySet().stream().collect(Collectors.joining(" "));
+            if (clientScopeParam != null && !clientScopeParam.isEmpty() && defaultClientScopeParam.isEmpty()) {
+                defaultClientScopeParam = clientScopeParam;
+            } else {
+                defaultClientScopeParam += " " + clientScopeParam;
+            }
+            if (getConfig().isPassScope() && !defaultClientScopeParam.isEmpty()) {
+                Set<String> optionalScopeSet = Arrays.stream(getConfig().getOptionalScope().split(" ")).map(s -> s.split(":")[0]).collect(Collectors.toSet());
+                String scopeValue = Profile.isFeatureEnabled(Profile.Feature.DYNAMIC_SCOPES) ? Arrays.stream(defaultClientScopeParam.split(" ")).filter(sc -> optionalScopeSet.contains(sc.split(":")[0])).collect(Collectors.joining(" ")) : Arrays.stream(defaultClientScopeParam.split(" ")).filter(sc -> optionalScopeSet.contains(sc)).collect(Collectors.joining(" "));
+                uriBuilder.queryParam(OAUTH2_PARAMETER_SCOPE, scopeValue);
+            } else {
+                uriBuilder.queryParam(OAUTH2_PARAMETER_SCOPE, getConfig().getDefaultScope());
+            }
         } else {
-            defaultClientScopeParam += " "+clientScopeParam;
-        }
-        if (getConfig().isPassScope() &&  !defaultClientScopeParam.isEmpty()) {
-            Set<String> optionalScopeSet = Arrays.stream(getConfig().getOptionalScope().split(" ")).map(s -> s.split(":")[0]).collect(Collectors.toSet());
-            String scopeValue = Profile.isFeatureEnabled(Profile.Feature.DYNAMIC_SCOPES) ? Arrays.stream(defaultClientScopeParam.split(" ")).filter(sc -> optionalScopeSet.contains(sc.split(":")[0])).collect(Collectors.joining(" ")) : Arrays.stream(defaultClientScopeParam.split(" ")).filter(sc -> optionalScopeSet.contains(sc)).collect(Collectors.joining(" "));
-            uriBuilder.queryParam(OAUTH2_PARAMETER_SCOPE, scopeValue);
-        } else {
+            //SAML client -> set default scopes as scope parameter
             uriBuilder.queryParam(OAUTH2_PARAMETER_SCOPE, getConfig().getDefaultScope());
         }
 
