@@ -335,7 +335,7 @@ public abstract class AbstractOAuth2IdentityProvider<C extends OAuth2IdentityPro
             String defaultClientScopeParam = request.getAuthenticationSession().getClient().getClientScopes(true).keySet().stream().collect(Collectors.joining(" "));
             if (clientScopeParam != null && !clientScopeParam.isEmpty() && defaultClientScopeParam.isEmpty()) {
                 defaultClientScopeParam = clientScopeParam;
-            } else {
+            } else if (clientScopeParam != null && !clientScopeParam.isEmpty()){
                 defaultClientScopeParam += " " + clientScopeParam;
             }
             if (getConfig().isPassScope() && !defaultClientScopeParam.isEmpty()) {
