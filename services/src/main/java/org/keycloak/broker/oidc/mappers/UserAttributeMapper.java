@@ -54,6 +54,7 @@ public class UserAttributeMapper extends AbstractClaimMapper {
     public static final String EMAIL_VERIFIED = "emailVerified";
     public static final String FIRST_NAME = "firstName";
     public static final String LAST_NAME = "lastName";
+    public static final String PRESERVE_EXISTING_ATTRIBUTES = "keep.empty.values";
     private static final Set<IdentityProviderSyncMode> IDENTITY_PROVIDER_SYNC_MODES = new HashSet<>(Arrays.asList(IdentityProviderSyncMode.values()));
 
     static {
@@ -65,6 +66,12 @@ public class UserAttributeMapper extends AbstractClaimMapper {
         property1.setHelpText("Name of claim to search for in token. You can reference nested claims using a '.', i.e. 'address.locality'. To use dot (.) literally, escape it with backslash (\\.)");
         property1.setType(ProviderConfigProperty.STRING_TYPE);
         configProperties.add(property1);
+        ProviderConfigProperty keepEmptyValuesProperty = new ProviderConfigProperty();
+        keepEmptyValuesProperty.setName(PRESERVE_EXISTING_ATTRIBUTES);
+        keepEmptyValuesProperty.setLabel("Preserve existing attributes");
+        keepEmptyValuesProperty.setHelpText("Controls how user attributes are updated with the FORCE sync mode. When this option is enabled, existing user attributes will be preserved if the corresponding claim is not released by the Identity Provider (IdP) during login. When disabled (default), existing user attributes will be removed if the corresponding claim is not released by the IdP.");
+        keepEmptyValuesProperty.setType(ProviderConfigProperty.BOOLEAN_TYPE);
+        configProperties.add(keepEmptyValuesProperty);
         property = new ProviderConfigProperty();
         property.setName(USER_ATTRIBUTE);
         property.setLabel("User Attribute Name");
@@ -171,9 +178,10 @@ public class UserAttributeMapper extends AbstractClaimMapper {
                 user.setEmailVerified(Boolean.valueOf(values.get(0)));
         } else {
             List<String> current = user.getAttributeStream(attribute).collect(Collectors.toList());
+            boolean keepEmptyValues = Boolean.parseBoolean(mapperModel.getConfig().get(PRESERVE_EXISTING_ATTRIBUTES));
             if (!CollectionUtil.collectionEquals(values, current)) {
                 user.setAttribute(attribute, values);
-            } else if (values.isEmpty()) {
+            } else if (values.isEmpty() && !keepEmptyValues) {
                 user.removeAttribute(attribute);
             }
         }
