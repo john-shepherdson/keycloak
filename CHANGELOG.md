@@ -21,6 +21,7 @@ Our Keycloak version is working well with PostgreSQL database. For using other S
 - Fix configuration problems in generated Claim or attribute Mappers[Mapper for generating SAML attribute values or Claim values using other SAML attribute/Claim values as input](https://trello.com/c/8K46f2mo/1642-mapper-for-generating-saml-attribute-values-or-claim-values-using-other-saml-attribute-claim-values-as-input)
 - Enchance SAML IdP Logout [Keycloak-19183](https://github.com/keycloak/keycloak/issues/19183)
 - Change 'client.offline.session.max.timeout' to 'client.offline.session.max.lifespan' [Changes in federation registry and deployer for Keycloak staging version 22 and Clients migration](https://trello.com/c/Dk8ajZ2E/2214-changes-in-federation-registry-and-deployer-for-keycloak-staging-version-22-and-clients-migration)
+- Group search case insensitive [Manage groups: search --> case insensitive](https://trello.com/c/iCfjZ306/2554-manage-groups-search-case-insensitive)
 
 ## [22.0.5-1.1] - 2024-02-27
 - Use the target client when processing scopes for internal exchanges [Keycloak-19183](https://github.com/keycloak/keycloak/issues/23528)
