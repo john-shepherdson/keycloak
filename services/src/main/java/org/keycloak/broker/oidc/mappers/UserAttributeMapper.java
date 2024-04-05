@@ -179,7 +179,7 @@ public class UserAttributeMapper extends AbstractClaimMapper {
         } else {
             List<String> current = user.getAttributeStream(attribute).collect(Collectors.toList());
             boolean keepEmptyValues = Boolean.parseBoolean(mapperModel.getConfig().get(PRESERVE_EXISTING_ATTRIBUTES));
-            if (!CollectionUtil.collectionEquals(values, current)) {
+            if (!CollectionUtil.collectionEquals(values, current) && (values.size() > 0 || !keepEmptyValues)) {
                 user.setAttribute(attribute, values);
             } else if (values.isEmpty() && !keepEmptyValues) {
                 user.removeAttribute(attribute);
