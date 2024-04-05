@@ -18,6 +18,9 @@ Our Keycloak version is working well with PostgreSQL database. For using other S
 
 ## [22.0.5-1.2] - 2024-04-03
 
+For not throwing errors due to dublicate client_attribute entries you must execute the following delete statement before upgrading to this version :
+_delete from client_attributes where name='client.offline.session.max.lifespan';_
+
 ### Added
 
 - Allow forwarding OIDC scopes to upstream OIDC Identity Provider in Keycloak [Allow forwarding OIDC scopes to upstream OIDC Identity Provider in Keycloak](https://trello.com/c/9I5SeGN6/2470-allow-forwarding-oidc-scopes-to-upstream-oidc-identity-provider-in-keycloak)
