@@ -13,7 +13,8 @@ Our Keycloak version is working well with PostgreSQL database. For using other S
 ## [Unreleased]
 
 ### Added
-- OIDC UserAttribute mapper strategy FORCE could preserve existing attributes [Implement mapper strategy FORCE update only when claim is present](https://trello.com/c/ClFiAOgF/2543-implement-mapper-strategy-force-update-only-when-claim-is-present?filter=member:cgeorgilakis)
+- OIDC UserAttribute mapper strategy FORCE could preserve existing attributes [Implement mapper strategy FORCE update only when claim is present](https://trello.com/c/ClFiAOgF/2543-implement-mapper-strategy-force-update-only-when-claim-is-present)
+- Debug log for id token and user info of OIDC IdP [Investigate how to log OIDC login events incl user claims from OIDC IdP](https://trello.com/c/G7pWOVDa/2574-investigate-how-to-log-oidc-login-events-incl-user-claims-from-oidc-idp)
 
 ## [22.0.5-1.2] - 2024-04-03
 

@@ -476,6 +476,8 @@ public class OIDCIdentityProvider extends AbstractOAuth2IdentityProvider<OIDCIde
 
     protected BrokeredIdentityContext extractIdentity(AccessTokenResponse tokenResponse, String accessToken, JsonWebToken idToken) throws IOException {
         String id = idToken.getSubject();
+        logger.debugf("User with %s username(sub claim) has log in from idp %s", id, getConfig().getAlias());
+        logger.debugf("idToken : %s", accessToken);
         BrokeredIdentityContext identity = new BrokeredIdentityContext(id);
         String name = (String) idToken.getOtherClaims().get(IDToken.NAME);
         String givenName = (String)idToken.getOtherClaims().get(IDToken.GIVEN_NAME);
@@ -509,6 +511,8 @@ public class OIDCIdentityProvider extends AbstractOAuth2IdentityProvider<OIDCIde
                         throw new RuntimeException("Unsupported content-type [" + contentType + "] in response from [" + userInfoUrl + "].");
                     }
 
+                    logger.debug("Userinfo");
+                    logger.debug(userInfo.toPrettyString());
                     id = getJsonProperty(userInfo, "sub");
                     name = getJsonProperty(userInfo, "name");
                     givenName = getJsonProperty(userInfo, IDToken.GIVEN_NAME);
