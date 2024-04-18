@@ -72,7 +72,7 @@ public class UserAttributeMapper extends AbstractClaimMapper {
         ProviderConfigProperty relatedScopesProperty = new ProviderConfigProperty();
         relatedScopesProperty.setName(RELATED_SCOPES);
         relatedScopesProperty.setLabel("Related scopes");
-        relatedScopesProperty.setHelpText("Related scopes with this Identity Provider mapper. If none of related scopes is either default client scope either exists in scope parameter and Identity Provider passScope is true, user attribute will not be deleted with strategy FORCE. When pass scope in Identity Provider is not enabled(default), existing user attributes will be removed if the corresponding claim is not released by the IdP.");
+        relatedScopesProperty.setHelpText("Specify the scopes that can be used for requesting the claim when the 'Pass Scope' option is enabled. If none of the listed scopes are either set as default client scopes or present in the scope parameter from the initial application request, the user attribute will be preserved even if sync mode is set to 'FORCE'. If 'Pass Scope' is not enabled, any existing user attribute values will be removed if the corresponding claim is missing from the Identity Provider response.");
         relatedScopesProperty.setType(ProviderConfigProperty.MULTIVALUED_STRING_TYPE);
         relatedScopesProperty.setStringify(Boolean.TRUE);
         relatedScopesProperty.setDefaultValue("");

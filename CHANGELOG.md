@@ -10,7 +10,7 @@ Full Keycloak upstream jira issue can be shown if filtered by Fix version.
 
 Our Keycloak version is working well with PostgreSQL database. For using other SQL databases, text field in database need to be evaluated.
 
-## [Unreleased]
+## [22.0.5-1.3] - 2024-04-18
 
 ### Added
 - OIDC UserAttribute mapper strategy FORCE will not delete not existing values if pass scope is enabled and scope is not passed [Implement mapper strategy FORCE update only when claim is present](https://trello.com/c/ClFiAOgF/2543-implement-mapper-strategy-force-update-only-when-claim-is-present)
