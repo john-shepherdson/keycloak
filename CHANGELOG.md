@@ -10,6 +10,11 @@ Full Keycloak upstream jira issue can be shown if filtered by Fix version.
 
 Our Keycloak version is working well with PostgreSQL database. For using other SQL databases, text field in database need to be evaluated.
 
+## [Unreleased]
+
+### Fixed
+- Correct Linkedin name and logo[RCIAM-1346](https://jira.argo.grnet.gr/browse/RCIAM-1346)
+
 ## [22.0.5-1.3] - 2024-04-18
 
 ### Added
@@ -29,7 +34,7 @@ _delete from client_attributes where name='client.offline.session.max.lifespan';
 - Fix configuration problems in generated Claim or attribute Mappers[Mapper for generating SAML attribute values or Claim values using other SAML attribute/Claim values as input](https://trello.com/c/8K46f2mo/1642-mapper-for-generating-saml-attribute-values-or-claim-values-using-other-saml-attribute-claim-values-as-input)
 - Enchance SAML IdP Logout [Keycloak-19183](https://github.com/keycloak/keycloak/issues/19183)
 - Change 'client.offline.session.max.timeout' to 'client.offline.session.max.lifespan' [Changes in federation registry and deployer for Keycloak staging version 22 and Clients migration](https://trello.com/c/Dk8ajZ2E/2214-changes-in-federation-registry-and-deployer-for-keycloak-staging-version-22-and-clients-migration)
-- Group search case insensitive [Manage groups: search --> case insensitive](https://trello.com/c/iCfjZ306/2554-manage-groups-search-case-insensitive)
+- Group search case insensitive [RCIAM-1336](https://jira.argo.grnet.gr/browse/RCIAM-1336)
 
 ## [22.0.5-1.1] - 2024-02-27
 - Use the target client when processing scopes for internal exchanges [Keycloak-19183](https://github.com/keycloak/keycloak/issues/23528)
@@ -104,7 +109,7 @@ _delete from client_attributes where name='client.offline.session.max.lifespan';
 - Update changes related to service account with Client registration 
 - Dynamic scopes( default enabled): bug corrections, filtering and consent [RCIAM-848](https://jira.argo.grnet.gr/browse/RCIAM-848)
 - Fix Token Exchange without scope parameter bug in scope 
-- OIDC Protocol Mappers add value to existing claims instead of overwriting it[Mapper for generating SAML attribute values or Claim values using other SAML attribute/Claim values as input](https://trello.com/c/8K46f2mo/1642-mapper-for-generating-saml-attribute-values-or-claim-values-using-other-saml-attribute-claim-values-as-input)
+- OIDC Protocol Mappers add value to existing claims instead of overwriting it[Keycloak-25774](https://github.com/keycloak/keycloak/issues/25774)
 - Support federation metadata with nested EntitiesDescription[Support federation metadata with nested EntitiesDescription](https://trello.com/c/wRbquYl4/2395-support-federation-metadata-with-nested-entitiesdescription)
 
 # Migration from eosc-kc version 18
