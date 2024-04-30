@@ -3,6 +3,7 @@ package org.keycloak.services.resources.account.resources;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.POST;
+import jakarta.ws.rs.PUT;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.Produces;
 import org.jboss.resteasy.annotations.cache.NoCache;
@@ -44,5 +45,12 @@ public class SshPublicKeyResource {
         List<String> values = user.getAttributeStream(SSH_PUBLIC_KEYS).collect(Collectors.toList());
         values.add(newSshKey);
         user.setAttribute(SSH_PUBLIC_KEYS, values);
+    }
+
+    @PUT
+    @Path("/")
+    @NoCache
+    public void createSshPublicKeys(List<String> sshKeys){
+        user.setAttribute(SSH_PUBLIC_KEYS, sshKeys);
     }
 }
