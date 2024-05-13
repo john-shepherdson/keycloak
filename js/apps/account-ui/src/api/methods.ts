@@ -101,6 +101,17 @@ export async function getLinkedAccounts({ signal }: CallOptions) {
   return parseResponse<LinkedAccountRepresentation[]>(response);
 }
 
+export async function getSSHKeys() {
+  const response = await request("/ssh-public-keys");
+  return parseResponse<string[]>(response);
+}
+
+export const updateSHHKeys = (sshKeys: string[]) =>
+  request("/ssh-public-keys", {
+    method: "PUT",
+    body: [...sshKeys],
+  });
+
 export async function unLinkAccount(account: LinkedAccountRepresentation) {
   const response = await request("/linked-accounts/" + account.providerName, {
     method: "DELETE",

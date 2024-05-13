@@ -11,6 +11,7 @@ const Applications = lazy(() => import("./applications/Applications"));
 const Groups = lazy(() => import("./groups/Groups"));
 const PersonalInfo = lazy(() => import("./personal-info/PersonalInfo"));
 const Resources = lazy(() => import("./resources/Resources"));
+const SSHKeys = lazy(() => import("./account-security/SSHKeys"));
 
 export const DeviceActivityRoute: RouteObject = {
   path: "account-security/device-activity",
@@ -47,6 +48,11 @@ export const PersonalInfoRoute: IndexRouteObject = {
   element: <PersonalInfo />,
 };
 
+export const SSHKeysRoute: RouteObject = {
+  path: "account-security/ssh-keys",
+  element: <SSHKeys />,
+};
+
 export const RootRoute: RouteObject = {
   path: "/",
   element: <Root />,
@@ -60,6 +66,7 @@ export const RootRoute: RouteObject = {
     GroupsRoute,
     PersonalInfoRoute,
     ResourcesRoute,
+    SSHKeysRoute,
   ],
 };
 

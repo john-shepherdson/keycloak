@@ -12,6 +12,9 @@ Our Keycloak version is working well with PostgreSQL database. For using other S
 
 ## [Unreleased]
 
+### Added
+- Add support for managing SSH keys from account console
+
 ### Fixed
 - Correct Linkedin name and logo[RCIAM-1346](https://jira.argo.grnet.gr/browse/RCIAM-1346)
 - Put uriInfo in error response

@@ -56,6 +56,10 @@ const menuItems: MenuItem[] = [
         path: "account-security/linked-accounts",
         isHidden: !environment.features.isLinkedAccountsEnabled,
       },
+      {
+        label: "sshKeys",
+        path: "account-security/ssh-keys",
+      },
     ],
   },
   {
