@@ -22,6 +22,7 @@
         <artifactId>keycloak-model-pom</artifactId>
         <groupId>org.keycloak</groupId>
         <version>22.0.10</version>
+        <relativePath>../pom.xml</relativePath>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
