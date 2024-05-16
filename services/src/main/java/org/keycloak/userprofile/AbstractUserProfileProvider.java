@@ -38,6 +38,7 @@ import java.util.function.Function;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import org.keycloak.Config;
+import org.keycloak.authentication.requiredactions.TermsAndConditions;
 import org.keycloak.common.Profile;
 import org.keycloak.common.Profile.Feature;
 import org.keycloak.models.KeycloakContext;
@@ -217,6 +218,11 @@ public abstract class AbstractUserProfileProvider<U extends UserProfileProvider>
     }
 
     @Override
+    public UserProfile create(UserProfileContext context, Map<String, ?> attributes, UserModel user, boolean terms) {
+        return terms ? createUserProfileWithTerms(context, attributes, user) : createUserProfile(context, attributes, user);
+    }
+
+    @Override
     public UserProfile create(UserProfileContext context, Map<String, ?> attributes) {
         return createUserProfile(context, attributes, null);
     }
@@ -334,6 +340,13 @@ public abstract class AbstractUserProfileProvider<U extends UserProfileProvider>
 
     private UserProfile createUserProfile(UserProfileContext context, Map<String, ?> attributes, UserModel user) {
         UserProfileMetadata metadata = configureUserProfile(contextualMetadataRegistry.get(context), session);
+        Attributes profileAttributes = createAttributes(context, attributes, user, metadata);
+        return new DefaultUserProfile(metadata, profileAttributes, createUserFactory(), user, session);
+    }
+
+    private UserProfile createUserProfileWithTerms(UserProfileContext context, Map<String, ?> attributes, UserModel user) {
+        UserProfileMetadata metadata = configureUserProfile(contextualMetadataRegistry.get(context), session);
+        metadata.addAttribute(TermsAndConditions.USER_ATTRIBUTE, 1000, createReadOnlyAttributeUnchangedValidator(readOnlyAttributesPattern));
         Attributes profileAttributes = createAttributes(context, attributes, user, metadata);
         return new DefaultUserProfile(metadata, profileAttributes, createUserFactory(), user, session);
     }

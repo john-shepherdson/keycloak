@@ -18,6 +18,7 @@ Our Keycloak version is working well with PostgreSQL database. For using other S
 ### Fixed
 - Correct Linkedin name and logo[RCIAM-1346](https://jira.argo.grnet.gr/browse/RCIAM-1346)
 - Put uriInfo in error response
+- Being possible to accept terms and conditions befure User is saved in Keycloak during first broker login. Follow GDPR. [Keycloak-28714](https://github.com/keycloak/keycloak/issues/28714) 
 
 ### Changed
 -Attribute Consuming Service: Update Input and Default Value
@@ -44,7 +45,7 @@ _delete from client_attributes where name='client.offline.session.max.lifespan';
 - Group search case insensitive [RCIAM-1336](https://jira.argo.grnet.gr/browse/RCIAM-1336)
 
 ## [22.0.5-1.1] - 2024-02-27
-- Use the target client when processing scopes for internal exchanges [Keycloak-19183](https://github.com/keycloak/keycloak/issues/23528)
+- Use the target client when processing scopes for internal exchanges [Keycloak-23528](https://github.com/keycloak/keycloak/issues/23528)
 
 ### Added
 - ID token lifetime option

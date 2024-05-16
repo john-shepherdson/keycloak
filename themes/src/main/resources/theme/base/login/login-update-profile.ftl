@@ -1,5 +1,6 @@
 <#import "template.ftl" as layout>
-<@layout.registrationLayout displayMessage=!messagesPerField.existsError('username','email','firstName','lastName'); section>
+<#import "register-commons.ftl" as registerCommons>
+<@layout.registrationLayout displayMessage=!messagesPerField.existsError('username','email','firstName','lastName','termsAccepted'); section>
     <#if section = "header">
         ${msg("loginProfileTitle")}
     <#elseif section = "form">
@@ -11,7 +12,7 @@
                     </div>
                     <div class="${properties.kcInputWrapperClass!}">
                         <input type="text" id="username" name="username" value="${(user.username!'')}"
-                               class="${properties.kcInputClass!}"
+                               class="${properties.kcInputClass!}" <#if isUpdateProfile?has_content && !isUpdateProfile>readonly</#if>
                                aria-invalid="<#if messagesPerField.existsError('username')>true</#if>"
                         />
 
@@ -30,7 +31,7 @@
                     </div>
                     <div class="${properties.kcInputWrapperClass!}">
                         <input type="text" id="email" name="email" value="${(user.email!'')}"
-                               class="${properties.kcInputClass!}"
+                               class="${properties.kcInputClass!}" <#if isUpdateProfile?has_content && !isUpdateProfile>readonly</#if>
                                aria-invalid="<#if messagesPerField.existsError('email')>true</#if>"
                         />
 
@@ -49,7 +50,7 @@
                 </div>
                 <div class="${properties.kcInputWrapperClass!}">
                     <input type="text" id="firstName" name="firstName" value="${(user.firstName!'')}"
-                           class="${properties.kcInputClass!}"
+                           class="${properties.kcInputClass!}" <#if isUpdateProfile?has_content && !isUpdateProfile>readonly</#if>
                            aria-invalid="<#if messagesPerField.existsError('firstName')>true</#if>"
                     />
 
@@ -67,7 +68,7 @@
                 </div>
                 <div class="${properties.kcInputWrapperClass!}">
                     <input type="text" id="lastName" name="lastName" value="${(user.lastName!'')}"
-                           class="${properties.kcInputClass!}"
+                           class="${properties.kcInputClass!}" <#if isUpdateProfile?has_content && !isUpdateProfile>readonly</#if>
                            aria-invalid="<#if messagesPerField.existsError('lastName')>true</#if>"
                     />
 
@@ -79,6 +80,7 @@
                 </div>
             </div>
 
+            <@registerCommons.termsAcceptance/>
             <div class="${properties.kcFormGroupClass!}">
                 <div id="kc-form-options" class="${properties.kcFormOptionsClass!}">
                     <div class="${properties.kcFormOptionsWrapperClass!}">
