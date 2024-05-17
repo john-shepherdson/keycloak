@@ -491,7 +491,7 @@ const Fields = ({ readOnly }: DescriptorSettingsProps) => {
       >
         <Controller
           name="config.attributeConsumingServiceIndex"
-          defaultValue={0}
+          defaultValue={1}
           control={control}
           render={({ field }) => {
             const v = Number(field.value);

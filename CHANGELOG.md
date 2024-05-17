@@ -19,6 +19,9 @@ Our Keycloak version is working well with PostgreSQL database. For using other S
 - Correct Linkedin name and logo[RCIAM-1346](https://jira.argo.grnet.gr/browse/RCIAM-1346)
 - Put uriInfo in error response
 
+### Changed
+-Attribute Consuming Service: Update Input and Default Value
+
 ## [22.0.5-1.3] - 2024-04-18
 
 ### Added

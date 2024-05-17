@@ -1,10 +1,10 @@
 import type IdentityFederationRepresentation from "@keycloak/keycloak-admin-client/lib/defs/identityFederationRepresentation";
 import {
   FormGroup,
+  NumberInput,
   Select,
   SelectOption,
   SelectVariant,
-  TextInput,
 } from "@patternfly/react-core";
 import { useState } from "react";
 import { KeycloakTextInput } from "../../components/keycloak-text-input/KeycloakTextInput";
@@ -261,20 +261,29 @@ const IdentityProviderFederationConfig = () => {
       >
         <Controller
           name="config.attributeConsumingServiceIndex"
+          defaultValue={1}
           control={control}
-          defaultValue=""
-          render={({ field }) => (
-            <TextInput
-              type="number"
-              value={field.value}
-              data-testid="attributeConsumingServiceIndex"
-              min={0}
-              onChange={(value) => {
-                const num = Number(value);
-                field.onChange(value === "" ? value : num < 0 ? 0 : num);
-              }}
-            />
-          )}
+          render={({ field }) => {
+            const v = Number(field.value);
+            return (
+              <NumberInput
+                data-testid="attributeConsumingServiceIndex"
+                inputName="attributeConsumingServiceIndex"
+                min={0}
+                max={2147483}
+                value={v}
+                readOnly
+                onPlus={() => field.onChange(v + 1)}
+                onMinus={() => field.onChange(v - 1)}
+                onChange={(event) => {
+                  const value = Number(
+                    (event.target as HTMLInputElement).value,
+                  );
+                  field.onChange(value < 0 ? 0 : value);
+                }}
+              />
+            );
+          }}
         />
       </FormGroup>
       <FormGroup
