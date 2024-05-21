@@ -15,6 +15,7 @@ Our Keycloak version is working well with PostgreSQL database. For using other S
 ### Added
 - Handling authenticating authority(ies) in user session
 - Add user session name to ClaimToUserSessionNoteMapper
+- Add Keycloak tag 22.0.11 [version 22.0.11](https://github.com/keycloak/keycloak/commits/22.0.11/)
 
 ## [22.0.10-1.7] - 2024-07-10
 
