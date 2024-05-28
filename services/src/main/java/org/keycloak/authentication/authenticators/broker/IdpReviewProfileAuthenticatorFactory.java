@@ -116,7 +116,9 @@ public class IdpReviewProfileAuthenticatorFactory implements AuthenticatorFactor
         property.setName(TERMS_AND_CONDITIONS);
         property.setLabel("Accept Terms and Conditions");
         property.setType(ProviderConfigProperty.BOOLEAN_TYPE);
-        property.setHelpText("If this option is true and terms and conditions required action is enabled, new user will be obliged to accept terms and conditions during profile review. With this first broken login flow will follow GDPR.");
+        property.setHelpText("Enable this option to require users to accept terms and conditions before their profile is recorded."
+                +"This ensures compliance with data regulation frameworks like GDPR on first login."
+                +"You also need to enable the 'Terms and Conditions' Required action for this to take effect.");
         configProperties.add(property);
     }
 
