@@ -105,10 +105,12 @@
   "disableUserInfo": "Disable user info",
   "isAccessTokenJWT": "Access Token is JWT",
   "userInfoUrl": "User Info URL",
+  "tokenIntrospectionUrl": "Token Introspection URL",
   "issuer": "Issuer",
   "passScope": "Pass scope request parameter",
   "scopes": "Default scopes",
   "optionalScopes": "Optional scopes",
+  "validateRefreshToken": "Validate refresh token",
   "prompt": "Prompt",
   "prompts": {
     "unspecified": "Unspecified",

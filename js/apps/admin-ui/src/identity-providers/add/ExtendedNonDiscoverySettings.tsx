@@ -52,6 +52,7 @@ export const ExtendedNonDiscoverySettings = () => {
         />
         <SwitchField field="config.disableUserInfo" label="disableUserInfo" />
         <SwitchField field="config.disableNonce" label="disableNonce" />
+        <SwitchField field="config.validateRefreshToken" label="validateRefreshToken" />
         <TextField field="config.defaultScope" label="scopes" />
         <SwitchField label="passScope" field="config.passScope" />
         {passScope === "true" && (<TextField field="config.optionalScope" label="optionalScopes"/>)}

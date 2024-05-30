@@ -111,6 +111,11 @@ const Fields = ({ readOnly }: DiscoverySettingsProps) => {
         label="userInfoUrl"
         isReadOnly={readOnly}
       />
+      <TextField
+         field="config.tokenIntrospectionUrl"
+         label="tokenIntrospectionUrl"
+         isReadOnly={readOnly}
+      />
       <TextField field="config.issuer" label="issuer" isReadOnly={readOnly} />
       <SwitchField
         field="config.validateSignature"

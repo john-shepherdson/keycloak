@@ -79,6 +79,7 @@ public class OIDCIdentityProviderFactory extends AbstractIdentityProviderFactory
             config.setUseJwksUrl(false);
             config.setJwksUrl(null);
         }
+        config.setTokenIntrospectionUrl(rep.getIntrospectionEndpoint());
         return config;
     }
 

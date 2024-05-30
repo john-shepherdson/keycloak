@@ -32,6 +32,8 @@ public class OIDCIdentityProviderConfig extends OAuth2IdentityProviderConfig {
     public static final String USE_JWKS_URL = "useJwksUrl";
     public static final String VALIDATE_SIGNATURE = "validateSignature";
     public static final String IS_ACCESS_TOKEN_JWT = "isAccessTokenJWT";
+    public static final String TOKEN_INTROSPECTION_URL = "tokenIntrospectionUrl";
+    public static final String VALIDATE_REFRESH_TOKEN = "validateRefreshToken";
 
     public OIDCIdentityProviderConfig(IdentityProviderModel identityProviderModel) {
         super(identityProviderModel);
@@ -182,6 +184,23 @@ public class OIDCIdentityProviderConfig extends OAuth2IdentityProviderConfig {
     public void setLastRefreshTime(long lastRefreshTime) {
         getConfig().put(LAST_REFRESH_TIME, String.valueOf(lastRefreshTime));
     }
+
+    public String getTokenIntrospectionUrl() {
+        return getConfig().get(TOKEN_INTROSPECTION_URL);
+    }
+
+    public void setTokenIntrospectionUrl(String tokenIntrospectionUrl) {
+        getConfig().put(TOKEN_INTROSPECTION_URL, tokenIntrospectionUrl);
+    }
+
+    public boolean isValidateRefreshToken() {
+        return Boolean.valueOf(getConfig().get(VALIDATE_REFRESH_TOKEN));
+    }
+
+    public void setValidateRefreshToken(boolean validateRefreshToken) {
+        getConfig().put(VALIDATE_REFRESH_TOKEN, String.valueOf(validateRefreshToken));
+    }
+
 
     @Override
     public void validate(RealmModel realm) {
