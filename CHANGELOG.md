@@ -18,6 +18,9 @@ Our Keycloak version is working well with PostgreSQL database. For using other S
 ### Changed
 - Hardcord Attribute Mapper supporting adding List of values
 
+### Fixed
+- Migrate 'spEntityId' to 'entityId' in SAML federation
+
 ## [22.0.5-1.4] - 2024-05-31
 
 ### Added

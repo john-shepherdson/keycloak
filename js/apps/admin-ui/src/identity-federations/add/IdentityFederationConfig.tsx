@@ -45,14 +45,14 @@ const IdentityProviderFederationConfig = () => {
         }
         isRequired
         helperTextInvalid={t("common:required")}
-        validated={errors.config?.spEntityId ? "error" : "default"}
+        validated={errors.config?.entityId ? "error" : "default"}
       >
         <KeycloakTextInput
           data-testid="serviceProviderEntityId"
           id="kc-service-provider-entity-id"
-          validated={errors.config?.spEntityId ? "error" : "default"}
+          validated={errors.config?.entityId ? "error" : "default"}
           defaultValue={`${environment.authServerUrl}/realms/${realm}`}
-          {...register("config.spEntityId", { required: true })}
+          {...register("config.entityId", { required: true })}
         />
       </FormGroup>
       <FormGroup
