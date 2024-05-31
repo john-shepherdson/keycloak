@@ -164,6 +164,7 @@ public class LinkedAccountsResource {
         rep.setProviderName(provider.getAlias());
         if (identity != null) {
             rep.setLinkedUsername(identity.getUserName());
+            rep.setLinkedUserID(identity.getUserId());
         }
         return rep;
     }
