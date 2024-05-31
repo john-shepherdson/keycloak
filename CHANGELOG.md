@@ -10,7 +10,7 @@ Full Keycloak upstream jira issue can be shown if filtered by Fix version.
 
 Our Keycloak version is working well with PostgreSQL database. For using other SQL databases, text field in database need to be evaluated.
 
-## [Unreleased]
+## [22.0.5-1.4] - 2024-05-31
 
 ### Added
 - Add support for managing SSH keys from account console
@@ -22,7 +22,8 @@ Our Keycloak version is working well with PostgreSQL database. For using other S
 - Being possible to accept terms and conditions befure User is saved in Keycloak during first broker login. Follow GDPR. [Keycloak-28714](https://github.com/keycloak/keycloak/issues/28714) 
 
 ### Changed
--Attribute Consuming Service: Update Input and Default Value
+- Attribute Consuming Service: Update Input and Default Value
+- Hide Identity Type in Linked Accounts Page
 
 ## [22.0.5-1.3] - 2024-04-18
 
