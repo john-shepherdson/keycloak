@@ -17,9 +17,16 @@
 
 package org.keycloak.protocol.oidc;
 
+import java.io.IOException;
+import java.nio.charset.Charset;
 import java.util.*;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.apache.commons.io.IOUtils;
 import org.jboss.logging.Logger;
+import org.keycloak.broker.oidc.OIDCIdentityProviderConfig;
+import org.keycloak.broker.oidc.OIDCIdentityProviderFactory;
 import org.keycloak.http.HttpRequest;
 import org.keycloak.OAuth2Constants;
 import org.keycloak.OAuthErrorException;
@@ -27,6 +34,7 @@ import org.keycloak.TokenCategory;
 import org.keycloak.TokenVerifier;
 import org.keycloak.authentication.authenticators.util.AcrStore;
 import org.keycloak.broker.oidc.OIDCIdentityProvider;
+import org.keycloak.broker.oidc.AbstractOAuth2IdentityProvider;
 import org.keycloak.broker.provider.IdentityBrokerException;
 import org.keycloak.common.ClientConnection;
 import org.keycloak.common.Profile;
@@ -46,6 +54,7 @@ import org.keycloak.models.ClientModel;
 import org.keycloak.models.ClientScopeModel;
 import org.keycloak.models.ClientSessionContext;
 import org.keycloak.models.Constants;
+import org.keycloak.models.IdentityProviderModel;
 import org.keycloak.models.ImpersonationSessionNote;
 import org.keycloak.models.KeycloakSession;
 import org.keycloak.models.ProtocolMapperModel;
@@ -87,6 +96,7 @@ import org.keycloak.services.util.DefaultClientSessionContext;
 import org.keycloak.services.util.MtlsHoKTokenUtil;
 import org.keycloak.sessions.AuthenticationSessionModel;
 import org.keycloak.util.TokenUtil;
+import org.keycloak.broker.provider.util.SimpleHttp;
 
 import java.util.concurrent.TimeUnit;
 import java.util.function.BiConsumer;
@@ -115,6 +125,8 @@ import static org.keycloak.utils.LockObjectsForModification.lockUserSessionsForM
 public class TokenManager {
     private static final Logger logger = Logger.getLogger(TokenManager.class);
     private static final String JWT = "JWT";
+    private static final String PARAM_TOKEN = "token";
+    protected static ObjectMapper mapper = new ObjectMapper();
 
     public static class TokenValidation {
         public final UserModel user;
@@ -216,6 +228,26 @@ public class TokenManager {
         // Check user didn't revoke granted consent
         if (!verifyConsentStillAvailable(session, user, client, clientSessionCtx.getClientScopesStream())) {
             throw new OAuthErrorException(OAuthErrorException.INVALID_SCOPE, "Client no longer has requested consent from user");
+        }
+
+        String loginIdpAlias = userSession.getNote(Details.IDENTITY_PROVIDER);
+        String refreshTokenIdP = userSession.getNote(AbstractOAuth2IdentityProvider.FEDERATED_REFRESH_TOKEN);
+        if (loginIdpAlias!= null && refreshTokenIdP != null) {
+            IdentityProviderModel idp = realm.getIdentityProviderByAlias(loginIdpAlias);
+            String tokenIntrospectionIdPUrl = idp.getConfig().get(OIDCIdentityProviderConfig.TOKEN_INTROSPECTION_URL);
+            if (OIDCIdentityProviderFactory.PROVIDER_ID.equals(idp.getProviderId()) && Boolean.valueOf(idp.getConfig().get(OIDCIdentityProviderConfig.VALIDATE_SIGNATURE)) && tokenIntrospectionIdPUrl != null) {
+                OIDCIdentityProviderConfig oidcIssuerIdp = new OIDCIdentityProviderConfig(idp);
+                try {
+                    OIDCIdentityProvider oidcIssuerProvider = new OIDCIdentityProvider(session, oidcIssuerIdp);
+                    SimpleHttp.Response response = oidcIssuerProvider.authenticateTokenRequest(SimpleHttp.doPost(tokenIntrospectionIdPUrl, session).param(PARAM_TOKEN, refreshTokenIdP)).asResponse();
+                    if (response.getResponse().getStatusLine().getStatusCode() > 300 || !mapper.readTree(response.getResponse().getEntity().getContent()).get("active").asBoolean()) {
+                        throw new OAuthErrorException(OAuthErrorException.INVALID_GRANT, "Invalid IdP Refresh Token Error");
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    throw new OAuthErrorException(OAuthErrorException.INVALID_GRANT, "Invalid IdP Refresh Token Error");
+                }
+            }
         }
 
         clientSessionCtx.setAttribute(OIDCLoginProtocol.NONCE_PARAM, oldToken.getNonce());

@@ -12,6 +12,9 @@ Our Keycloak version is working well with PostgreSQL database. For using other S
 
 ## [Unreleased]
 
+### Added
+- Refresh token flow may check oidc idp  refresh token valid
+
 ### Changed
 - Hardcord Attribute Mapper supporting adding List of values
 
