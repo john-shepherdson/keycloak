@@ -10,6 +10,11 @@ Full Keycloak upstream jira issue can be shown if filtered by Fix version.
 
 Our Keycloak version is working well with PostgreSQL database. For using other SQL databases, text field in database need to be evaluated.
 
+## [Unreleased]
+
+### Changed
+- Hardcord Attribute Mapper supporting adding List of values
+
 ## [22.0.5-1.4] - 2024-05-31
 
 ### Added
