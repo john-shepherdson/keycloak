@@ -272,7 +272,7 @@ public class SAMLFederationProvider extends AbstractIdPFederationProvider <SAMLF
 								config.put(SAMLIdentityProviderConfig.WANT_ASSERTIONS_ENCRYPTED, wantAssertionsEncrypted);
 								config.put(SAMLIdentityProviderConfig.WANT_ASSERTIONS_SIGNED, String.valueOf(model.isWantAssertionsSigned()));
 								config.put(SAMLIdentityProviderConfig.WANT_LOGOUT_REQUESTS_SIGNED, String.valueOf(model.isWantLogoutRequestsSigned()));
-								config.put(SAMLIdentityProviderConfig.IDP_ENTITY_ID, model.getConfig().get(SAMLIdentityProviderConfig.ENTITY_ID));
+								config.put(SAMLIdentityProviderConfig.ENTITY_ID, model.getConfig().get(SAMLIdentityProviderConfig.ENTITY_ID));
 
 								config.put(SAMLIdentityProviderConfig.POST_BINDING_RESPONSE, String.valueOf(model.isPostBindingResponse()));
 								config.put(SAMLIdentityProviderConfig.POST_BINDING_LOGOUT, String.valueOf(model.isPostBindingLogoutReceivingRequest()));
