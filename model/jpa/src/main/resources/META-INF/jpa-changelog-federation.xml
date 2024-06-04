@@ -2,7 +2,7 @@
 
     <changeSet author="eosc-kc" id="federation-entityId">
         <sql>
-            update federation_config set "name" ='entityId' where "name" ='spEntityId';
+            update federation_config set name ='entityId' where name ='spEntityId';
         </sql>
     </changeSet>
 </databaseChangeLog>
