@@ -82,6 +82,7 @@ interface LinkedAccount {
     providerName: string;
     displayName: string;
     linkedUsername: string;
+    linkedUserID: string;
 }
 
 interface LinkedAccountsPageProps extends RouteComponentProps {
@@ -396,7 +397,7 @@ class LinkedAccountsPage extends React.Component<LinkedAccountsPageProps, Linked
                                     </DataListCell>,
                                     <DataListCell key='username' width={5}>
                                         <Split>
-                                            <SplitItem className="pf-u-my-xs"><span id={`${account.providerAlias}-idp-username`}>{account.linkedUsername}</span></SplitItem>
+                                            <SplitItem className="pf-u-my-xs"><span id={`${account.providerAlias}-idp-username`}>{account.linkedUserID}</span></SplitItem>
                                         </Split>
                                     </DataListCell>
                                 ]} />
