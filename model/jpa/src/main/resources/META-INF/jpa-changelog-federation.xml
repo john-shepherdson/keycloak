@@ -5,4 +5,8 @@
             update federation_config set name ='entityId' where name ='spEntityId';
         </sql>
     </changeSet>
+
+    <changeSet author="eosc-kc" id="omitAttributeConsumingServiceIndexAuthn">
+        <customChange class="org.keycloak.connections.jpa.updater.liquibase.custom.JpaUpdateOmitAttributeConsumingServiceIndexAuthn"/>
+    </changeSet>
 </databaseChangeLog>

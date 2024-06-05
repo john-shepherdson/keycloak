@@ -286,6 +286,12 @@ const IdentityProviderFederationConfig = () => {
           }}
         />
       </FormGroup>
+      <SwitchField
+          field="config.omitAttributeConsumingServiceIndexAuthn"
+          label="omitAttributeConsumingServiceIndexAuthn"
+          data-testid="omitAttributeConsumingServiceIndexAuthn"
+          isReadOnly={false}
+      />
       <FormGroup
         label={t("identity-federations:attributeConsumingServiceName")}
         labelIcon={

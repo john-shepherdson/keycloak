@@ -139,6 +139,7 @@
   "allowedClockSkew": "Allowed clock skew",
   "attributeConsumingServiceIndex": "Attribute Consuming Service Index",
   "attributeConsumingServiceName": "Attribute Consuming Service Name",
+  "omitAttributeConsumingServiceIndexAuthn": "Omit Attribute Consuming Service Index from AuthnRequests",
   "forwardParameters": "Forwarded query parameters",
   "generalSettings": "General settings",
   "oidcSettings": "OpenID Connect settings",

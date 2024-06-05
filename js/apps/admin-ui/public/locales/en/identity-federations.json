@@ -16,6 +16,7 @@
     "federationDetails": "Federation Details",
     "wantAssertionsEncrypted": "Want Assertions Encrypted",
     "attributeConsumingServiceIndex":"Attribute Consuming Service Index",
+    "omitAttributeConsumingServiceIndexAuthn": "Omit Attribute Consuming Service Index from AuthnRequests",
     "attributeConsumingServiceName":"Attribute Consuming Service Name",
     "signSpMetadata":"Sign Service Provider Metadata",
     "samlFederationV2":"SAML v2.0 Federation",

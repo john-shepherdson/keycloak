@@ -35,6 +35,7 @@
   "pkceMethod": "PKCE Method to use",
   "allowedClockSkew": "Clock skew in seconds that is tolerated when validating identity provider tokens. Default value is zero.",
   "attributeConsumingServiceIndex": "Index of the Attribute Consuming Service profile to request during authentication.",
+  "omitAttributeConsumingServiceIndexAuthn": "Indicates whether to include the configured Attribute Consuming Service Index in authentication requests sent to this IDP. Defaults to 'false'.",
   "attributeConsumingServiceName": "Name of the Attribute Consuming Service profile to advertise in the SP metadata.",
   "forwardParameters": "Non OpenID Connect/OAuth standard query parameters to be forwarded to external IDP from the initial application request to Authorization Endpoint. Multiple parameters can be entered, separated by comma (,).",
   "clientAuthentication": "The client authentication method (cfr. https://openid.net/specs/openid-connect-core-1_0.html#ClientAuthentication). In case of JWT signed with private key, the realm private key is used.",

@@ -17,6 +17,8 @@ Our Keycloak version is working well with PostgreSQL database. For using other S
 
 ### Changed
 - Hardcord Attribute Mapper supporting adding List of values
+- Support for omitting attributeConsumingServiceIndex from authentication requests
+- Linked Accounts Page changes
 
 ### Fixed
 - Migrate 'spEntityId' to 'entityId' in SAML federation

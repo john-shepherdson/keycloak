@@ -516,6 +516,12 @@ const Fields = ({ readOnly }: DescriptorSettingsProps) => {
           }}
         />
       </FormGroup>
+      <SwitchField
+          field="config.omitAttributeConsumingServiceIndexAuthn"
+          label="omitAttributeConsumingServiceIndexAuthn"
+          data-testid="omitAttributeConsumingServiceIndexAuthn"
+          isReadOnly={readOnly}
+      />
 
       <FormGroup
         label={t("attributeConsumingServiceName")}
