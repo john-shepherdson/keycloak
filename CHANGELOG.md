@@ -10,7 +10,7 @@ Full Keycloak upstream jira issue can be shown if filtered by Fix version.
 
 Our Keycloak version is working well with PostgreSQL database. For using other SQL databases, text field in database need to be evaluated.
 
-## [Unreleased]
+## [22.0.10-1.5] - 2024-06-13
 
 ### Added
 - Refresh token flow may check oidc idp  refresh token valid
@@ -22,8 +22,10 @@ Our Keycloak version is working well with PostgreSQL database. For using other S
 
 ### Fixed
 - Migrate 'spEntityId' to 'entityId' in SAML federation
+- Correct SAML client signature parsing for SAML client
+- Remove serviceProviderEntityId from metadata loader in SAML Identity Provider metadata loader
 
-## [22.0.5-1.4] - 2024-05-31
+## [22.0.10-1.4] - 2024-05-31
 
 ### Added
 - Add support for managing SSH keys from account console
