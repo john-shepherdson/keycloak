@@ -2270,7 +2270,7 @@
                 <!-- Minimum Java version supported for running Keycloak -->
                 <!-- maven.compiler.target and maven.compiler.source already set to 1.8 in the parent pom -->
                 <!-- other modules will configure a higher Java version (for example, Quarkus) -->
-                <maven.compiler.release>8</maven.compiler.release>
+                <maven.compiler.release>17</maven.compiler.release>
             </properties>
         </profile>
 
