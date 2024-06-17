@@ -62,6 +62,24 @@ const Fields = ({ readOnly }: DescriptorSettingsProps) => {
   return (
     <div className="pf-c-form pf-m-horizontal">
       {!readOnly && <AutoUpdateFields protocol={"saml"} />}
+      {!readOnly&&
+        <FormGroup
+          label={t("serviceProviderEntityId")}
+          fieldId="kc-saml-service-provider-entity-id"
+          labelIcon={
+            <HelpItem
+              helpText={t("identity-providers-help:serviceProviderEntityId")}
+              fieldLabelId="identity-providers:serviceProviderEntityId"
+            />
+          }
+        >
+          <KeycloakTextInput
+            data-testid="serviceProviderEntityId"
+            id="kc-saml-service-provider-entity-id"
+            {...register("config.entityId")}
+          />
+        </FormGroup>
+      }
       <FormGroup
         label={t("identityProviderEntityId")}
         fieldId="kc-identity-provider-entity-id"
