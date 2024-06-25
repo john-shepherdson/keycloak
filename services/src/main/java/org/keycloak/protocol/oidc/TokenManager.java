@@ -463,7 +463,7 @@ public class TokenManager {
         }
 
         AccessTokenResponseBuilder responseBuilder = responseBuilder(realm, authorizedClient, event, session,
-            validation.userSession, validation.clientSessionCtx).accessToken(validation.newToken);
+            validation.userSession, validation.clientSessionCtx).offlineToken( TokenUtil.TOKEN_TYPE_OFFLINE.equals(refreshToken.getType())).accessToken(validation.newToken);
         boolean generateRefreshToken = OIDCAdvancedConfigWrapper.fromClientModel(authorizedClient).isUseRefreshToken() || (authorizedClient.getAttribute(OIDCConfigAttributes.REVOKE_REFRESH_TOKEN) == null && realm.isRevokeRefreshToken()) || Boolean.valueOf(authorizedClient.getAttribute(OIDCConfigAttributes.REVOKE_REFRESH_TOKEN));
 
         if (generateRefreshToken) {
@@ -1167,6 +1167,8 @@ public class TokenManager {
 
         String stateHash;
 
+        boolean offlineToken = true;
+
         public AccessTokenResponseBuilder(RealmModel realm, ClientModel client, EventBuilder event, KeycloakSession session,
                                           UserSessionModel userSession, ClientSessionContext clientSessionCtx) {
             this.realm = realm;
@@ -1195,6 +1197,11 @@ public class TokenManager {
         }
         public AccessTokenResponseBuilder refreshToken(RefreshToken refreshToken) {
             this.refreshToken = refreshToken;
+            return this;
+        }
+
+        public AccessTokenResponseBuilder offlineToken(boolean offlineToken) {
+            this.offlineToken = offlineToken;
             return this;
         }
 
@@ -1335,7 +1342,7 @@ public class TokenManager {
         }
 
         public boolean isOfflineToken() {
-            return refreshToken != null && TokenUtil.TOKEN_TYPE_OFFLINE.equals(refreshToken.getType());
+            return offlineToken;
         }
 
         public AccessTokenResponse build() {
