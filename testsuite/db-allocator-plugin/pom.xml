@@ -32,6 +32,7 @@
 
     <properties>
         <maven.version>3.3.9</maven.version>
+        <maven.compiler.release>8</maven.compiler.release>
     </properties>
 
     <dependencies>
