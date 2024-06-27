@@ -62,7 +62,7 @@ const Fields = ({ readOnly }: DescriptorSettingsProps) => {
   return (
     <div className="pf-c-form pf-m-horizontal">
       {!readOnly && <AutoUpdateFields protocol={"saml"} />}
-      {!readOnly&&
+      {!readOnly && (
         <FormGroup
           label={t("serviceProviderEntityId")}
           fieldId="kc-saml-service-provider-entity-id"
@@ -79,7 +79,7 @@ const Fields = ({ readOnly }: DescriptorSettingsProps) => {
             {...register("config.entityId")}
           />
         </FormGroup>
-      }
+      )}
       <FormGroup
         label={t("identityProviderEntityId")}
         fieldId="kc-identity-provider-entity-id"
@@ -170,7 +170,11 @@ const Fields = ({ readOnly }: DescriptorSettingsProps) => {
       >
         <Controller
           name="config.nameIDPolicyFormat"
-          defaultValue={"urn:oasis:names:tc:SAML:2.0:nameid-format:persistent"}
+          defaultValue={
+            !readOnly
+              ? "isNull"
+              : "urn:oasis:names:tc:SAML:2.0:nameid-format:persistent"
+          }
           control={control}
           render={({ field }) => (
             <Select
@@ -178,7 +182,7 @@ const Fields = ({ readOnly }: DescriptorSettingsProps) => {
               onToggle={(isExpanded) => setNamedPolicyDropdownOpen(isExpanded)}
               isOpen={namedPolicyDropdownOpen}
               onSelect={(_, value) => {
-                field.onChange(value as string);
+                field.onChange(value === "isNull" ? null : value);
                 setNamedPolicyDropdownOpen(false);
               }}
               selections={field.value}
@@ -186,9 +190,16 @@ const Fields = ({ readOnly }: DescriptorSettingsProps) => {
               isDisabled={readOnly}
             >
               <SelectOption
+                data-testid="empty-option"
+                value={"isNull"}
+                isPlaceholder={!field.value}
+              >
+                {t("identity-providers:empty")}
+              </SelectOption>
+              <SelectOption
                 data-testid="persistent-option"
                 value={"urn:oasis:names:tc:SAML:2.0:nameid-format:persistent"}
-                isPlaceholder
+                isPlaceholder={!!field.value}
               >
                 {t("persistent")}
               </SelectOption>
@@ -519,10 +530,10 @@ const Fields = ({ readOnly }: DescriptorSettingsProps) => {
         />
       </FormGroup>
       <SwitchField
-          field="config.omitAttributeConsumingServiceIndexAuthn"
-          label="omitAttributeConsumingServiceIndexAuthn"
-          data-testid="omitAttributeConsumingServiceIndexAuthn"
-          isReadOnly={readOnly}
+        field="config.omitAttributeConsumingServiceIndexAuthn"
+        label="omitAttributeConsumingServiceIndexAuthn"
+        data-testid="omitAttributeConsumingServiceIndexAuthn"
+        isReadOnly={readOnly}
       />
 
       <FormGroup

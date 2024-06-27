@@ -18,7 +18,13 @@ import { SwitchField } from "../../identity-providers/component/SwitchField";
 
 const assertionsEncryptedOptions = ["true", "false", "optional"];
 
-const IdentityProviderFederationConfig = () => {
+type IdentityProviderFederationConfigProps = {
+  type: string;
+};
+
+const IdentityProviderFederationConfig = ({
+  type,
+}: IdentityProviderFederationConfigProps) => {
   const {
     register,
     control,
@@ -113,7 +119,11 @@ const IdentityProviderFederationConfig = () => {
       >
         <Controller
           name="config.nameIDPolicyFormat"
-          defaultValue={"urn:oasis:names:tc:SAML:2.0:nameid-format:persistent"}
+          defaultValue={
+            type === "edit"
+              ? "isNull"
+              : "urn:oasis:names:tc:SAML:2.0:nameid-format:persistent"
+          }
           control={control}
           render={({ field }) => (
             <Select
@@ -121,16 +131,23 @@ const IdentityProviderFederationConfig = () => {
               onToggle={(isExpanded) => setNamedPolicyDropdownOpen(isExpanded)}
               isOpen={namedPolicyDropdownOpen}
               onSelect={(_, value) => {
-                field.onChange(value as string);
+                field.onChange(value === "isNull" ? null : value);
                 setNamedPolicyDropdownOpen(false);
               }}
               selections={field.value}
               variant={SelectVariant.single}
             >
               <SelectOption
+                data-testid="empty-option"
+                value={"isNull"}
+                isPlaceholder={!field.value}
+              >
+                {t("identity-providers:empty")}
+              </SelectOption>
+              <SelectOption
                 data-testid="persistent-option"
                 value={"urn:oasis:names:tc:SAML:2.0:nameid-format:persistent"}
-                isPlaceholder
+                isPlaceholder={!!field.value}
               >
                 {t("identity-providers:persistent")}
               </SelectOption>
@@ -287,10 +304,10 @@ const IdentityProviderFederationConfig = () => {
         />
       </FormGroup>
       <SwitchField
-          field="config.omitAttributeConsumingServiceIndexAuthn"
-          label="omitAttributeConsumingServiceIndexAuthn"
-          data-testid="omitAttributeConsumingServiceIndexAuthn"
-          isReadOnly={false}
+        field="config.omitAttributeConsumingServiceIndexAuthn"
+        label="omitAttributeConsumingServiceIndexAuthn"
+        data-testid="omitAttributeConsumingServiceIndexAuthn"
+        isReadOnly={false}
       />
       <FormGroup
         label={t("identity-federations:attributeConsumingServiceName")}

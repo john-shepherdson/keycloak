@@ -14,6 +14,7 @@ Our Keycloak version is working well with PostgreSQL database. For using other S
 
 ### Fixed
 - Check for offline refresh token grant based on refresh token request parameter
+- Allow setting (Federation) IdP NameIDPolicy format to `null` 
 - Hide SP Entity in Add Page
 
 ## [22.0.10-1.5] - 2024-06-13

@@ -205,7 +205,7 @@ export default function IdentityFederationForm({
           isHorizontal
           onSubmit={handleSubmit(onSubmit)}
         >
-          <IdentityProviderFederationConfig />
+          <IdentityProviderFederationConfig type={type} />
         </FormAccess>
       ),
     },
