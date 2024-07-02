@@ -47,7 +47,7 @@
 
         <quarkus.version>3.2.10.Final</quarkus.version>
         <quarkus.build.version>3.2.10.Final</quarkus.build.version>
-        <eosc-kc.version>${project.version}-1.6rc1</eosc-kc.version>
+        <eosc-kc.version>${project.version}-1.6rc2</eosc-kc.version>
 
         <project.build-time>${timestamp}</project.build-time>
 
