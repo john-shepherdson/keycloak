@@ -53,6 +53,7 @@ import org.keycloak.events.Errors;
 import org.keycloak.events.EventBuilder;
 import org.keycloak.events.EventType;
 import org.keycloak.exceptions.TokenNotActiveException;
+import org.keycloak.models.IdentityProviderModel;
 import org.keycloak.models.SingleUseObjectKeyModel;
 import org.keycloak.models.AuthenticationFlowModel;
 import org.keycloak.models.ClientModel;
@@ -87,6 +88,7 @@ import org.keycloak.services.util.AuthenticationFlowURLHelper;
 import org.keycloak.services.util.BrowserHistoryHelper;
 import org.keycloak.services.util.CacheControlUtil;
 import org.keycloak.services.util.LocaleUtil;
+import org.keycloak.services.util.UserSessionUtil;
 import org.keycloak.sessions.AuthenticationSessionCompoundId;
 import org.keycloak.sessions.AuthenticationSessionModel;
 import org.keycloak.sessions.RootAuthenticationSessionModel;
@@ -864,7 +866,9 @@ public class LoginActionsService {
         }
 
         event.detail(Details.IDENTITY_PROVIDER, identityProviderAlias)
-                .detail(Details.IDENTITY_PROVIDER_USERNAME, brokerContext.getUsername());
+                .detail(Details.IDENTITY_PROVIDER_USERNAME, brokerContext.getUsername())
+                .detail(EventBuilder.AUTHN_AUTHORITY, UserSessionUtil.getAuthnAuthority(brokerContext.getIdpConfig()))
+                .detail(EventBuilder.IDP_NAME, UserSessionUtil.getIdPName(brokerContext.getIdpConfig()));
 
         event.success();
 
@@ -1027,8 +1031,11 @@ public class LoginActionsService {
         Map<String, String> userSessionNotes = authSession.getUserSessionNotes();
         String identityProvider = userSessionNotes.get(Details.IDENTITY_PROVIDER);
         if (identityProvider != null) {
+            IdentityProviderModel idp = authSession.getRealm().getIdentityProviderByAlias(identityProvider);
             event.detail(Details.IDENTITY_PROVIDER, identityProvider)
-                    .detail(Details.IDENTITY_PROVIDER_USERNAME, userSessionNotes.get(Details.IDENTITY_PROVIDER_USERNAME));
+                    .detail(Details.IDENTITY_PROVIDER_USERNAME, userSessionNotes.get(Details.IDENTITY_PROVIDER_USERNAME))
+                    .detail(EventBuilder.AUTHN_AUTHORITY, userSessionNotes.get(Details.IDENTITY_PROVIDER_AUTHN_AUTHORITY))
+                    .detail(EventBuilder.IDP_NAME, UserSessionUtil.getIdPName(idp));
         }
     }
 

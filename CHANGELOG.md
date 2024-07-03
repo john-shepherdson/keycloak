@@ -10,6 +10,11 @@ Full Keycloak upstream jira issue can be shown if filtered by Fix version.
 
 Our Keycloak version is working well with PostgreSQL database. For using other SQL databases, text field in database need to be evaluated.
 
+## [Unreleased]
+
+### Added
+- Handling authenticating authority(ies) in user session
+
 ## [22.0.10-1.7] - 2024-07-10
 
 ### Changed

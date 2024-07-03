@@ -1,12 +1,16 @@
 package org.keycloak.services.util;
 
 import org.jboss.logging.Logger;
+import org.keycloak.broker.oidc.OIDCIdentityProviderFactory;
+import org.keycloak.broker.saml.SAMLIdentityProviderConfig;
+import org.keycloak.broker.saml.SAMLIdentityProviderFactory;
 import org.keycloak.common.ClientConnection;
 import org.keycloak.common.constants.ServiceAccountConstants;
 import org.keycloak.events.Errors;
 import org.keycloak.events.EventBuilder;
 import org.keycloak.models.AuthenticatedClientSessionModel;
 import org.keycloak.models.ClientModel;
+import org.keycloak.models.IdentityProviderModel;
 import org.keycloak.models.KeycloakSession;
 import org.keycloak.models.RealmModel;
 import org.keycloak.models.UserModel;
@@ -22,11 +26,18 @@ import org.keycloak.services.managers.UserSessionCrossDCManager;
 import org.keycloak.services.managers.UserSessionManager;
 import org.keycloak.sessions.AuthenticationSessionModel;
 import org.keycloak.sessions.RootAuthenticationSessionModel;
+import org.keycloak.social.facebook.FacebookIdentityProviderFactory;
+import org.keycloak.social.google.GoogleIdentityProviderFactory;
+import org.keycloak.social.linkedin.LinkedInOIDCIdentityProviderFactory;
 import org.keycloak.utils.OAuth2Error;
 
 public class UserSessionUtil {
 
     private static final Logger logger = Logger.getLogger(UserSessionUtil.class);
+    private static final String GOOGLE_ISSUER = "https://accounts.google.com";
+    private static final String LINKEDIN_ISSUER = "https://www.linkedin.com/oauth";
+    private static final String ORCID_ISSUER = "https://orcid.org";
+    private static final String FACEBOOK_ISSUER = "https://www.facebook.com";
 
     public static UserSessionModel findValidSession(KeycloakSession session, RealmModel realm, AccessToken token, EventBuilder event, ClientModel client) {
         OAuth2Error error = new OAuth2Error().json(false).realm(realm);
@@ -103,5 +114,23 @@ public class UserSessionUtil {
             event.error(Errors.INVALID_TOKEN);
             throw error.invalidToken("Stale token");
         }
+    }
+
+    public static String getAuthnAuthority(IdentityProviderModel idp) {
+        return switch (idp.getProviderId()) {
+            case SAMLIdentityProviderFactory.PROVIDER_ID ->
+                    idp.getConfig().get(SAMLIdentityProviderConfig.IDP_ENTITY_ID) != null ? idp.getConfig().get(SAMLIdentityProviderConfig.IDP_ENTITY_ID) : idp.getAlias();
+            case OIDCIdentityProviderFactory.PROVIDER_ID ->
+                    idp.getConfig().get("issuer") != null ? idp.getConfig().get("issuer") : idp.getAlias();
+            case GoogleIdentityProviderFactory.PROVIDER_ID -> GOOGLE_ISSUER;
+            case "orcid" -> ORCID_ISSUER;
+            case LinkedInOIDCIdentityProviderFactory.PROVIDER_ID -> LINKEDIN_ISSUER;
+            case FacebookIdentityProviderFactory.PROVIDER_ID -> FACEBOOK_ISSUER;
+            default -> idp.getAlias();
+        };
+    }
+
+    public static String getIdPName(IdentityProviderModel idp) {
+        return idp.getDisplayName() != null ? idp.getDisplayName() : idp.getAlias();
     }
 }
