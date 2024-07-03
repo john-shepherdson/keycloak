@@ -10,7 +10,7 @@ Full Keycloak upstream jira issue can be shown if filtered by Fix version.
 
 Our Keycloak version is working well with PostgreSQL database. For using other SQL databases, text field in database need to be evaluated.
 
-## [Unreleased]
+## [22.0.10-1.6] - 2024-07-03
 
 ### Fixed
 - Check for offline refresh token grant based on refresh token request parameter
@@ -41,7 +41,7 @@ Our Keycloak version is working well with PostgreSQL database. For using other S
 ### Fixed
 - Correct Linkedin name and logo[RCIAM-1346](https://jira.argo.grnet.gr/browse/RCIAM-1346)
 - Put uriInfo in error response
-- Being possible to accept terms and conditions befure User is saved in Keycloak during first broker login. Follow GDPR. [Keycloak-28714](https://github.com/keycloak/keycloak/issues/28714) 
+- Being possible to accept terms and conditions before User is saved in Keycloak during first broker login. Follow GDPR. [Keycloak-28714](https://github.com/keycloak/keycloak/issues/28714) 
 
 ### Changed
 - Attribute Consuming Service: Update Input and Default Value

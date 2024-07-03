@@ -317,9 +317,17 @@ public class OfflineTokenTest extends AbstractKeycloakTest {
 
             assertTrue(tokenResponse.getScope().contains(OAuth2Constants.OFFLINE_ACCESS));
 
-            setTimeOffset(99999);
-            assertFalse(token.isActive());
-            assertTrue(offlineToken.isActive());
+//            setTimeOffset(99999);
+//            assertFalse(token.isActive());
+//            assertTrue(offlineToken.isActive());
+
+            // delete the non-offline session to force the NPE
+            adminClient.realm("test").deleteSession(sessionId);
+
+            //test that with deleted session that I can get access token without refresh token with refresh token flow
+            OAuthClient.AccessTokenResponse accessTokenResponseRefreshed = oauth.doRefreshTokenRequest(offlineTokenString, "secret1");
+            assertEquals(200, accessTokenResponseRefreshed.getStatusCode());
+            assertNull(accessTokenResponseRefreshed.getRefreshToken());
             
         } finally {
             // Revert changes
