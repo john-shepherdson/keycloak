@@ -22,7 +22,6 @@ import org.keycloak.common.ClientConnection;
 import org.keycloak.common.util.Time;
 import org.keycloak.models.ClientModel;
 import org.keycloak.models.KeycloakSession;
-import org.keycloak.models.KeycloakSessionFactory;
 import org.keycloak.models.RealmModel;
 import org.keycloak.models.UserModel;
 import org.keycloak.models.UserSessionModel;
@@ -139,7 +138,7 @@ public class EventBuilder {
 
     public EventBuilder session(UserSessionModel session) {
         event.setSessionId(session == null ? null : session.getId());
-        this.detail(AUTHN_AUTHORITY, session.getNote(Details.IDENTITY_PROVIDER_AUTHN_AUTHORITY));
+        this.detail(AUTHN_AUTHORITY, session.getNote(Details.IDENTITY_PROVIDER_ID));
         return this;
     }
 

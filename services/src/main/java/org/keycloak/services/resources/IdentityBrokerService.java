@@ -21,7 +21,6 @@ import jakarta.ws.rs.core.MediaType;
 import org.jboss.logging.Logger;
 import org.jboss.resteasy.annotations.cache.NoCache;
 import org.jboss.resteasy.spi.ResteasyProviderFactory;
-import org.keycloak.broker.oidc.OIDCIdentityProviderFactory;
 import org.keycloak.http.HttpRequest;
 import org.keycloak.OAuthErrorException;
 import org.keycloak.authentication.AuthenticationFlow;
@@ -45,7 +44,6 @@ import org.keycloak.broker.saml.SAMLEndpoint;
 import org.keycloak.broker.saml.SAMLIdentityProvider;
 import org.keycloak.broker.saml.SAMLIdentityProviderConfig;
 import org.keycloak.broker.saml.SAMLIdentityProviderFactory;
-import org.keycloak.broker.saml.federation.SAMLFederationProvider;
 import org.keycloak.broker.social.SocialIdentityProvider;
 import org.keycloak.common.ClientConnection;
 import org.keycloak.common.util.Base64Url;
@@ -109,7 +107,6 @@ import org.keycloak.services.util.UserSessionUtil;
 import org.keycloak.services.validation.Validation;
 import org.keycloak.sessions.AuthenticationSessionModel;
 import org.keycloak.sessions.RootAuthenticationSessionModel;
-import org.keycloak.social.google.GoogleIdentityProviderFactory;
 import org.keycloak.util.JsonSerialization;
 
 import jakarta.ws.rs.core.HttpHeaders;
@@ -961,7 +958,7 @@ public class IdentityBrokerService implements IdentityProvider.AuthenticationCal
         authSession.setUserSessionNote(Details.IDENTITY_PROVIDER, providerId);
         authSession.setUserSessionNote(Details.IDENTITY_PROVIDER_USERNAME, context.getUsername());
         String authnAuthority = UserSessionUtil.getAuthnAuthority(context.getIdpConfig());
-        authSession.setUserSessionNote(Details.IDENTITY_PROVIDER_AUTHN_AUTHORITY, authnAuthority);
+        authSession.setUserSessionNote(Details.IDENTITY_PROVIDER_ID, authnAuthority);
 
 
         event.detail(Details.IDENTITY_PROVIDER, providerId)
@@ -1138,7 +1135,7 @@ public class IdentityBrokerService implements IdentityProvider.AuthenticationCal
         if (userSession.getNote(Details.IDENTITY_PROVIDER) == null) {
             userSession.setNote(Details.IDENTITY_PROVIDER, context.getIdpConfig().getAlias());
             userSession.setNote(Details.IDENTITY_PROVIDER_USERNAME, context.getUsername());
-            userSession.setNote(Details.IDENTITY_PROVIDER_AUTHN_AUTHORITY, UserSessionUtil.getAuthnAuthority(context.getIdpConfig()));
+            userSession.setNote(Details.IDENTITY_PROVIDER_ID, UserSessionUtil.getAuthnAuthority(context.getIdpConfig()));
         }
 
         return Response.status(302).location(UriBuilder.fromUri(authSession.getRedirectUri()).build()).build();

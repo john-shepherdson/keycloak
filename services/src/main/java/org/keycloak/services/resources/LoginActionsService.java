@@ -1034,7 +1034,7 @@ public class LoginActionsService {
             IdentityProviderModel idp = authSession.getRealm().getIdentityProviderByAlias(identityProvider);
             event.detail(Details.IDENTITY_PROVIDER, identityProvider)
                     .detail(Details.IDENTITY_PROVIDER_USERNAME, userSessionNotes.get(Details.IDENTITY_PROVIDER_USERNAME))
-                    .detail(EventBuilder.AUTHN_AUTHORITY, userSessionNotes.get(Details.IDENTITY_PROVIDER_AUTHN_AUTHORITY))
+                    .detail(EventBuilder.AUTHN_AUTHORITY, userSessionNotes.get(Details.IDENTITY_PROVIDER_ID))
                     .detail(EventBuilder.IDP_NAME, UserSessionUtil.getIdPName(idp));
         }
     }
