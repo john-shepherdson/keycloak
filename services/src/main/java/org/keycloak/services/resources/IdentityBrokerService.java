@@ -788,6 +788,11 @@ public class IdentityBrokerService implements IdentityProvider.AuthenticationCal
             event.detail(Details.IDENTITY_PROVIDER_USERNAME, context.getUsername());
             event.detail(EventBuilder.AUTHN_AUTHORITY, UserSessionUtil.getAuthnAuthority(context.getIdpConfig()));
             event.detail(EventBuilder.IDP_NAME, UserSessionUtil.getIdPName(context.getIdpConfig()));
+            Map<String,String> userSessionNotes= authSession.getUserSessionNotes();
+            if (userSessionNotes.containsKey(Details.IDENTITY_PROVIDER_AUTHN_AUTHORITIES)){
+                this.event.detail(Details.IDENTITY_PROVIDER_AUTHN_AUTHORITIES, userSessionNotes.get(Details.IDENTITY_PROVIDER_AUTHN_AUTHORITIES));
+            }
+
 
             // Ensure the first-broker-login flow was successfully finished
             String authProvider = authSession.getAuthNote(AbstractIdpAuthenticator.FIRST_BROKER_LOGIN_SUCCESS);
@@ -965,6 +970,11 @@ public class IdentityBrokerService implements IdentityProvider.AuthenticationCal
                 .detail(Details.IDENTITY_PROVIDER_USERNAME, context.getUsername())
                 .detail(EventBuilder.AUTHN_AUTHORITY, authnAuthority)
                 .detail(EventBuilder.IDP_NAME, UserSessionUtil.getIdPName(context.getIdpConfig()));
+
+        Map<String,String> userSessionNotes= authSession.getUserSessionNotes();
+        if (userSessionNotes.containsKey(Details.IDENTITY_PROVIDER_AUTHN_AUTHORITIES)){
+            this.event.detail(Details.IDENTITY_PROVIDER_AUTHN_AUTHORITIES, userSessionNotes.get(Details.IDENTITY_PROVIDER_AUTHN_AUTHORITIES));
+        }
 
         if (isDebugEnabled()) {
             logger.debugf("Performing local authentication for user [%s].", federatedUser);

@@ -866,9 +866,7 @@ public class LoginActionsService {
         }
 
         event.detail(Details.IDENTITY_PROVIDER, identityProviderAlias)
-                .detail(Details.IDENTITY_PROVIDER_USERNAME, brokerContext.getUsername())
-                .detail(EventBuilder.AUTHN_AUTHORITY, UserSessionUtil.getAuthnAuthority(brokerContext.getIdpConfig()))
-                .detail(EventBuilder.IDP_NAME, UserSessionUtil.getIdPName(brokerContext.getIdpConfig()));
+                .detail(Details.IDENTITY_PROVIDER_USERNAME, brokerContext.getUsername());
 
         event.success();
 
@@ -1036,6 +1034,9 @@ public class LoginActionsService {
                     .detail(Details.IDENTITY_PROVIDER_USERNAME, userSessionNotes.get(Details.IDENTITY_PROVIDER_USERNAME))
                     .detail(EventBuilder.AUTHN_AUTHORITY, userSessionNotes.get(Details.IDENTITY_PROVIDER_ID))
                     .detail(EventBuilder.IDP_NAME, UserSessionUtil.getIdPName(idp));
+            if (userSessionNotes.containsKey(Details.IDENTITY_PROVIDER_AUTHN_AUTHORITIES)){
+                this.event.detail(Details.IDENTITY_PROVIDER_AUTHN_AUTHORITIES, userSessionNotes.get(Details.IDENTITY_PROVIDER_AUTHN_AUTHORITIES));
+            }
         }
     }
 
