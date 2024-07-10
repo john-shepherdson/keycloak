@@ -7,6 +7,7 @@ import org.keycloak.utils.StringUtil;
 
 import java.io.UnsupportedEncodingException;
 import java.util.Collections;
+import java.util.List;
 
 public class MigrateTo22_0_0_1_1 implements Migration {
 
@@ -23,31 +24,28 @@ public class MigrateTo22_0_0_1_1 implements Migration {
     }
 
     private void changeSamlIdPs(RealmModel realm, KeycloakSession session) {
-        session.users().searchForUserStream(realm, Collections.singletonMap(UserModel.INCLUDE_SERVICE_ACCOUNT, Boolean.FALSE.toString())).forEach(user -> {
-            session.users().getFederatedIdentitiesStream(realm, user).forEach(identity -> {
-                IdentityProviderModel idp = realm.getIdentityProviderByAlias(identity.getIdentityProvider());
-                if (idp.getFederations() != null && idp.getFederations().size() > 0) {
-                    try {
-                        //only federated idp users change
-                        session.users().removeFederatedIdentity(realm, user, idp.getAlias());
+        List<FederationModel> federations = realm.getSAMLFederations();
+        if (federations != null && !federations.isEmpty()) {
+            session.users().searchForUserStream(realm, Collections.singletonMap(UserModel.INCLUDE_SERVICE_ACCOUNT, Boolean.FALSE.toString())).forEach(user -> {
+                session.users().getFederatedIdentitiesStream(realm, user).forEach(identity -> {
+                    IdentityProviderModel idp = realm.getIdentityProviderByAlias(identity.getIdentityProvider());
+                    if (idp.getFederations() != null && idp.getFederations().size() > 0) {
+                        try {
+                            //only federated idp users change
+                            session.users().removeFederatedIdentity(realm, user, idp.getAlias());
 
-                        // And create new
-                        FederatedIdentityModel newFederatedIdentity = new FederatedIdentityModel(StringUtil.getBase64(idp.getConfig().get("entityId")), identity.getUserId(), identity.getUserName(),
-                                identity.getToken());
-                        session.users().addFederatedIdentity(realm, user, newFederatedIdentity);
-                    } catch (UnsupportedEncodingException e) {
-                        throw new RuntimeException(e);
+                            // And create new
+                            FederatedIdentityModel newFederatedIdentity = new FederatedIdentityModel(StringUtil.getBase64(idp.getConfig().get("entityId")), identity.getUserId(), identity.getUserName(),
+                                    identity.getToken());
+                            session.users().addFederatedIdentity(realm, user, newFederatedIdentity);
+                        } catch (UnsupportedEncodingException e) {
+                            throw new RuntimeException(e);
+                        }
+
                     }
-
-                }
+                });
             });
-        });
-        for (FederationModel oldFederation : realm.getSAMLFederations()){
-              realm.upgrateTo22IdPFederation(oldFederation.getInternalId());
-//            UpgradeTo22Task upgradeTo22Task = new UpgradeTo22Task(oldFederation.getInternalId(), realm.getId());
-//            ClusterAwareScheduledTaskRunner taskRunner = new ClusterAwareScheduledTaskRunner(session.getKeycloakSessionFactory(), upgradeTo22Task,60 * 1000);
-//            TimerProvider timer = session.getProvider(TimerProvider.class);
-//            timer.scheduleOnce(taskRunner, 30 * 1000, " UpgradeTo22Federation" + oldFederation.getInternalId());
+            federations.stream().forEach(federation -> realm.upgrateTo22IdPFederation(federation.getInternalId()));
         }
     }
 
