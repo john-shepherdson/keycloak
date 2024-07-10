@@ -14,6 +14,7 @@ Our Keycloak version is working well with PostgreSQL database. For using other S
 
 ### Added
 - Handling authenticating authority(ies) in user session
+- Add user session name to ClaimToUserSessionNoteMapper
 
 ## [22.0.10-1.7] - 2024-07-10
 
