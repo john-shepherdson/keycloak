@@ -1,9 +1,9 @@
 {
     "addIdentityFederation":"Add Identity Federation",
     "identityFederations":"Identity federations",
-    "updateFrequency":"Update frequency (mins)",
+    "updateFrequency":"Refresh Frequency (mins)",
     "validUntil":"Valid until",
-    "lastUpdatedTime": "Last updated time",
+    "lastUpdatedTime": "Last Refresh",
     "actions": "Actions",
     "addFederation": "Add Federation",
     "importFromURL":"Import from URL",
@@ -50,5 +50,11 @@
     "createError": "Could not create the identity federation {{error}}",
     "deleteFederation": "Delete federation?",
     "deleteConfirm": "Are you sure you want to permanently delete this federation?",
-    "updateFrequencyInMins": "Update Fedequency in Minutes"
+    "updateFrequencyInMins": "Refresh Fedequency in Minutes",
+    "provider": "Provider",
+    "refresh": "Refresh",
+    "refreshFederation": "Refresh Federation",
+    "refreshConfirm": "Are you sure you want to refresh this federation?",
+    "refreshSuccessIdentityFederation":"Identity Federation Refreshed Successfully",
+    "refreshErrorIdentityFederation": "Identity Federation could not be refreshed due to an unexpected error."
 }

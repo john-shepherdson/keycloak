@@ -118,7 +118,9 @@ export default function IdentityFederationForm({
 
   useEffect(() => {
     refresh();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [mapperLoading]);
+
   const [toggleConfirmMapperDialog, MapperConfirm] = useConfirmDialog({
     titleKey: `identity-federations:${mapperAction}Mapper`,
     messageKey: t(`identity-federations:${mapperAction}MapperConfirm`, {

@@ -17,16 +17,14 @@
 
 package org.keycloak.services.resources.admin;
 
-import com.google.common.collect.Streams;
 import jakarta.ws.rs.*;
 import org.eclipse.microprofile.openapi.annotations.Operation;
 import org.eclipse.microprofile.openapi.annotations.extensions.Extension;
 import org.eclipse.microprofile.openapi.annotations.parameters.Parameter;
 import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 import org.jboss.resteasy.annotations.cache.NoCache;
-import org.keycloak.broker.provider.IdentityProvider;
 import org.keycloak.broker.provider.IdentityProviderFactory;
-import org.keycloak.broker.social.SocialIdentityProvider;
+import org.keycloak.broker.saml.SAMLIdentityProviderFactory;
 import org.keycloak.connections.httpclient.HttpClientProvider;
 import org.keycloak.events.admin.OperationType;
 import org.keycloak.events.admin.ResourceType;
@@ -38,11 +36,11 @@ import org.keycloak.models.RealmModel;
 import org.keycloak.models.utils.ModelToRepresentation;
 import org.keycloak.models.utils.RepresentationToModel;
 import org.keycloak.models.utils.StripSecretsUtils;
-import org.keycloak.provider.ProviderFactory;
 import org.keycloak.representations.idm.IdentityProviderRepresentation;
 import org.keycloak.services.ErrorResponse;
 import org.keycloak.services.resources.KeycloakOpenAPI;
 import org.keycloak.services.resources.admin.permissions.AdminPermissionEvaluator;
+import org.keycloak.services.util.ResourcesUtil;
 import org.keycloak.utils.ReservedCharValidator;
 
 import jakarta.ws.rs.core.MediaType;
@@ -52,7 +50,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.*;
 import java.util.function.Function;
-import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -61,7 +58,6 @@ import static jakarta.ws.rs.core.Response.Status.BAD_REQUEST;
 import org.keycloak.services.scheduled.AutoUpdateIdentityProviders;
 import org.keycloak.services.scheduled.ClusterAwareScheduledTaskRunner;
 import org.keycloak.timer.TimerProvider;
-import org.keycloak.utils.ReservedCharValidator;
 
 /**
  * @resource Identity Providers
@@ -96,7 +92,7 @@ public class IdentityProvidersResource {
     @Operation( summary = "Get identity providers")
     public Response getIdentityProviders(@Parameter(description = "Provider id") @PathParam("provider_id") String providerId) {
         this.auth.realm().requireViewIdentityProviders();
-        IdentityProviderFactory providerFactory = getProviderFactoryById(providerId);
+        IdentityProviderFactory providerFactory = ResourcesUtil.getProviderFactoryById(session, providerId);
         if (providerFactory != null) {
             return Response.ok(providerFactory).build();
         }
@@ -124,7 +120,7 @@ public class IdentityProvidersResource {
         }
         String providerId = formDataMap.getFirst("providerId").asString();
         InputStream inputStream = formDataMap.getFirst("file").asInputStream();
-        IdentityProviderFactory providerFactory = getProviderFactoryById(providerId);
+        IdentityProviderFactory providerFactory = ResourcesUtil.getProviderFactoryById(session, providerId);
         Map<String, String> config = providerFactory.parseConfig(session, inputStream, new IdentityProviderModel()).getConfig();
         return config;
     }
@@ -154,7 +150,7 @@ public class IdentityProvidersResource {
         String from = data.get("fromUrl").toString();
         InputStream inputStream = session.getProvider(HttpClientProvider.class).get(from);
         try {
-            IdentityProviderFactory providerFactory = getProviderFactoryById(providerId);
+            IdentityProviderFactory providerFactory = ResourcesUtil.getProviderFactoryById(session, providerId);
             Map<String, String> config = providerFactory.parseConfig(session, inputStream, new IdentityProviderModel()).getConfig();
             return config;
         } finally {
@@ -247,7 +243,7 @@ public class IdentityProvidersResource {
 
             representation.setInternalId(identityProvider.getInternalId());
             //for autoupdated IdPs create schedule task
-            if (identityProvider.getConfig().get(IdentityProviderModel.REFRESH_PERIOD) != null)
+            if ("true".equals(identityProvider.getConfig().get(IdentityProviderModel.AUTO_UPDATE)))
                 createScheduleTask(identityProvider.getAlias(), Long.parseLong(identityProvider.getConfig().get(IdentityProviderModel.REFRESH_PERIOD)) * 1000);
             adminEvent.operation(OperationType.CREATE).resourcePath(session.getContext().getUri(), identityProvider.getAlias())
                     .representation(StripSecretsUtils.strip(representation)).success();
@@ -283,16 +279,4 @@ public class IdentityProvidersResource {
         return new IdentityProviderResource(this.auth, realm, session, identityProviderModel, adminEvent);
     }
 
-    private IdentityProviderFactory getProviderFactoryById(String providerId) {
-        return getProviderFactories()
-                .filter(providerFactory -> Objects.equals(providerId, providerFactory.getId()))
-                .map(IdentityProviderFactory.class::cast)
-                .findFirst()
-                .orElse(null);
-    }
-
-    private Stream<ProviderFactory> getProviderFactories() {
-        return Streams.concat(session.getKeycloakSessionFactory().getProviderFactoriesStream(IdentityProvider.class),
-                session.getKeycloakSessionFactory().getProviderFactoriesStream(SocialIdentityProvider.class));
-    }
 }

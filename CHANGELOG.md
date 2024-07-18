@@ -16,6 +16,15 @@ Our Keycloak version is working well with PostgreSQL database. For using other S
 - Handling authenticating authority(ies) in user session
 - Add user session name to ClaimToUserSessionNoteMapper
 - Add Keycloak tag 22.0.11 [version 22.0.11](https://github.com/keycloak/keycloak/commits/22.0.11/)
+- Refresh SAML federation and auto-updated IdP
+
+### Changed
+- Change condition for parsing NameIDPolicy in autoUpdated IdP
+
+### Fixed
+- Fix bugs in AutoUpdated schedule task
+- Correct query for autoUpdated IdP
+- Do not change lastRefreshTime during IdP update
 
 ## [22.0.10-1.7] - 2024-07-10
 

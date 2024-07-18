@@ -64,6 +64,8 @@ type HeaderProps = {
   value: boolean;
   save: () => void;
   toggleDeleteDialog: () => void;
+  toggleRefreshDialog: () => void;
+  refreshEnabled: boolean;
 };
 
 type IdPWithMapperAttributes = IdentityProviderMapperRepresentation & {
@@ -74,7 +76,14 @@ type IdPWithMapperAttributes = IdentityProviderMapperRepresentation & {
   mapperId: string;
 };
 
-const Header = ({ onChange, value, save, toggleDeleteDialog }: HeaderProps) => {
+const Header = ({
+  onChange,
+  value,
+  save,
+  toggleDeleteDialog,
+  toggleRefreshDialog,
+  refreshEnabled,
+}: HeaderProps) => {
   const { t } = useTranslation("identity-providers");
   const { alias: displayName } = useParams<{ alias: string }>();
   const [provider, setProvider] = useState<IdentityProviderRepresentation>();
@@ -116,6 +125,16 @@ const Header = ({ onChange, value, save, toggleDeleteDialog }: HeaderProps) => {
           <DropdownItem key="delete" onClick={() => toggleDeleteDialog()}>
             {t("common:delete")}
           </DropdownItem>,
+          ...(refreshEnabled
+            ? [
+                <DropdownItem
+                  key="refresh"
+                  onClick={() => toggleRefreshDialog()}
+                >
+                  {t("common:refresh")}
+                </DropdownItem>,
+              ]
+            : []),
         ]}
         isEnabled={value}
         onToggle={(value) => {
@@ -160,6 +179,7 @@ export default function DetailSettings() {
   const form = useForm<IdentityProviderRepresentation>();
   const { handleSubmit, getValues, reset } = form;
   const [provider, setProvider] = useState<IdentityProviderRepresentation>();
+  const [refreshEnabled, setRefreshEnabled] = useState<boolean>(false);
   const [selectedMapper, setSelectedMapper] =
     useState<IdPWithMapperAttributes>();
   const serverInfo = useServerInfo();
@@ -195,6 +215,10 @@ export default function DetailSettings() {
 
       reset(fetchedProvider);
       setProvider(fetchedProvider);
+
+      if (fetchedProvider.config!.autoUpdate) {
+        setRefreshEnabled(true);
+      }
 
       if (fetchedProvider.config!.authnContextClassRefs) {
         form.setValue(
@@ -266,6 +290,22 @@ export default function DetailSettings() {
         navigate(toIdentityProviders({ realm }));
       } catch (error) {
         addError(t("identity-providers:deleteError"), error);
+      }
+    },
+  });
+
+  const [toggleRefreshDialog, RefreshConfirm] = useConfirmDialog({
+    titleKey: t("identity-providers:refreshProvider"),
+    messageKey: t("identity-providers:refreshConfirm", { provider: alias }),
+    continueButtonLabel: t("common:refresh"),
+    continueButtonVariant: ButtonVariant.primary,
+    onConfirm: async () => {
+      try {
+        await adminClient.identityProviders.refresh({ alias: alias });
+        addAlert(t("refreshSuccess"), AlertVariant.success);
+        navigate(toIdentityProviders({ realm }));
+      } catch (error) {
+        addError(t("identity-providers:refreshError"), error);
       }
     },
   });
@@ -402,6 +442,7 @@ export default function DetailSettings() {
   return (
     <FormProvider {...form}>
       <DeleteConfirm />
+      <RefreshConfirm />
       <DeleteMapperConfirm />
       <Controller
         name="enabled"
@@ -413,6 +454,8 @@ export default function DetailSettings() {
             onChange={field.onChange}
             save={save}
             toggleDeleteDialog={toggleDeleteDialog}
+            toggleRefreshDialog={toggleRefreshDialog}
+            refreshEnabled={refreshEnabled}
           />
         )}
       />

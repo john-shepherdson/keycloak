@@ -13,6 +13,7 @@ import {
   CardTitle,
   Split,
   SplitItem,
+  Spinner,
 } from "@patternfly/react-core";
 import { useState } from "react";
 import { useAlerts } from "../components/alert/Alerts";
@@ -132,6 +133,45 @@ export default function IdentityFederationsSection() {
     },
   });
 
+  const setRefreshing = (value: boolean) => {
+    setIdentityFederations(
+      identityFederations!.map((federation) =>
+        federation.internalId === selectedFederation?.internalId
+          ? { ...federation, refreshing: value }
+          : federation,
+      ),
+    );
+  };
+
+  const [toggleRefreshDialog, RefreshConfirm] = useConfirmDialog({
+    titleKey: t("refreshFederation"),
+    messageKey: t("refreshConfirm", {
+      identityFederation: selectedFederation?.alias,
+    }),
+    continueButtonLabel: t("refresh"),
+    continueButtonVariant: ButtonVariant.primary,
+    onConfirm: async () => {
+      try {
+        setRefreshing(true);
+        await adminClient.identityFederations.refresh({
+          id: selectedFederation!.internalId!,
+        });
+        setRefreshing(false);
+        refresh();
+        addAlert(
+          t("identity-federations:refreshSuccessIdentityFederation"),
+          AlertVariant.success,
+        );
+      } catch (error) {
+        setRefreshing(false);
+        addError(
+          t("identity-federations:refreshErrorIdentityFederation"),
+          error,
+        );
+      }
+    },
+  });
+
   const formatDate = (timestamp: any) => {
     // Create a new Date object
     const date = new Date(timestamp);
@@ -155,6 +195,7 @@ export default function IdentityFederationsSection() {
   return (
     <>
       <DeleteConfirm />
+      <RefreshConfirm />
       <ViewHeader titleKey={t("identity-federations:identityFederations")} />
       <PageSection variant="light">
         {loading ? (
@@ -189,6 +230,13 @@ export default function IdentityFederationsSection() {
                   toggleDeleteDialog();
                 },
               } as Action<IdentityFederationRepresentation>,
+              {
+                title: t("refresh"),
+                onRowClick: (identityFederation) => {
+                  setSelectedFederation(identityFederation);
+                  toggleRefreshDialog();
+                },
+              } as Action<IdentityFederationRepresentation>,
             ]}
             columns={[
               {
@@ -217,7 +265,22 @@ export default function IdentityFederationsSection() {
               {
                 name: "lastMetadataRefreshTimestamp",
                 displayKey: t("lastUpdatedTime"),
-                cellFormatters: [(value) => (value ? formatDate(value) : "")],
+                cellRenderer: (identityFederation: any) => {
+                  return identityFederation.refreshing ? (
+                    <>
+                      <Spinner size="sm" />
+                      <span style={{ marginLeft: "8px" }}>Refreshing...</span>
+                    </>
+                  ) : (
+                    <span>
+                      {identityFederation?.lastMetadataRefreshTimestamp
+                        ? formatDate(
+                            identityFederation.lastMetadataRefreshTimestamp,
+                          )
+                        : ""}
+                    </span>
+                  );
+                },
               },
             ]}
           />

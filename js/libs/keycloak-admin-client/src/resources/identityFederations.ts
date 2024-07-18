@@ -59,6 +59,12 @@ export class IdentityFederations extends Resource<{ realm?: string }> {
     urlParamKeys: ["id"],
   });
 
+  public refresh = this.makeRequest<{ id: string }, void>({
+    method: "POST",
+    path: "/instances/{id}/refresh",
+    urlParamKeys: ["id"],
+  });
+
   constructor(client: KeycloakAdminClient) {
     super(client, {
       path: "/admin/realms/{realm}/saml-federations",

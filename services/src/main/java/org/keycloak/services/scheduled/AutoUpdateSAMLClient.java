@@ -24,7 +24,7 @@ import java.time.Instant;
 
 public class AutoUpdateSAMLClient implements ScheduledTask {
 
-    protected static final Logger logger = Logger.getLogger(AutoUpdateIdentityProviders.class);
+    protected static final Logger logger = Logger.getLogger(AutoUpdateSAMLClient.class);
 
     protected final String id;
     protected final String realmId;

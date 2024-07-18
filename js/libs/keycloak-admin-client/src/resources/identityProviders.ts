@@ -63,6 +63,12 @@ export class IdentityProviders extends Resource<{ realm?: string }> {
     urlParamKeys: ["alias"],
   });
 
+  public refresh = this.makeRequest<{ alias: string }, void>({
+    method: "POST",
+    path: "/instances/{alias}/refresh",
+    urlParamKeys: ["alias"],
+  });
+
   public findFactory = this.makeRequest<{ providerId: string }, any>({
     method: "GET",
     path: "/providers/{providerId}",
