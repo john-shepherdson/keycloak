@@ -234,7 +234,7 @@ export default function DetailSettings() {
         );
       }
     },
-    [],
+    [key],
   );
 
   const toTab = (tab: IdentityProviderTab) =>
@@ -273,6 +273,7 @@ export default function DetailSettings() {
         },
       );
       addAlert(t("updateSuccess"), AlertVariant.success);
+      refresh();
     } catch (error) {
       addError("identity-providers:updateError", error);
     }
@@ -303,7 +304,7 @@ export default function DetailSettings() {
       try {
         await adminClient.identityProviders.refresh({ alias: alias });
         addAlert(t("refreshSuccess"), AlertVariant.success);
-        navigate(toIdentityProviders({ realm }));
+        refresh();
       } catch (error) {
         addError(t("identity-providers:refreshError"), error);
       }
