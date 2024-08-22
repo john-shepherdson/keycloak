@@ -348,6 +348,9 @@ public class IdentityBrokerService implements IdentityProvider.AuthenticationCal
 
         try {
             IdentityProvider identityProvider = getIdentityProvider(session, realmModel, providerId);
+            boolean isMemberOfAggregation = (identityProviderModel.getFederations() != null && identityProviderModel.getFederations().size() > 0) ? true : false;
+            if(isMemberOfAggregation)
+                providerId = null;
             Response response = identityProvider.performLogin(createAuthenticationRequest(providerId, clientSessionCode));
 
             if (response != null) {

@@ -14,6 +14,7 @@ import { useParams } from "../../utils/useParams";
 import { IdentityFederationParams } from "../routes/IdentityFederation";
 import IdentityFederationForm from "./IdentityFederationForm";
 import { toIdentityFederations } from "../routes/IdentityFederations";
+import { cleanEmptyStrings } from "../../util";
 
 export default function EditIdentityFederation() {
   const { t } = useTranslation("identity-federations");
@@ -43,7 +44,7 @@ export default function EditIdentityFederation() {
   ) => {
     try {
       await adminClient.identityFederations.create({
-        ...identityFederation,
+        ...cleanEmptyStrings(identityFederation),
       });
       navigate(
         toIdentityFederations({

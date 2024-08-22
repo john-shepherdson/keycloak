@@ -1,0 +1,19 @@
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <changeSet author="eosc-kc" id="remove-idp-indexes">
+        <dropIndex indexName="IDP_MAPPER_CONFIG_IDX_IDP_MAPPER_ID" tableName="IDP_MAPPER_CONFIG"/>
+        <dropIndex indexName="IDENTITY_PROVIDER_CONFIG_IDX_IDPID" tableName="IDENTITY_PROVIDER_CONFIG"/>
+        <dropIndex indexName="FEDERATION_IDX_ALIAS" tableName="FEDERATION"/>
+        <dropIndex indexName="FEDERATION_CONFIG_IDX_FED_ID" tableName="FEDERATION_CONFIG"/>
+
+        <dropIndex indexName="ENTITY_CATEGORY_ALLOWLIST_IDX_FED_ID" tableName="ENTITY_CATEGORY_ALLOWLIST"/>
+        <dropIndex indexName="ENTITY_CATEGORY_DENYLIST_IDX_FED_ID" tableName="ENTITY_CATEGORY_DENYLIST"/>
+        <dropIndex indexName="ENTITYID_ALLOWLIST_IDX_FED_ID" tableName="ENTITYID_ALLOWLIST"/>
+        <dropIndex indexName="ENTITYID_DENYLIST_IDX_FED_ID" tableName="ENTITYID_DENYLIST"/>
+
+        <dropIndex indexName="REGISTRATION_AUTHORITY_ALLOWLIST_IDX_FED_ID" tableName="REGISTRATION_AUTHORITY_ALLOWLIST"/>
+        <dropIndex indexName="REGISTRATION_AUTHORITY_DENYLIST_IDX_FED_ID" tableName="REGISTRATION_AUTHORITY_DENYLIST"/>
+        <dropIndex indexName="FEDERATION_MAPPER_CONFIG_IDX_FED_MAP_ID" tableName="FEDERATION_MAPPER_CONFIG"/>
+        <dropIndex indexName="IDENTITY_PROVIDER_MAPPER_IDX_ALIAS" tableName="IDENTITY_PROVIDER_MAPPER"/>
+    </changeSet>
+</databaseChangeLog>

@@ -7,7 +7,7 @@ import {
   SelectVariant,
   ValidatedOptions,
 } from "@patternfly/react-core";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { KeycloakTextInput } from "../../components/keycloak-text-input/KeycloakTextInput";
 import { HelpItem } from "ui-shared";
 import { useTranslation } from "react-i18next";
@@ -22,12 +22,18 @@ type GeneralSettingsProps = {
 const GeneralSettings = ({ type }: GeneralSettingsProps) => {
   const {
     register,
+    trigger,
     control,
+    setValue,
     formState: { errors },
   } = useFormContext<IdentityFederationRepresentation>();
   const { t } = useTranslation("identity-federations");
   const { t: th } = useTranslation("identity-federations-help");
   const [categoriesOpen, setCategoriesOpen] = useState(false);
+  useEffect(() => {
+    setValue("updateFrequencyInMins", 30);
+    trigger("updateFrequencyInMins");
+  }, []);
 
   return (
     <>

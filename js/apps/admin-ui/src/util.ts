@@ -170,3 +170,22 @@ export const addTrailingSlash = (url: string) =>
   url.endsWith("/") ? url : url + "/";
 
 export const generateId = () => Math.floor(Math.random() * 1000);
+
+export const cleanEmptyStrings = (
+  obj: Record<string, any>,
+): Record<string, any> => {
+  // Iterate through all properties of the object
+  for (const key in obj) {
+    if (Object.prototype.hasOwnProperty.call(obj, key)) {
+      // If the property is an array, filter out empty strings
+      if (Array.isArray(obj[key])) {
+        obj[key] = obj[key].filter((item: any) => item !== "");
+      }
+      // If the property is an object, recursively clean it
+      else if (typeof obj[key] === "object" && obj[key] !== null) {
+        obj[key] = cleanEmptyStrings(obj[key]);
+      }
+    }
+  }
+  return obj;
+};

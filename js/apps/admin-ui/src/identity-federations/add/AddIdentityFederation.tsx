@@ -9,6 +9,7 @@ import { useNavigate } from "react-router-dom";
 import { toIdentityFederations } from "../routes/IdentityFederations";
 import { adminClient } from "../../admin-client";
 import IdentityFederationForm from "./IdentityFederationForm";
+import { cleanEmptyStrings } from "../../util";
 
 export default function AddIdentityFederation() {
   const form = useForm<IdentityFederationRepresentation>();
@@ -21,7 +22,7 @@ export default function AddIdentityFederation() {
   const onSubmit = async (samlFederation: IdentityFederationRepresentation) => {
     try {
       await adminClient.identityFederations.create({
-        ...samlFederation,
+        ...cleanEmptyStrings(samlFederation),
         providerId: id,
       });
       addAlert(t("createSuccess"), AlertVariant.success);

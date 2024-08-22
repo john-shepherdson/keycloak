@@ -115,7 +115,9 @@ const AllowDenyList = ({ type }: AllowDenyListProps) => {
                               value={value}
                               onChange={(value) => {
                                 categoryList[attributeName][index] = value;
-                                setValue(`category${type}List`, categoryList);
+                                setValue(`category${type}List`, categoryList, {
+                                  shouldDirty: true,
+                                });
                               }}
                             />
                             <Button
@@ -131,6 +133,7 @@ const AllowDenyList = ({ type }: AllowDenyListProps) => {
                                     setValue(
                                       `category${type}List`,
                                       categoryList,
+                                      { shouldDirty: true },
                                     );
                                   } else {
                                     throw new Error(
@@ -158,7 +161,9 @@ const AllowDenyList = ({ type }: AllowDenyListProps) => {
                     <Button
                       onClick={() => {
                         delete categoryList[attributeName];
-                        setValue(`category${type}List`, categoryList);
+                        setValue(`category${type}List`, categoryList, {
+                          shouldDirty: true,
+                        });
                       }}
                     >
                       Remove
@@ -228,7 +233,9 @@ const AllowDenyList = ({ type }: AllowDenyListProps) => {
                     setAttributeValueArray([]);
                     setAttributeName("");
                     setAttributeValue("");
-                    setValue(`category${type}List`, categoryList);
+                    setValue(`category${type}List`, categoryList, {
+                      shouldDirty: true,
+                    });
                   }}
                   isDisabled={
                     attributeName.length === 0 ||

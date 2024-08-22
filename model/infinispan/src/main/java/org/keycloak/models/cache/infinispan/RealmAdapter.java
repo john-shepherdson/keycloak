@@ -17,6 +17,7 @@
 
 package org.keycloak.models.cache.infinispan;
 
+import org.jboss.logging.Logger;
 import org.keycloak.Config;
 import org.keycloak.common.enums.SslRequired;
 import org.keycloak.component.ComponentModel;
@@ -38,6 +39,9 @@ import java.util.stream.Stream;
  * @version $Revision: 1 $
  */
 public class RealmAdapter implements CachedRealmModel {
+
+    protected static final Logger logger = Logger.getLogger(RealmAdapter.class);
+
     protected CachedRealm cached;
     protected RealmCacheSession cacheSession;
     protected volatile RealmModel updated;
@@ -977,6 +981,7 @@ public class RealmAdapter implements CachedRealmModel {
         updated.taskExecutionFederation(federationModel, addIdPs, updatedIdPs, removedIdPs);
         //invalidate cache for users related with removed IdPs
         session.users().preRemove(removedIdPs);
+        logger.info("finish updating cache for the SAML federation (id): " + federationModel.getAlias());
     }
 
     @Override

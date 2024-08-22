@@ -79,7 +79,7 @@ export default function IdentityFederationsSection() {
     (federations) => {
       setIdentityFederations(federations);
     },
-    [],
+    [key],
   );
 
   const federationOptions = [

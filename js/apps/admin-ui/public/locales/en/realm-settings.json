@@ -834,6 +834,22 @@
     "PUSHED_AUTHORIZATION_REQUEST_ERROR": {
       "name": "Pushed authorization request error",
       "description": "Pushed authorization request error"
+    },
+    "GROUP_MEMBERSHIP_CREATE": {
+      "name": "Group membership create",
+      "description": "Group membership create"
+    },
+    "GROUP_MEMBERSHIP_UPDATE": {
+      "name": "Group membership update",
+      "description": "Group membership update"
+    },
+    "GROUP_MEMBERSHIP_DELETE": {
+      "name": "Group membership delete",
+      "description": "Group membership delete"
+    },
+    "GROUP_MEMBERSHIP_SUSPEND": {
+      "name": "Group membership suspend",
+      "description": "Group membership suspend"
     }
   },
   "emptyEvents": "Nothing to add",

@@ -212,13 +212,9 @@ export default function DetailSettings() {
       if (!fetchedProvider) {
         throw new Error(t("common:notFound"));
       }
-
       reset(fetchedProvider);
       setProvider(fetchedProvider);
-
-      if (fetchedProvider.config!.autoUpdate) {
-        setRefreshEnabled(true);
-      }
+      setRefreshEnabled(fetchedProvider.config!.metadataUrl);
 
       if (fetchedProvider.config!.authnContextClassRefs) {
         form.setValue(

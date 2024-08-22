@@ -207,8 +207,8 @@ public class IdentityProviderResource {
             throw new jakarta.ws.rs.NotFoundException();
         }
 
-        if (!"true".equals(identityProviderModel.getConfig().get(IdentityProviderModel.AUTO_UPDATE))) {
-            throw ErrorResponse.error("This is not auto updated IdP", BAD_REQUEST);
+        if (identityProviderModel.getConfig().get(IdentityProviderModel.METADATA_URL) == null) {
+            throw ErrorResponse.error("Metadata url does not exist for this IdP", BAD_REQUEST);
         }
 
         try {
@@ -228,12 +228,10 @@ public class IdentityProviderResource {
     }
 
     private void updateIdpFromRep(IdentityProviderRepresentation providerRep, RealmModel realm, KeycloakSession session) {
-        String internalId = providerRep.getInternalId();
-        String newProviderId = providerRep.getAlias();
-        IdentityProviderModel oldIdP = getProviderIdByInternalId(realm, internalId);
+        String oldProviderId = getProviderIdByInternalId(realm, providerRep.getInternalId());
 
-        if (oldIdP == null) {
-            lookUpProviderIdByAlias(realm, providerRep);
+        if (oldProviderId == null) {
+            providerRep.setInternalId(identityProviderModel.getInternalId());
         }
 
         IdentityProviderModel updated = RepresentationToModel.toModel(realm, providerRep, session);
@@ -241,35 +239,33 @@ public class IdentityProviderResource {
         if (updated.getConfig() != null && ComponentRepresentation.SECRET_VALUE.equals(updated.getConfig().get("clientSecret"))) {
             updated.getConfig().put("clientSecret", identityProviderModel.getConfig() != null ? identityProviderModel.getConfig().get("clientSecret") : null);
         }
-        if (oldIdP != null) {
-            updated.getConfig().put(IdentityProviderModel.LAST_REFRESH_TIME, oldIdP.getConfig().get(IdentityProviderModel.LAST_REFRESH_TIME));
-        }
+        updated.getConfig().put(IdentityProviderModel.LAST_REFRESH_TIME, identityProviderModel.getConfig().get(IdentityProviderModel.LAST_REFRESH_TIME));
 
         realm.updateIdentityProvider(updated);
 
-        if ("true".equals(updated.getConfig().get(IdentityProviderModel.AUTO_UPDATE)) && (oldIdP == null || "false".equals(oldIdP.getConfig().get(IdentityProviderModel.AUTO_UPDATE)))) {
+        if ("true".equals(updated.getConfig().get(IdentityProviderModel.AUTO_UPDATE)) && "false".equals(identityProviderModel.getConfig().get(IdentityProviderModel.AUTO_UPDATE))) {
             //change from simple to autoUpdated IdP
             TimerProvider timer = session.getProvider(TimerProvider.class);
             createScheduleTask(timer, updated.getAlias(), Long.parseLong(updated.getConfig().get(IdentityProviderModel.REFRESH_PERIOD)) * 1000, Long.parseLong(updated.getConfig().get(IdentityProviderModel.REFRESH_PERIOD)) * 1000);
-        } else if ("false".equals(updated.getConfig().get(IdentityProviderModel.AUTO_UPDATE)) && oldIdP != null && "true".equals(oldIdP.getConfig().get(IdentityProviderModel.AUTO_UPDATE))) {
+        } else if ("false".equals(updated.getConfig().get(IdentityProviderModel.AUTO_UPDATE)) && "true".equals(identityProviderModel.getConfig().get(IdentityProviderModel.AUTO_UPDATE))) {
             //change from autoUpdated to simple IdP
             TimerProvider timer = session.getProvider(TimerProvider.class);
-            timer.cancelTask(realm.getId()+"_AutoUpdateIdP_" + oldIdP.getAlias());
-        } else if ("true".equals(updated.getConfig().get(IdentityProviderModel.AUTO_UPDATE)) && oldIdP != null && (!updated.getConfig().get(IdentityProviderModel.REFRESH_PERIOD).equals(oldIdP.getConfig().get(IdentityProviderModel.REFRESH_PERIOD)) || !oldIdP.getAlias().equals(newProviderId))) {
+            timer.cancelTask(realm.getId()+"_AutoUpdateIdP_" + identityProviderModel.getAlias());
+        } else if ("true".equals(updated.getConfig().get(IdentityProviderModel.AUTO_UPDATE)) && (!updated.getConfig().get(IdentityProviderModel.REFRESH_PERIOD).equals(identityProviderModel.getConfig().get(IdentityProviderModel.REFRESH_PERIOD)) || !identityProviderModel.getAlias().equals(providerRep.getAlias()))) {
             //change refreshPeriod or alias
             TimerProvider timer = session.getProvider(TimerProvider.class);
             long delay = updated.getConfig().get(IdentityProviderModel.LAST_REFRESH_TIME) == null ? Long.parseLong(updated.getConfig().get(IdentityProviderModel.REFRESH_PERIOD)) * 1000 : Long.parseLong(updated.getConfig().get(IdentityProviderModel.LAST_REFRESH_TIME) )+ Long.parseLong(updated.getConfig().get(IdentityProviderModel.REFRESH_PERIOD)) * 1000 - Instant.now().toEpochMilli();
-            timer.cancelTask(realm.getId()+"_AutoUpdateIdP_" + oldIdP.getAlias());
+            timer.cancelTask(realm.getId()+"_AutoUpdateIdP_" + identityProviderModel.getAlias());
             createScheduleTask(timer, updated.getAlias(), delay, Long.parseLong(updated.getConfig().get(IdentityProviderModel.REFRESH_PERIOD)) * 1000);
         }
 
-        if (oldIdP != null && !oldIdP.getAlias().equals(newProviderId)) {
+        if (!updated.getAlias().equals(identityProviderModel.getAlias())) {
 
             // Admin changed the ID (alias) of identity provider. We must update all clients and users
-            logger.debug("Changing providerId in all clients and linked users. oldProviderId=" + oldIdP.getAlias() + ", newProviderId=" + newProviderId);
+            logger.debug("Changing providerId in all clients and linked users. oldProviderId=" + identityProviderModel.getAlias() + ", newProviderId=" + updated.getAlias());
 
             updateUsersAfterProviderAliasChange(session.users().searchForUserStream(realm, Collections.singletonMap(UserModel.INCLUDE_SERVICE_ACCOUNT, Boolean.FALSE.toString())),
-                    oldIdP.getAlias(), newProviderId, realm, session);
+                    identityProviderModel.getAlias(), updated.getAlias(), realm, session);
         }
     }
 
@@ -280,8 +276,9 @@ public class IdentityProviderResource {
     }
 
     // return ID of IdentityProvider from realm based on internalId of this provider
-    private static IdentityProviderModel getProviderIdByInternalId(RealmModel realm, String providerInternalId) {
+    private static String getProviderIdByInternalId(RealmModel realm, String providerInternalId) {
         return realm.getIdentityProvidersStream().filter(p -> Objects.equals(p.getInternalId(), providerInternalId))
+                .map(IdentityProviderModel::getAlias)
                 .findFirst()
                 .orElse(null);
     }

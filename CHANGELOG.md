@@ -12,6 +12,24 @@ Our Keycloak version is working well with PostgreSQL database. For using other S
 
 ## [Unreleased]
 
+### Changed
+- SAML Federation process reexecute when no all IDPs are added
+
+## [22.0.11-1.9] - 2024-10-10
+
+### Fixed
+- Small fixes and extra logs to saml federation parsing
+- Link federated IdPs
+- Messages for group events
+- Add specific IdPs number during SAML Federation creation
+- Fix allow/deny Entity Categories filtering for SAML federations
+- Fix ui problems in SAML Federation
+
+### Changed
+- Remove indexes from federation and IdP related tables
+
+## [22.0.11-1.8] - 2024-09-11
+
 ### Added
 - Handling authenticating authority(ies) in user session
 - Add user session name to ClaimToUserSessionNoteMapper
@@ -20,11 +38,13 @@ Our Keycloak version is working well with PostgreSQL database. For using other S
 
 ### Changed
 - Change condition for parsing NameIDPolicy in autoUpdated IdP
+- Improve/ change update IdP REST API
 
 ### Fixed
 - Fix bugs in AutoUpdated schedule task
 - Correct query for autoUpdated IdP
 - Do not change lastRefreshTime during IdP update
+- Improvements and logs in SAML federation task execution
 
 ## [22.0.10-1.7] - 2024-07-10
 

@@ -55,6 +55,7 @@ import static org.keycloak.utils.StreamsUtil.closing;
  */
 public class RealmAdapter implements LegacyRealmModel, JpaModel<RealmEntity> {
     protected static final Logger logger = Logger.getLogger(RealmAdapter.class);
+
     protected RealmEntity realm;
     protected EntityManager em;
     protected KeycloakSession session;
@@ -1295,6 +1296,11 @@ public class RealmAdapter implements LegacyRealmModel, JpaModel<RealmEntity> {
 
     @Override
     public void addIdentityProvider(IdentityProviderModel identityProvider) {
+        addIdentityProviderMain(identityProvider);
+        em.flush();
+    }
+
+    private void addIdentityProviderMain(IdentityProviderModel identityProvider) {
         IdentityProviderEntity entity = new IdentityProviderEntity();
 
         if (identityProvider.getInternalId() == null) {
@@ -1359,24 +1365,6 @@ public class RealmAdapter implements LegacyRealmModel, JpaModel<RealmEntity> {
 
         em.flush();
 
-    }
-
-    /**
-     * method for update when federation task is executed
-     * @param identityProvider
-     */
-    private void updateIdentityProviderFromFed(IdentityProviderModel identityProvider) {
-
-        IdentityProviderEntity entity =(IdentityProviderEntity)  em.find(IdentityProviderEntity.class,identityProvider.getInternalId());
-        modelToEntity(entity,identityProvider);
-        if (identityProvider.getFederations() != null) {
-            entity.setFederations(identityProvider.getFederations().stream().map(id -> {
-                FederationEntity fed = new FederationEntity();
-                fed.setInternalId(id);
-                return fed;
-            }).collect(Collectors.toSet()));
-        }
-
         session.getKeycloakSessionFactory().publish(new RealmModel.IdentityProviderUpdatedEvent() {
 
             @Override
@@ -1394,6 +1382,24 @@ public class RealmAdapter implements LegacyRealmModel, JpaModel<RealmEntity> {
                 return session;
             }
         });
+
+    }
+
+    /**
+     * method for update when federation task is executed
+     * @param identityProvider
+     */
+    private void updateIdentityProviderFromFed(IdentityProviderModel identityProvider) {
+
+        IdentityProviderEntity entity =(IdentityProviderEntity)  em.find(IdentityProviderEntity.class,identityProvider.getInternalId());
+        modelToEntity(entity,identityProvider);
+        if (identityProvider.getFederations() != null) {
+            entity.setFederations(identityProvider.getFederations().stream().map(id -> {
+                FederationEntity fed = new FederationEntity();
+                fed.setInternalId(id);
+                return fed;
+            }).collect(Collectors.toSet()));
+        }
     }
 
     private FederationModel entityToModel(FederationEntity entity) {
@@ -1552,8 +1558,9 @@ public class RealmAdapter implements LegacyRealmModel, JpaModel<RealmEntity> {
     @Override
     public void taskExecutionFederation(FederationModel federationModel, List<IdentityProviderModel> addIdPs, List<IdentityProviderModel> updatedIdPs, List<String> removedIdPs) {
 
-	    addIdPs.stream().forEach(idp -> {
-            this.addIdentityProvider(idp);
+        logger.info("Starting updating in database the SAML federation (id): " + federationModel.getAlias());
+        for (IdentityProviderModel idp : addIdPs) {
+            this.addIdentityProviderMain(idp);
             //add mappers from federation for new identity providers
             federationModel.getFederationMapperModels().stream().map(mapper -> new IdentityProviderMapperModel(mapper, idp.getAlias())).forEach(mapper ->{
                 try {
@@ -1563,16 +1570,13 @@ public class RealmAdapter implements LegacyRealmModel, JpaModel<RealmEntity> {
                     logger.warn("Previously removed IdP mapper with alias "+mapper.getIdentityProviderAlias()+ " and name "+mapper.getName()+" still exists!" );
                 }
             });
-        });
-        updatedIdPs.stream().forEach(this::updateIdentityProviderFromFed);
-        if(removedIdPs != null && !removedIdPs.isEmpty()) {
-            removedIdPs.stream().forEach(alias -> {
-                //remove mappers also
-                logger.info("Removing idp with alias = " + alias);
-                this.removeFederationIdp(federationModel, alias);
-            });
         }
+        updatedIdPs.stream().forEach(this::updateIdentityProviderFromFed);
+        removedIdPs.stream().forEach(alias -> this.removeFederationIdp(federationModel, alias));
+        logger.info("Finish updating IdPs of the SAML federation (id): " + federationModel.getAlias());
         this.updateSAMLFederation(federationModel);
+        em.flush();
+        logger.info("Finish updating in database the SAML federation (id): " + federationModel.getAlias());
     }
 
     @Override
@@ -1863,7 +1867,6 @@ public class RealmAdapter implements LegacyRealmModel, JpaModel<RealmEntity> {
     @Override
     public void removeIdentityProviderMapper(IdentityProviderMapperModel mapping) {
         IdentityProviderMapperEntity toDelete = getIdentityProviderMapperEntity(mapping.getId());
-        logger.info(toDelete == null ? "Problem in removing":"Removing" + " IdentityProviderMapperModel for IdP with alias = "+mapping.getIdentityProviderAlias()+" and name = "+mapping.getName());
         if (toDelete != null) {
             this.realm.getIdentityProviderMappers().remove(toDelete);
             em.remove(toDelete);
