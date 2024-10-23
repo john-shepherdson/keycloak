@@ -176,6 +176,7 @@ public class OAuth2IdentityProviderConfig extends IdentityProviderModel {
 
     @Override
     public void validate(RealmModel realm) {
+        super.validate(realm);
         SslRequired sslRequired = realm.getSslRequired();
 
         checkUrl(sslRequired, getAuthorizationUrl(), "authorization_url");

@@ -10,6 +10,15 @@ Full Keycloak upstream jira issue can be shown if filtered by Fix version.
 
 Our Keycloak version is working well with PostgreSQL database. For using other SQL databases, text field in database need to be evaluated.
 
+## [Unreleased]
+
+### Added
+- Logo uri for IdPs
+- Add cookie for chosen login IdPs
+
+### Fixed
+- Make IdPs selection more efficient
+
 ## [22.0.11-1.10] - 2024-10-21
 
 ### Changed

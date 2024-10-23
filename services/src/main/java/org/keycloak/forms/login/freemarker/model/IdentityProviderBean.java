@@ -52,7 +52,7 @@ public class IdentityProviderBean {
         if (!identityProviders.isEmpty()) {
             List<IdentityProvider> orderedList = new ArrayList<>();
             for (IdentityProviderModel identityProvider : identityProviders) {
-                if (identityProvider.isEnabled() && !identityProvider.isLinkOnly()) {
+                if (identityProvider.isEnabled() && !identityProvider.isLinkOnly() && !(identityProvider.getConfig() != null && Boolean.parseBoolean(identityProvider.getConfig().get("hideOnLoginPage")))) {
                     addIdentityProvider(orderedList, realm, baseURI, identityProvider);
                 }
             }
@@ -69,12 +69,9 @@ public class IdentityProviderBean {
         String loginUrl = Urls.identityProviderAuthnRequest(baseURI, identityProvider.getAlias(), realm.getName()).toString();
         String displayName = KeycloakModelUtils.getIdentityProviderDisplayName(session, identityProvider);
         Map<String, String> config = identityProvider.getConfig();
-        boolean hideOnLoginPage = config != null && Boolean.parseBoolean(config.get("hideOnLoginPage"));
-        if (!hideOnLoginPage) {
-            orderedSet.add(new IdentityProvider(identityProvider.getAlias(),
-                    displayName, identityProvider.getProviderId(), loginUrl,
-                    config != null ? config.get("guiOrder") : null, getLoginIconClasses(identityProvider)));
-        }
+        orderedSet.add(new IdentityProvider(identityProvider.getAlias(),
+                displayName, identityProvider.getProviderId(), loginUrl,
+                config != null ? config.get("guiOrder") : null, getLoginIconClasses(identityProvider), config.get(IdentityProviderModel.LOGO_URI)));
     }
 
     // Get icon classes defined in properties of current theme with key 'kcLogoIdP-{alias}'
@@ -110,18 +107,20 @@ public class IdentityProviderBean {
         private final String guiOrder;
         private final String displayName;
         private final String iconClasses;
+        private final String logoUri;
 
         public IdentityProvider(String alias, String displayName, String providerId, String loginUrl, String guiOrder) {
-            this(alias, displayName, providerId, loginUrl, guiOrder, "");
+            this(alias, displayName, providerId, loginUrl, guiOrder, "", null);
         }
 
-        public IdentityProvider(String alias, String displayName, String providerId, String loginUrl, String guiOrder, String iconClasses) {
+        public IdentityProvider(String alias, String displayName, String providerId, String loginUrl, String guiOrder, String iconClasses, String logoUri) {
             this.alias = alias;
             this.displayName = displayName;
             this.providerId = providerId;
             this.loginUrl = loginUrl;
             this.guiOrder = guiOrder;
             this.iconClasses = iconClasses;
+            this.logoUri = logoUri;
         }
 
         public String getAlias() {
@@ -147,6 +146,10 @@ public class IdentityProviderBean {
 
         public String getIconClasses() {
             return iconClasses;
+        }
+
+        public String getLogoUri() {
+            return logoUri;
         }
     }
 

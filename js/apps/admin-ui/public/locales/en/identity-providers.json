@@ -200,6 +200,7 @@
   "actions": "Actions",
   "order": "Order",
   "promotedLoginbutton": "Promoted login button",
+  "logoUri": "Logo URI",
   "autoUpdate":"Auto Update",
   "deletedSuccessIdentityProvider": "Identity provider successfully deleted.",
   "deleteErrorIdentityProvider": "Could not delete the identity provider {{error}}",

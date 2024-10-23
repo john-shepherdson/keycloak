@@ -22,6 +22,8 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import static org.keycloak.common.util.UriUtils.checkUri;
+
 /**
  * <p>A model type representing the configuration for identity providers. It provides some common properties and also a {@link org.keycloak.models.IdentityProviderModel#config}
  * for configuration options and properties specifics to a identity provider.</p>
@@ -48,6 +50,7 @@ public class IdentityProviderModel implements Serializable {
     public static final String METADATA_URL = "metadataUrl";
     public static final String REFRESH_PERIOD = "refreshPeriod";
     public static final String LAST_REFRESH_TIME = "lastRefreshTime";
+    public static final String LOGO_URI = "logoUri";
 
     private String internalId;
 
@@ -236,6 +239,7 @@ public class IdentityProviderModel implements Serializable {
      * @param realm the realm
      */
     public void validate(RealmModel realm) {
+        checkUri(getLogoUri(), LOGO_URI);
     }
         
     public IdentityProviderSyncMode getSyncMode() {
@@ -301,7 +305,15 @@ public class IdentityProviderModel implements Serializable {
 
     public void setPromotedLoginButton(boolean promotedLoginButton) {
         getConfig().put(PROMOTED_LOGIN_BUTTON, String.valueOf(promotedLoginButton));
-    }     
+    }
+
+    public String getLogoUri() {
+        return getConfig().get(LOGO_URI);
+    }
+
+    public void setLogoUri(String logoUri) {
+        getConfig().put(LOGO_URI, logoUri);
+    }
 
     public Set<String> getFederations() {
 		return federations;

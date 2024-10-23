@@ -146,6 +146,11 @@ export const AdvancedSettings = ({ isOIDC, isSAML }: AdvancedSettingsProps) => {
         field="config.promotedLoginbutton"
         label="promotedLoginbutton"
       />
+      <TextField
+        field="config.logoUri"
+        label="logoUri"
+        data-testid="logoUri"
+      />
       {(!isSAML || isOIDC) && (
         <FormGroupField label="filteredByClaim">
           <Controller

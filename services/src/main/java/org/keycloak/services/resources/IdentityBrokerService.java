@@ -17,10 +17,12 @@
 package org.keycloak.services.resources;
 
 import jakarta.ws.rs.*;
+import jakarta.ws.rs.core.Cookie;
 import jakarta.ws.rs.core.MediaType;
 import org.jboss.logging.Logger;
 import org.jboss.resteasy.annotations.cache.NoCache;
 import org.jboss.resteasy.spi.ResteasyProviderFactory;
+import org.keycloak.common.util.ServerCookie;
 import org.keycloak.http.HttpRequest;
 import org.keycloak.OAuthErrorException;
 import org.keycloak.authentication.AuthenticationFlow;
@@ -102,6 +104,7 @@ import org.keycloak.services.resources.account.AccountConsole;
 import org.keycloak.services.util.AuthenticationFlowURLHelper;
 import org.keycloak.services.util.BrowserHistoryHelper;
 import org.keycloak.services.util.CacheControlUtil;
+import org.keycloak.services.util.CookieHelper;
 import org.keycloak.services.util.DefaultClientSessionContext;
 import org.keycloak.services.util.UserSessionUtil;
 import org.keycloak.services.validation.Validation;
@@ -127,7 +130,10 @@ import java.net.URI;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
@@ -146,6 +152,7 @@ public class IdentityBrokerService implements IdentityProvider.AuthenticationCal
 
     // Authentication session note, which references identity provider that is currently linked
     private static final String LINKING_IDENTITY_PROVIDER = "LINKING_IDENTITY_PROVIDER";
+    private static final String KEYCLOAK_REMEMBER_IDPS = "KEYCLOAK_REMEMBER_IDPS";
 
     private static final Logger logger = Logger.getLogger(IdentityBrokerService.class);
 
@@ -634,7 +641,7 @@ public class IdentityBrokerService implements IdentityProvider.AuthenticationCal
             }
             context.setToken(null);
         }
-        
+
         StatusResponseType loginResponse = (StatusResponseType) context.getContextData().get(SAMLEndpoint.SAML_LOGIN_RESPONSE);
         if (loginResponse != null) {
             for(Iterator<SamlAuthenticationPreprocessor> it = SamlSessionUtils.getSamlAuthenticationPreprocessorIterator(session); it.hasNext();) {
@@ -643,7 +650,13 @@ public class IdentityBrokerService implements IdentityProvider.AuthenticationCal
         }
 
         session.getContext().setClient(authenticationSession.getClient());
-
+        //set last login IdP to cookie (alias comma separated)
+        Cookie idpsCookie = session.getContext().getHttpRequest().getHttpHeaders().getCookies().get(KEYCLOAK_REMEMBER_IDPS);
+        List<String> idpsAlias = idpsCookie == null ? new ArrayList<>() : Arrays.asList(idpsCookie.getValue().split(","));
+        if (! idpsAlias.contains(providerId)) {
+            idpsAlias.add(providerId);
+            CookieHelper.addCookie(KEYCLOAK_REMEMBER_IDPS, idpsAlias.stream().collect(Collectors.joining(",")), AuthenticationManager.getRealmCookiePath(realmModel, session.getContext().getUri()), null, null, 31536000, realmModel.getSslRequired().isRequired(session.getContext().getConnection()), true, ServerCookie.SameSiteAttributeValue.NONE, session);
+        }
         context.getIdp().preprocessFederatedIdentity(session, realmModel, context);
         KeycloakSessionFactory sessionFactory = session.getKeycloakSessionFactory();
         realmModel.getIdentityProviderMappersByAliasStream(context.getIdpConfig().getAlias()).forEach(mapper -> {
