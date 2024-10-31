@@ -17,7 +17,6 @@
 package org.keycloak.services.resources;
 
 import jakarta.ws.rs.*;
-import jakarta.ws.rs.core.Cookie;
 import jakarta.ws.rs.core.MediaType;
 import org.jboss.logging.Logger;
 import org.jboss.resteasy.annotations.cache.NoCache;
@@ -127,6 +126,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URI;
+import java.net.URLDecoder;
+import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -152,7 +153,7 @@ public class IdentityBrokerService implements IdentityProvider.AuthenticationCal
 
     // Authentication session note, which references identity provider that is currently linked
     private static final String LINKING_IDENTITY_PROVIDER = "LINKING_IDENTITY_PROVIDER";
-    private static final String KEYCLOAK_REMEMBER_IDPS = "KEYCLOAK_REMEMBER_IDPS";
+    private static final String KEYCLOAK_REMEMBER_IDPS = "KEYCLOAK_REMEMBER_IDPS_";
 
     private static final Logger logger = Logger.getLogger(IdentityBrokerService.class);
 
@@ -651,11 +652,37 @@ public class IdentityBrokerService implements IdentityProvider.AuthenticationCal
 
         session.getContext().setClient(authenticationSession.getClient());
         //set last login IdP to cookie (alias comma separated)
-        Cookie idpsCookie = session.getContext().getHttpRequest().getHttpHeaders().getCookies().get(KEYCLOAK_REMEMBER_IDPS);
-        List<String> idpsAlias = idpsCookie == null ? new ArrayList<>() : Arrays.asList(idpsCookie.getValue().split(","));
-        if (! idpsAlias.contains(providerId)) {
-            idpsAlias.add(providerId);
-            CookieHelper.addCookie(KEYCLOAK_REMEMBER_IDPS, idpsAlias.stream().collect(Collectors.joining(",")), AuthenticationManager.getRealmCookiePath(realmModel, session.getContext().getUri()), null, null, 31536000, realmModel.getSslRequired().isRequired(session.getContext().getConnection()), true, ServerCookie.SameSiteAttributeValue.NONE, session);
+        Set<String> cookieValues = CookieHelper.getCookieValue(session, KEYCLOAK_REMEMBER_IDPS + realmModel.getId());
+        try {
+            List<String> idpsAlias = cookieValues.isEmpty() ? new ArrayList<>() : new ArrayList<>(JsonSerialization.readValue(URLDecoder.decode(cookieValues.iterator().next(), StandardCharsets.UTF_8), List.class));
+            if (!idpsAlias.contains(providerId)) {
+                if (!idpsAlias.isEmpty()) {
+                    CookieHelper.addCookie(KEYCLOAK_REMEMBER_IDPS + realmModel.getId(), "",
+                            AuthenticationManager.getRealmCookiePath(realmModel, session.getContext().getUri()),
+                            null,
+                            "Expiring cookie",
+                            0,  // Expire immediately
+                            realmModel.getSslRequired().isRequired(session.getContext().getConnection()),
+                            true,
+                            ServerCookie.SameSiteAttributeValue.NONE,
+                            session);
+                }
+                // Add the new cookie
+                idpsAlias.add(providerId);
+                CookieHelper.addCookie(KEYCLOAK_REMEMBER_IDPS + realmModel.getId(),
+                        URLEncoder.encode(JsonSerialization.writeValueAsString(idpsAlias), StandardCharsets.UTF_8),
+                        AuthenticationManager.getRealmCookiePath(realmModel, session.getContext().getUri()),
+                        null,
+                        null,
+                        31536000,
+                        realmModel.getSslRequired().isRequired(session.getContext().getConnection()),
+                        true,
+                        ServerCookie.SameSiteAttributeValue.NONE,
+                        session);
+
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
         }
         context.getIdp().preprocessFederatedIdentity(session, realmModel, context);
         KeycloakSessionFactory sessionFactory = session.getKeycloakSessionFactory();
