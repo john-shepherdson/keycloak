@@ -59,6 +59,7 @@ import jakarta.transaction.Transaction;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.security.Key;
 import java.security.KeyPair;
 import java.security.PrivateKey;
@@ -1143,6 +1144,6 @@ public final class KeycloakModelUtils {
     }
 
     public static String base64AndUrlEncoding(String str) throws UnsupportedEncodingException {
-        return URLEncoder.encode(StringUtil.getBase64(str));
+        return URLEncoder.encode(StringUtil.getBase64(str), StandardCharsets.UTF_8.toString());
     }
 }
