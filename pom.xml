@@ -240,6 +240,11 @@
 
         <!-- Set to true on release to update proto.lock files -->
         <commitProtoLockChanges>false</commitProtoLockChanges>
+    
+        <!-- For SonarQube cloud -->
+        <sonar.organization>john-shepherdson</sonar.organization>
+        <sonar.host.url>https://sonarcloud.io</sonar.host.url>
+
     </properties>
 
     <url>http://keycloak.org</url>
