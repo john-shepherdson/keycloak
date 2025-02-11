@@ -34,6 +34,13 @@ public class HardcodedClaimBasedOnAttributeMapper extends AbstractOIDCProtocolMa
         configProperties.add(property);
 
         property = new ProviderConfigProperty();
+        property.setName(ProtocolMapperUtils.MULTIVALUED);
+        property.setLabel(ProtocolMapperUtils.MULTIVALUED_LABEL);
+        property.setHelpText(ProtocolMapperUtils.MULTIVALUED_HELP_TEXT);
+        property.setType(ProviderConfigProperty.BOOLEAN_TYPE);
+        configProperties.add(property);
+
+        property = new ProviderConfigProperty();
         property.setName(ProtocolMapperUtils.CLAIM_VALUE);
         property.setLabel(ProtocolMapperUtils.CLAIM_VALUE_LABEL);
         property.setHelpText(ProtocolMapperUtils.CONDITIONAL_CLAIM_VALUE_HELP_TEXT);
@@ -78,9 +85,8 @@ public class HardcodedClaimBasedOnAttributeMapper extends AbstractOIDCProtocolMa
             Collection<String> userAttributeValues = KeycloakModelUtils.resolveAttribute(userSession.getUser(), userAttribute , false);
 
             if (userAttributeValues.stream().anyMatch(possibleAttributeValues::contains)) {
-                String attributeValue = mappingModel.getConfig().get(ProtocolMapperUtils.CLAIM_VALUE);
-                if (attributeValue == null) return;
-                OIDCAttributeMapperHelper.mapClaim(token, mappingModel, attributeValue);
+                List<String> attributeValues = Arrays.asList(mappingModel.getConfig().get(ProtocolMapperUtils.CLAIM_VALUE).split(Constants.CFG_DELIMITER));
+                OIDCAttributeMapperHelper.mapClaim(token, mappingModel, attributeValues.size() ==1 ? attributeValues.get(0) : attributeValues);
             }
     }
 
