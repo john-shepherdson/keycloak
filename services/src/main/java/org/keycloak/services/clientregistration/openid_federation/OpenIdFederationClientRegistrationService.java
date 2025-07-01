@@ -47,8 +47,8 @@ public class OpenIdFederationClientRegistrationService extends AbstractClientReg
     @Consumes({"application/entity-statement+jwt", "application/trust-chain+json"})
     public Response explicitClientRegistration(String body, @Context HttpHeaders headers) {
         RealmModel realm = session.getContext().getRealm();
-        OpenIdFederationGeneralConfig config = realm.getOpenIdFederationConfig();
-        if (!realm.isOpenIdFederationConfig() || !config.getOpenIdFederationList().stream().flatMap(x -> x.getClientRegistrationTypesSupported().stream()).collect(Collectors.toSet()).contains(ClientRegistrationTypeEnum.EXPLICIT) || config.getAuthorityHints().isEmpty()) {
+        OpenIdFederationGeneralConfig config = realm.getOpenIdFederationGeneralConfig();
+        if (!realm.isOpenIdFederationEnabled() || config.getOpenIdFederationList() == null || !config.getOpenIdFederationList().stream().flatMap(x -> x.getClientRegistrationTypesSupported().stream()).collect(Collectors.toSet()).contains(ClientRegistrationTypeEnum.EXPLICIT) || config.getAuthorityHints().isEmpty()) {
             throw new ErrorResponseException(Errors.INVALID_REQUEST, "Explicit OpenID Federation Client Registration is not supported in this realm", Response.Status.BAD_REQUEST);
         }
         checkSsl();
@@ -111,9 +111,6 @@ public class OpenIdFederationClientRegistrationService extends AbstractClientReg
     }
 
     private void validationRules(EntityStatement statement) {
-        if (!TokenUtil.ENTITY_STATEMENT_JWT.equals(statement.getType())) {
-            throw new ErrorResponseException(Errors.INVALID_REQUEST, "No correct typ header.", Response.Status.NOT_FOUND);
-        }
         if (statement.getIssuer() == null) {
             throw new ErrorResponseException(Errors.INVALID_ISSUER, "No issuer in the request.", Response.Status.NOT_FOUND);
         }

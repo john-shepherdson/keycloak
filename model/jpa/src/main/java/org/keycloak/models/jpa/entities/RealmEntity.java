@@ -151,7 +151,7 @@ public class RealmEntity {
     @OneToMany(cascade ={CascadeType.REMOVE}, orphanRemoval = true, mappedBy = "realm")
     Collection<UserFederationMapperEntity> userFederationMappers = new LinkedList<>();
 
-    @OneToMany(cascade ={CascadeType.ALL}, orphanRemoval = true, mappedBy = "realm")
+    @OneToMany(cascade ={CascadeType.PERSIST, CascadeType.REMOVE}, mappedBy = "realm")
     List<OpenIdFederationEntity> openIdFederationList = new ArrayList<>();
 
     @ElementCollection
@@ -617,13 +617,10 @@ public class RealmEntity {
     }
 
     public List<OpenIdFederationEntity> getOpenIdFederationList() {
-        return openIdFederationList;
+        return openIdFederationList == null ? new ArrayList<>() : openIdFederationList;
     }
 
     public void setOpenIdFederationList(List<OpenIdFederationEntity> openIdFederationList) {
-        if (this.openIdFederationList == null) {
-            this.openIdFederationList = new ArrayList<>();
-        }
         this.openIdFederationList.clear();
         if (openIdFederationList != null && !openIdFederationList.isEmpty()) {
             this.openIdFederationList.addAll(openIdFederationList);
