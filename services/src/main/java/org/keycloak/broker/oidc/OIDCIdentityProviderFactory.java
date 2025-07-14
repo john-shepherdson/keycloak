@@ -24,7 +24,9 @@ import org.keycloak.util.JsonSerialization;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.InvocationTargetException;
 import java.util.Map;
+import java.util.function.Function;
 
 /**
  * @author Pedro Igor
@@ -55,17 +57,30 @@ public class OIDCIdentityProviderFactory extends AbstractIdentityProviderFactory
 
     @Override
     public IdentityProviderModel parseConfig(KeycloakSession session, InputStream inputStream, IdentityProviderModel model) {
-        return parseOIDCConfig(session, inputStream, model);
+        return parseOIDCConfig(inputStream, model, OIDCIdentityProviderConfig.class);
     }
 
-    protected static IdentityProviderModel parseOIDCConfig(KeycloakSession session, InputStream inputStream, IdentityProviderModel model) {
+    protected static <T extends OIDCIdentityProviderConfig> T parseOIDCConfig(
+            InputStream inputStream,
+            IdentityProviderModel model,
+            Class<T> configClass
+    ) {
         OIDCConfigurationRepresentation rep;
         try {
             rep = JsonSerialization.readValue(inputStream, OIDCConfigurationRepresentation.class);
         } catch (IOException e) {
             throw new RuntimeException("failed to load openid connect metadata", e);
         }
-        OIDCIdentityProviderConfig config = new OIDCIdentityProviderConfig(model);
+        try {
+            return parseOIDCConfig(rep, configClass, model);
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to instantiate config", e);
+        }
+
+    }
+
+    public static <P extends OIDCConfigurationRepresentation, T extends OIDCIdentityProviderConfig> T parseOIDCConfig( P rep,  Class<T> configClass, IdentityProviderModel model) throws Exception {
+        T config = configClass.getConstructor(IdentityProviderModel.class).newInstance(model);
         config.setIssuer(rep.getIssuer());
         config.setLogoutUrl(rep.getLogoutEndpoint());
         config.setAuthorizationUrl(rep.getAuthorizationEndpoint());
@@ -75,7 +90,7 @@ public class OIDCIdentityProviderFactory extends AbstractIdentityProviderFactory
             config.setValidateSignature(true);
             config.setUseJwksUrl(true);
             config.setJwksUrl(rep.getJwksUri());
-        } else  if (config.getJwksUrl() != null) {
+        } else if (config.getJwksUrl() != null) {
             config.setUseJwksUrl(false);
             config.setJwksUrl(null);
         }
