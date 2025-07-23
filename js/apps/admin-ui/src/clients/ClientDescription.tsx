@@ -1,6 +1,6 @@
 import { useTranslation } from "react-i18next";
 import { TextControl, TextAreaControl, HelpItem } from "ui-shared";
-
+import useFormatDate from "../utils/useFormatDate";
 import { FormAccess } from "../components/form/FormAccess";
 import { DefaultSwitchControl } from "../components/SwitchControl";
 import { FormGroup } from "@patternfly/react-core";
@@ -21,6 +21,7 @@ export const ClientDescription = ({
   hasConfigureAccess: configure,
 }: ClientDescriptionProps) => {
   const { t } = useTranslation("clients");
+  const formatDate = useFormatDate();
   const {
     watch,
     control,
@@ -29,6 +30,9 @@ export const ClientDescription = ({
   const autoUpdated = watch(
     convertAttributeNameToForm("attributes.saml.auto.updated"),
   ) as unknown as string;
+  const expirationTime = watch(
+    convertAttributeNameToForm("attributes.expiration.time"),
+  ) as unknown as number;
   const lastRefreshed = watch(
     convertAttributeNameToForm("attributes.saml.last.refresh.time"),
   ) as unknown as string;
@@ -166,6 +170,19 @@ export const ClientDescription = ({
         label={t("alwaysDisplayInUI")}
         labelIcon={t("clients-help:alwaysDisplayInUI")}
       />
+      {expirationTime && (
+        <FormGroup
+          label={t("clients:expirationTime")}
+          labelIcon={
+            <HelpItem
+              helpText={t("clients-help:expirationTime")}
+              fieldLabelId="clients-help:expirationTime"
+            />
+          }
+        >
+          {formatDate(new Date(expirationTime * 1000))}
+        </FormGroup>
+      )}
     </FormAccess>
   );
 };
