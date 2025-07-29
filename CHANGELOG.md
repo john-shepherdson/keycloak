@@ -10,7 +10,7 @@ Full Keycloak upstream jira issue can be shown if filtered by Fix version.
 
 Our Keycloak version is working well with PostgreSQL database. For using other SQL databases, text field in database need to be evaluated.
 
-## [Unreleased] 
+## [22.0.13-1.20] - 2025-08-07
 
 ### Added
 - OpenID Federation client access policies (UI)
@@ -24,6 +24,7 @@ Our Keycloak version is working well with PostgreSQL database. For using other S
 - Fixes in Trust Chain Resolution
 - Validate IdP refresh token based on 'Validate refresh token' configuration
 - Notify other nodes for event cancellation
+- Fix Metadata Policies for RP Metadata (experimental feature)
 
 ## [22.0.13-1.19] - 2025-07-10
 
