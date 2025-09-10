@@ -1293,7 +1293,7 @@ public class LegacyExportImportManager implements ExportImportManager {
         OpenIdFederationConfig fedConfig = new OpenIdFederationConfig();
         fedConfig.setInternalId(representation.getInternalId());
         fedConfig.setTrustAnchor(representation.getTrustAnchor());
-        fedConfig.setEntityTypes(representation.getEntityTypes().stream().map(EntityTypeEnum::valueOf).collect(Collectors.toList()));
+        fedConfig.setEntityType(EntityTypeEnum.valueOf(representation.getEntityType()));
         fedConfig.setClientRegistrationTypesSupported(representation.getClientRegistrationTypesSupported().stream().map(ClientRegistrationTypeEnum::valueOf).collect(Collectors.toList()));
         fedConfig.setIdpConfiguration(representation.getIdpConfiguration());
         return fedConfig;

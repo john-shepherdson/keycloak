@@ -11,9 +11,8 @@ public class OpenIdFederationConfig {
 
     private String internalId;
     private String trustAnchor;
+    private EntityTypeEnum entityType;
     private List<ClientRegistrationTypeEnum> clientRegistrationTypesSupported;
-
-    private List<EntityTypeEnum> entityTypes;
     private Map<String, String> idpConfiguration  = new HashMap<>();
 
     public OpenIdFederationConfig() {}
@@ -42,12 +41,12 @@ public class OpenIdFederationConfig {
         this.clientRegistrationTypesSupported = clientRegistrationTypesSupported;
     }
 
-    public List<EntityTypeEnum> getEntityTypes() {
-        return entityTypes;
+    public EntityTypeEnum getEntityType() {
+        return entityType;
     }
 
-    public void setEntityTypes(List<EntityTypeEnum> entityTypes) {
-        this.entityTypes = entityTypes;
+    public void setEntityType(EntityTypeEnum entityType) {
+        this.entityType = entityType;
     }
 
     public Map<String, String> getIdpConfiguration() {

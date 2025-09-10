@@ -6,12 +6,15 @@ import jakarta.persistence.CollectionTable;
 import jakarta.persistence.Column;
 import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.MapKeyColumn;
 import jakarta.persistence.Table;
+import org.keycloak.models.enums.EntityTypeEnum;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -26,6 +29,9 @@ public class OpenIdFederationEntity {
     private String internalId;
     @Column(name = "TRUST_ANCHOR")
     private String trustAnchor;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "ENTITY_TYPE")
+    private EntityTypeEnum entityType;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "REALM_ID")
@@ -57,6 +63,14 @@ public class OpenIdFederationEntity {
 
     public void setTrustAnchor(String trustAnchor) {
         this.trustAnchor = trustAnchor;
+    }
+
+    public EntityTypeEnum getEntityType() {
+        return entityType;
+    }
+
+    public void setEntityType(EntityTypeEnum entityType) {
+        this.entityType = entityType;
     }
 
     public RealmEntity getRealm() {

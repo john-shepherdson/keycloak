@@ -56,7 +56,7 @@ public class OpenIdFederationWellKnownProvider extends OIDCWellKnownProvider {
         CommonMetadata common = OpenIdFederationUtils.commonMetadata(openIdFederationConfig);
         Set<ClientRegistrationTypeEnum> registrationTypes = openIdFederationConfig.getOpenIdFederationList().stream().flatMap(x -> x.getClientRegistrationTypesSupported().stream()).collect(Collectors.toSet());
 
-        if (openIdFederationConfig.getOpenIdFederationList().stream().flatMap(x -> x.getEntityTypes().stream()).anyMatch(EntityTypeEnum.OPENID_PROVIDER::equals)) {
+        if (openIdFederationConfig.getOpenIdFederationList().stream().anyMatch(x -> EntityTypeEnum.OPENID_PROVIDER.equals(x.getEntityType()))) {
             OPMetadata opMetadata;
             try {
                 opMetadata = from(((OIDCConfigurationRepresentation) super.getConfig()));
@@ -75,7 +75,7 @@ public class OpenIdFederationWellKnownProvider extends OIDCWellKnownProvider {
             metadata.setOpenIdProviderMetadata(opMetadata);
         }
 
-        if (openIdFederationConfig.getOpenIdFederationList().stream().flatMap(x -> x.getEntityTypes().stream()).collect(Collectors.toSet()).contains(EntityTypeEnum.OPENID_RELYING_PARTY)) {
+        if (openIdFederationConfig.getOpenIdFederationList().stream().anyMatch(x -> EntityTypeEnum.OPENID_RELYING_PARTY.equals(x.getEntityType()))) {
             RPMetadata rPMetadata = OpenIdFederationUtils.createRPMetadata(openIdFederationConfig, registrationTypes.stream(), common, RealmsResource.protocolUrl(backendUriInfo).clone().path(OIDCLoginProtocolService.class, "certs").build(realm.getName(),
                     OIDCLoginProtocol.LOGIN_PROTOCOL).toString(), frontendUriInfo, realm.getName());
             List<String> openIdFederationSubjectTypes = openIdFederationConfig.getOpenIdFederationList().stream().flatMap(x -> {

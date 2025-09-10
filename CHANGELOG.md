@@ -16,6 +16,10 @@ Our Keycloak version is working well with PostgreSQL database. For using other S
 - OpenID Federation Automatic Registration as OP 
 - OID-FED settings for OPs
 
+### Changed
+- Make EntityType unique in OpenId Federation Entity [RCIAM-246](https://tts.grnet.gr/jira/browse/RCIAM-246)
+
+
 
 ## [22.0.13-1.22] - 2025-09-08
 

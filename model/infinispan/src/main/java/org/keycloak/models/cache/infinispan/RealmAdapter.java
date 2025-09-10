@@ -768,7 +768,7 @@ public class RealmAdapter implements CachedRealmModel {
     @Override
     public Stream<OpenIdFederationConfig> getTrustAnchorsBasedOnTypes(EntityTypeEnum entityType, ClientRegistrationTypeEnum clientRegistrationType) {
         if (isUpdated()) return updated.getTrustAnchorsBasedOnTypes(entityType, clientRegistrationType);
-        return isOpenIdFederationEnabled() ? cached.getOpenIdFederationConfig().getOpenIdFederationList().stream().filter(x -> x.getEntityTypes().contains(entityType) && x.getClientRegistrationTypesSupported().contains(clientRegistrationType)) : Stream.empty();
+        return isOpenIdFederationEnabled() ? cached.getOpenIdFederationConfig().getOpenIdFederationList().stream().filter(x -> entityType.equals(x.getEntityType()) && x.getClientRegistrationTypesSupported().contains(clientRegistrationType)) : Stream.empty();
     }
 
     @Override

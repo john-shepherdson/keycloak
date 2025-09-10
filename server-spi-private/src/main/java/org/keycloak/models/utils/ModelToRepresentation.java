@@ -915,7 +915,7 @@ public class ModelToRepresentation {
         OpenIdFederationRepresentation federationRep = new OpenIdFederationRepresentation();
         federationRep.setInternalId(model.getInternalId());
         federationRep.setTrustAnchor(model.getTrustAnchor());
-        federationRep.setEntityTypes(model.getEntityTypes().stream().map(EntityTypeEnum::toString).collect(Collectors.toList()));
+        federationRep.setEntityType(model.getEntityType().toString());
         federationRep.setClientRegistrationTypesSupported(model.getClientRegistrationTypesSupported().stream().map(ClientRegistrationTypeEnum::toString).collect(Collectors.toList()));
         federationRep.setIdpConfiguration(model.getIdpConfiguration());
         return federationRep;

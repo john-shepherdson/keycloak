@@ -10,7 +10,7 @@ public class OpenIdFederationRepresentation {
     private String trustAnchor;
     private List<String> clientRegistrationTypesSupported;
 
-    private List<String> entityTypes;
+    private String entityType;
 
     private Map<String, String> idpConfiguration  = new HashMap<>();
 
@@ -40,12 +40,12 @@ public class OpenIdFederationRepresentation {
         this.clientRegistrationTypesSupported = clientRegistrationTypesSupported;
     }
 
-    public List<String> getEntityTypes() {
-        return entityTypes;
+    public String getEntityType() {
+        return entityType;
     }
 
-    public void setEntityTypes(List<String> entityTypes) {
-        this.entityTypes = entityTypes;
+    public void setEntityType(String entityType) {
+        this.entityType = entityType;
     }
 
     public Map<String, String> getIdpConfiguration() {

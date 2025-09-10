@@ -258,12 +258,24 @@ public class OIDCWellKnownProviderTest extends AbstractKeycloakTest {
             realmRep.setOpenIdFederationAuthorityHints(Stream.of("https://edugain.org/federation").collect(Collectors.toList()));
             testRealm.update(realmRep);
 
+            List<String> federationIds = List.of();
             OpenIdFederationRepresentation openIdFederationRepresentation = new OpenIdFederationRepresentation();
             openIdFederationRepresentation.setTrustAnchor("https://edugain.org/trust-anchor");
             openIdFederationRepresentation.setClientRegistrationTypesSupported(Stream.of("EXPLICIT").collect(Collectors.toList()));
-            openIdFederationRepresentation.setEntityTypes(Stream.of("OPENID_PROVIDER", "OPENID_RELYING_PARTY").collect(Collectors.toList()));
-            Map<String, String> idpConfiguration = Map.of(OpenIdFederationUtils.SUBJECT_TYPES_SUPPORTED, "public");
-            testRealm.openIdFederationsResource().create(openIdFederationRepresentation);
+            openIdFederationRepresentation.setEntityType("OPENID_PROVIDER");
+            Response response = testRealm.openIdFederationsResource().create(openIdFederationRepresentation);
+            federationIds.add(ApiUtil.getCreatedId(response));
+            response.close();
+
+
+            OpenIdFederationRepresentation openIdFederationRepresentation2 = new OpenIdFederationRepresentation();
+            openIdFederationRepresentation2.setTrustAnchor("https://edugain.org/trust-anchor");
+            openIdFederationRepresentation2.setClientRegistrationTypesSupported(Stream.of("EXPLICIT").collect(Collectors.toList()));
+            openIdFederationRepresentation2.setEntityType("OPENID_RELYING_PARTY");
+            openIdFederationRepresentation2.setIdpConfiguration(Map.of(OpenIdFederationUtils.SUBJECT_TYPES_SUPPORTED, "public"));
+            response = testRealm.openIdFederationsResource().create(openIdFederationRepresentation2);
+            federationIds.add(ApiUtil.getCreatedId(response));
+            response.close();
 
             //When Open Id Federation is configured
             EntityStatement statement = getOIDCFederationDiscoveryRepresentation(client, OAuthClient.AUTH_SERVER_ROOT);
@@ -294,6 +306,7 @@ public class OIDCWellKnownProviderTest extends AbstractKeycloakTest {
 
             realmRep.setOpenIdFederationEnabled(false);
             testRealm.update(realmRep);
+            federationIds.stream().forEach(x -> testRealm.openIdFederationsResource().delete(x));
         } finally {
             client.close();
         }
