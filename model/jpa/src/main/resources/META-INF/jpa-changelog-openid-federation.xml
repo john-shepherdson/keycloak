@@ -55,17 +55,21 @@
 
     <changeSet author="cgeorgilakis@grnet.gr" id="openid-federation2-populate">
         <sql>
-            WITH first_values AS (
-            SELECT DISTINCT ON (o.openid_federation_id)
-            o.openid_federation_id,
+            MERGE INTO OPENID_FEDERATION fed
+            USING (
+            SELECT o.openid_federation_id,
             o.value
+            FROM (
+            SELECT o.*,
+            ROW_NUMBER() OVER (PARTITION BY o.openid_federation_id ORDER BY o.id) rn
             FROM openid_federation_attribute o
             WHERE o.name = 'openidFederationEntityTypes'
-            )
-            UPDATE OPENID_FEDERATION fed
-            SET ENTITY_TYPE = f.value
-            FROM first_values f
-            WHERE fed.internal_id = f.openid_federation_id;
+            ) o
+            WHERE rn = 1
+            ) sub
+            ON (fed.internal_id = sub.openid_federation_id)
+            WHEN MATCHED THEN
+            UPDATE SET ENTITY_TYPE = sub.value;
         </sql>
 
         <sql>
