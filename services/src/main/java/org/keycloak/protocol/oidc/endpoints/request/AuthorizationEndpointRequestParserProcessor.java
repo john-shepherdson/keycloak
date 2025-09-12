@@ -109,7 +109,7 @@ public class AuthorizationEndpointRequestParserProcessor {
         }
     }
 
-    public static AuthorizationEndpointRequest parseRequestOpenIdFederation(EventBuilder event, KeycloakSession session, MultivaluedMap<String, String> requestParams, EndpointType endpointType) {
+    public static AuthorizationEndpointRequest parseRequestOpenIdFederation(EventBuilder event, KeycloakSession session, ClientModel client, MultivaluedMap<String, String> requestParams, EndpointType endpointType) {
         try {
             AuthorizationEndpointRequest request = parseRequestCommon(requestParams, endpointType);
 
@@ -118,10 +118,23 @@ public class AuthorizationEndpointRequestParserProcessor {
 
             if (requestParam != null && requestUriParam != null) {
                 throw new RuntimeException("Illegal to use both 'request' and 'request_uri' parameters together");
+            } else  if (requestParam == null && requestUriParam == null) {
+                throw new RuntimeException("For automatic client registration");
             }
 
+            String requestObjectRequired = OIDCAdvancedConfigWrapper.fromClientModel(client).getRequestObjectRequired();
+
+            if (OIDCConfigAttributes.REQUEST_OBJECT_REQUIRED_REQUEST.equals(requestObjectRequired)
+                    && requestParam == null) {
+                throw new RuntimeException("Client is required to use 'request' parameter.");
+            }
+//            else if (OIDCConfigAttributes.REQUEST_OBJECT_REQUIRED_REQUEST_URI.equals(requestObjectRequired)
+//                    && requestUriParam == null) {
+//                throw new RuntimeException("Client is required to use 'request_uri' parameter.");
+            //            }
+
             if (requestParam != null) {
-                new OpenIdFederationAuthzEndpointRequestObjectParser(session, requestParam).parseRequest(request);
+                new OpenIdFederationAuthzEndpointRequestObjectParser(session, requestParam, client).parseRequest(request);
             } else if (requestUriParam != null) {
                 throw new RuntimeException("requestUriParam not supported for automatic client registration");
             }
@@ -135,7 +148,8 @@ public class AuthorizationEndpointRequestParserProcessor {
         } catch (Exception e) {
             ServicesLogger.LOGGER.invalidRequest(e);
             event.error(Errors.INVALID_REQUEST);
-            throw new ErrorPageException(session, Response.Status.BAD_REQUEST, Messages.INVALID_REQUEST);
+            event.detail("Automatic","true");
+            throw new ErrorPageException(session, Response.Status.BAD_REQUEST, Messages.INVALID_REQUEST_AUTOMATIC_REGISTRATION);
         }
     }
 
