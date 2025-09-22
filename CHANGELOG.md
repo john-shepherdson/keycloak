@@ -15,6 +15,7 @@ Our Keycloak version is working well with PostgreSQL database. For using other S
 ### Added
 - OpenID Federation Automatic Registration as OP 
 - OID-FED settings for OPs
+- Update Identity Provider in explicit registration (OpenId Federation as RP)
 
 ### Changed
 - Move entityType and ClientRegistrationType to OpenId Federation general settings
@@ -22,6 +23,8 @@ Our Keycloak version is working well with PostgreSQL database. For using other S
 
 ### Fixed
 - Correct error for null audience in JWTClientAuthenticator
+- Correct logout for OpenId Federation IdP
+- Being possible to add realm default scopes during Dynamic Client Registration/ OpenID Federation when scopes are including in client representation
 
 
 ## [22.0.13-1.22] - 2025-09-08
