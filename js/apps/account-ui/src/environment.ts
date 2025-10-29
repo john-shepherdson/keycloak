@@ -31,6 +31,7 @@ export type Feature = {
   manageConsentAllowed: boolean;
   manageAccountBasicAuthAllowed: boolean;
   manageAccount2faAllowed: boolean;
+  manageAccountAuthAllowed: boolean;
   viewApplicationAllowed: boolean;
 };
 

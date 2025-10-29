@@ -166,6 +166,7 @@
           "manageConsentAllowed" : ${manageConsentAllowed?c},
           "manageAccountBasicAuthAllowed" : ${manageAccountBasicAuthAllowed?c},
           "manageAccount2faAllowed" : ${manageAccount2faAllowed?c},
+          "manageAccountAuthAllowed" : ${(manageAccountBasicAuthAllowed || manageAccount2faAllowed)?c},
           "viewApplicationAllowed" : ${viewApplicationAllowed?c}
         },
         "scope": "${scope!""}"
