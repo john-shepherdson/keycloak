@@ -454,10 +454,10 @@ public abstract class AbstractMigrationTest extends AbstractKeycloakTest {
 
     protected void testMigrationTo26_4_0() {
         testSamlEncryptionAttributes(migrationRealm);
-        testMigrationTo26_4_0_1_0();
+        testMigrationTo26_4_1_0_1();
     }
 
-    protected void testMigrationTo26_4_0_1_0() {
+    protected void testMigrationTo26_4_1_0_1() {
         testNewAccountRoles(masterRealm);
         testNewAccountRoles(migrationRealm);
     }

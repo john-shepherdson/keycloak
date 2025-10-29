@@ -10,9 +10,9 @@ import org.keycloak.representations.idm.RealmRepresentation;
 
 import static org.keycloak.models.AccountRoles.MANAGE_ACCOUNT_2FA;
 import static org.keycloak.models.AccountRoles.MANAGE_ACCOUNT_BASIC_AUTH;
-public class MigrateTo26_4_0_1_0 implements Migration {
+public class MigrateTo26_4_1_0_1 implements Migration {
 
-    public static final ModelVersion VERSION = new ModelVersion("26_4_0_1_0");
+    public static final ModelVersion VERSION = new ModelVersion("26.4.1-0.1");
 
     @Override
     public void migrate(KeycloakSession session) {

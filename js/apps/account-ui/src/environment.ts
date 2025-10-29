@@ -27,6 +27,11 @@ export type Feature = {
   isViewGroupsEnabled: boolean;
   isViewOrganizationsEnabled: boolean;
   isOid4VciEnabled: boolean;
+  manageAccountAllowed: boolean;
+  manageConsentAllowed: boolean;
+  manageAccountBasicAuthAllowed: boolean;
+  manageAccount2faAllowed: boolean;
+  viewApplicationAllowed: boolean;
 };
 
 export const environment = getInjectedEnvironment<Environment>();
