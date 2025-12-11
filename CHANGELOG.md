@@ -39,6 +39,7 @@ Full Keycloak upstream jira issue can be shown if filtered by Fix version.
 - User attribute unique validation [RCIAM-429](https://tts.grnet.gr/jira/browse/RCIAM-429)
 - Add no editable Attribute Validator [RCIAM-429](https://tts.grnet.gr/jira/browse/RCIAM-429)
 - Signalling Multi-Factor Authentication (MFA) requests to OIDC and SAML Identity Providers 
+- Default acr value for Identity Providers login
 
 ### Changed
 - Change emailVerified User field with UserAttributeMappers (conditional trust email). [EOSC-KC-70](https://github.com/eosc-kc/keycloak/issues/70)
@@ -52,6 +53,7 @@ Full Keycloak upstream jira issue can be shown if filtered by Fix version.
 - LinkedAccountRepresentation consists linkedUserID
 - Support for omitting attributeConsumingServiceIndex from authentication requests
 - Every user can update his profile in account console based on User profile user managed attributes
+- Support MFA with Identity Providers
 
 ### Fixed
 - Changes in account console and account rest service [RCIAM-860](https://jira.argo.grnet.gr/browse/RCIAM-860)
