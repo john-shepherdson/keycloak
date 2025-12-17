@@ -62,7 +62,7 @@ public class OIDCClientRegistrationProvider extends AbstractClientRegistrationPr
 
         try {
             ClientRepresentation client = createOidcClient(clientOIDC, session, null);
-            URI uri = getRegistrationClientUri(clientOIDC.getClientId());
+            URI uri = getRegistrationClientUri(client.getClientId());
             clientOIDC = DescriptionConverter.toExternalResponse(session, client, uri, OIDCClientRepresentation.class);
             clientOIDC.setClientIdIssuedAt(Time.currentTime());
             return Response.created(uri).entity(clientOIDC).build();
