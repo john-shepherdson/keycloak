@@ -1479,7 +1479,7 @@ public class TokenManager {
             res = transformAccessTokenResponse(session, res, userSession, clientSessionCtx);
 
             // OIDC Financial API Read Only Profile : scope MUST be returned in the response from Token Endpoint
-            String responseScope = clientSessionCtx.getScopeString();
+            String responseScope = accessToken.getScope();
             res.setScope(responseScope);
             event.detail(Details.SCOPE, responseScope);
 
