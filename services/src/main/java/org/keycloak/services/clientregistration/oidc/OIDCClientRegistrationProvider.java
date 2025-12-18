@@ -89,8 +89,7 @@ public class OIDCClientRegistrationProvider extends AbstractClientRegistrationPr
         try {
 
             ClientRepresentation client = updateOidcClient(clientId, clientOIDC, session, null);
-            URI uri = session.getContext().getUri().getAbsolutePathBuilder().path(client.getClientId()).build();
-            OIDCClientRepresentation updatedClient = DescriptionConverter.toExternalResponse(session, client, uri, OIDCClientRepresentation.class);
+            OIDCClientRepresentation updatedClient = DescriptionConverter.toExternalResponse(session, client, getRegistrationClientUri(clientId), OIDCClientRepresentation.class);
             return Response.ok(updatedClient).build();
         } catch (ClientRegistrationException cre) {
             ServicesLogger.LOGGER.clientRegistrationException(cre.getMessage());
