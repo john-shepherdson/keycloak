@@ -213,6 +213,8 @@
         <!-- Version suffix that is appended to directories. Default is the maven GAV version but this can be edited to use a short form version -->
         <server.output.dir.version>${project.version}</server.output.dir.version>
 
+        <sonar.organization>eosc-beyond-sqa</sonar.organization>
+
     </properties>
 
     <url>http://keycloak.org</url>
